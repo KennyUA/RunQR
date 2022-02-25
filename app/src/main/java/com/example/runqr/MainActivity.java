@@ -4,7 +4,10 @@ import static java.security.AccessController.getContext;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -24,17 +27,27 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final Button AddQR = findViewById(R.id.add_qr_button);
-        AddQR.setOnClickListener(new View.OnClickListener() {
+        final Button addQR = findViewById(R.id.add_qr_button);
+        addQR.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent addQRIntent = new Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA);
-                startActivity(addQRIntent);
-                IntentIntegrator intentIntegrator = new IntentIntegrator(MainActivity.this);
-                ArrayList<String> QRCodeList = new ArrayList<String>();
-                QRCodeList.add(IntentIntegrator.QR_CODE);
-                intentIntegrator.setDesiredBarcodeFormats(QRCodeList);
-                intentIntegrator.initiateScan();
+
+                getSupportFragmentManager().beginTransaction().add(R.id.container, new AddQRFragment()).commit();
+
+                //final View addQR = findViewById(R.id.fragment_container_view);
+                //addQR.setVisibility(View.VISIBLE);
+
+
+
+                //AddQRFragment addQRFragment = new AddQRFragment();
+                //FragmentManager manager = getFragmentManager();
+                //FragmentTransaction transaction = manager.beginTransaction();
+                //transaction.add(R.id.fragment_container_view,AddQRFragment.class,"OPEN_SCANNER");
+                //transaction.replace(R.id.container,);
+                //transaction.addToBackStack(null);
+                //transaction.commit();
+
+
 
 
 
@@ -43,32 +56,6 @@ public class MainActivity extends AppCompatActivity {
 
 
         });
-
-
-
-
-
-    }
-
-
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-
-        super.onActivityResult(requestCode, resultCode, data);
-
-        IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode,resultCode,data);
-
-        if(scanResult != null){
-
-            AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
-
-            alertDialog.setMessage("Would you like to add this QR code?");
-            alertDialog.setPositiveButton("yes", )
-
-
-        }
 
 
     }
