@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    android:id="@+id/container">
+    tools:context=".MainActivity">
 
     <!-- res/layout/example_activity.xml -->
     <!--
@@ -18,11 +17,9 @@
         android:visibility="gone"/>
     -->
 
-
-
-
-
+    <!--
     <TextView
+        android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Hello World!"
@@ -30,6 +27,15 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+    -->
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/addQRFragment_container"
+        android:layout_margin="5dp">
+
+    </FrameLayout>
 
     <Button
         android:id="@+id/add_qr_button"
@@ -41,7 +47,6 @@
         app:layout_constraintHorizontal_bias="0.914"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

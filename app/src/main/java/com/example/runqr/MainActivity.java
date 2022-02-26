@@ -5,9 +5,13 @@ import static java.security.AccessController.getContext;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+//import android.support.v4.app.Fragment;
+//import android.support.v4.app.FragmentManager;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
+//import android.app.FragmentManager;
+//import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -32,7 +36,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                getSupportFragmentManager().beginTransaction().add(R.id.container, new AddQRFragment()).commit();
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                AddQRFragment addQRFragment = new AddQRFragment();
+                fragmentTransaction.add(R.id.addQRFragment_container,addQRFragment);
+                fragmentTransaction.commit();
+
+                //getSupportFragmentManager().beginTransaction().add(R.id.container, new AddQRFragment()).commit();
 
                 //final View addQR = findViewById(R.id.fragment_container_view);
                 //addQR.setVisibility(View.VISIBLE);

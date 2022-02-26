@@ -6,6 +6,11 @@ public class QRCode {
 
     private String hash;
 
+    public QRCode(String hash){
+        this.hash = hash;
+
+    }
+
 
 
 

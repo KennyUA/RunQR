@@ -8,7 +8,7 @@ public class Scanner {
 
 
     public void addQR(){
-
+        //new QRCode()
 
 
     }
