@@ -37,6 +37,25 @@
 
     </FrameLayout>
 
+    <!--
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/register_btn_wrapper"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <Button
+            android:id="@+id/add_qr_button"
+            android:layout_width="143dp"
+            android:layout_height="53dp"
+            android:layout_marginTop="16dp"
+            android:text="Add QR Code"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.914"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+    -->
+
     <Button
         android:id="@+id/add_qr_button"
         android:layout_width="143dp"
@@ -47,6 +66,5 @@
         app:layout_constraintHorizontal_bias="0.914"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

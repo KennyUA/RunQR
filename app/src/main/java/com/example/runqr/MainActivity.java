@@ -36,37 +36,42 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                AddQRFragment addQRFragment = new AddQRFragment();
-                fragmentTransaction.add(R.id.addQRFragment_container,addQRFragment);
-                fragmentTransaction.commit();
-
-                //getSupportFragmentManager().beginTransaction().add(R.id.container, new AddQRFragment()).commit();
-
-                //final View addQR = findViewById(R.id.fragment_container_view);
-                //addQR.setVisibility(View.VISIBLE);
-
-
-
-                //AddQRFragment addQRFragment = new AddQRFragment();
-                //FragmentManager manager = getFragmentManager();
-                //FragmentTransaction transaction = manager.beginTransaction();
-                //transaction.add(R.id.fragment_container_view,AddQRFragment.class,"OPEN_SCANNER");
-                //transaction.replace(R.id.container,);
-                //transaction.addToBackStack(null);
-                //transaction.commit();
-
-
-
+                openAddQRFragment(addQR);
 
 
             }
 
 
-
         });
 
+
+    }
+
+    public void openAddQRFragment(Button addQR){
+        // open addQRFragment to scan QRcode and add it to player's account
+        addQR.setVisibility(View.GONE);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        AddQRFragment addQRFragment = new AddQRFragment();
+        //fragmentTransaction.add(R.id.addQRFragment_container,addQRFragment);\
+        fragmentTransaction.add(R.id.addQRFragment_container, addQRFragment, "Add QR Code");
+        fragmentTransaction.commit();
+        //addQR.setVisibility(View.VISIBLE);
+
+        //getSupportFragmentManager().beginTransaction().add(R.id.container, new AddQRFragment()).commit();
+
+        //final View addQR = findViewById(R.id.fragment_container_view);
+        //addQR.setVisibility(View.VISIBLE);
+
+
+
+        //AddQRFragment addQRFragment = new AddQRFragment();
+        //FragmentManager manager = getFragmentManager();
+        //FragmentTransaction transaction = manager.beginTransaction();
+        //transaction.add(R.id.fragment_container_view,AddQRFragment.class,"OPEN_SCANNER");
+        //transaction.replace(R.id.container,);
+        //transaction.addToBackStack(null);
+        //transaction.commit();
 
     }
 
