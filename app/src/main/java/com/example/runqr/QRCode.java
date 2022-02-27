@@ -55,7 +55,9 @@ public class QRCode implements Serializable {
 
             for (int i=0; i < charDomain.size(); i +=1){
                 if( entry.getKey() == charDomain.get(i)) {
-                    QRScore += Math.pow(scoreDomain.get(i), (double) entry.getValue() - 1);
+                    int numOccurrences = Integer.parseInt(entry.getValue().toString());
+                    //int b = Integer.parseInt(a.toString());
+                    QRScore += Math.pow(scoreDomain.get(i), (double) numOccurrences - 1);
                 }
             }
 
