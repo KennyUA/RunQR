@@ -1,6 +1,7 @@
 package com.example.runqr;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,6 +40,14 @@ public class AddQRFragment extends Fragment {
     private String QRString = null;
 
 
+    OnConfirmPressed dataPasser;
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        dataPasser = (AddQRFragment.OnConfirmPressed) context;
+    }
+
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -74,12 +83,18 @@ public class AddQRFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 //add QRCode
-                String hashedString = QRCodeScanner.hashQRCode(QRString);
-                QRCodeScanner.addQRCode(hashedString);
+                if (QRString != null){
+                    String hashedString = QRCodeScanner.hashQRCode(QRString);
+                    QRCodeScanner.scanQRCode(hashedString);
+                    // send QRCode to MainActivity using intent
 
-                // prompt user to enter geolocation and/or photo of object hosting the QRCode
+                    // prompt user to enter geolocation and/or photo of object hosting the QRCode
 
-                //ignore for now
+                    //ignore for now
+                    getFragmentManager().beginTransaction().remove(AddQRFragment.this).commit();
+                    final Button addQRButton = getActivity().findViewById(R.id.add_qr_button);
+                    addQRButton.setVisibility(View.VISIBLE);
+                }
 
             }
         });
@@ -104,6 +119,15 @@ public class AddQRFragment extends Fragment {
         });
         return root;
     }
+
+    public interface OnConfirmPressed {
+        void onConfirmPressed(QRCode qrCodeData);
+    }
+
+    public void passData(QRCode data) {
+        dataPasser.onConfirmPressed(data);
+    }
+
 
     @Override
     public void onResume() {

@@ -2,14 +2,15 @@ package com.example.runqr;
 
 import com.google.common.hash.Hashing;
 
+import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 
-public class Scanner {
+public class Scanner implements Serializable {
     // scans QRCode and hashes contents and creates new QRCode instance with resulting hash stored
     private String hash;
 
 
-    public void addQRCode(String hashedContent){
+    public void scanQRCode(String hashedContent){
 
         // create new QRCode object
         QRCode qRCode = new QRCode(hashedContent);

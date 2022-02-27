@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 //import android.app.FragmentManager;
 //import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -24,12 +25,18 @@ import com.google.zxing.integration.android.IntentResult;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AddQRFragment.OnConfirmPressed {
+
+    /// fix below to do automatic log in and save player info
+    Player currentPlayer = new Player();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
 
         final Button addQR = findViewById(R.id.add_qr_button);
         addQR.setOnClickListener(new View.OnClickListener() {
@@ -46,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
 
     public void openAddQRFragment(Button addQR){
         // open addQRFragment to scan QRcode and add it to player's account
@@ -75,4 +83,9 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+    @Override
+    public void onConfirmPressed(QRCode qrCodeData) {
+        currentPlayer.addQRCode(qrCodeData);
+    }
 }

@@ -1,6 +1,8 @@
 package com.example.runqr;
 
-public class PlayerStats {
+import java.io.Serializable;
+
+public class PlayerStats implements Serializable {
     private int high_score;
     private int low_score;
     private int total_score;
@@ -79,5 +81,9 @@ public class PlayerStats {
 
     public void setTotal_score_ranking(int total_score_ranking) {
         this.total_score_ranking = total_score_ranking;
+    }
+
+    public void incrementTotalScore (int addScore){
+        this.total_score += addScore;
     }
 }
