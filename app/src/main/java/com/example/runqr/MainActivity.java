@@ -20,6 +20,7 @@ import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -30,6 +31,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnC
     /// fix below to do automatic log in and save player info
     Player currentPlayer = new Player();
 
+    FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
