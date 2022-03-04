@@ -31,7 +31,12 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnC
     /// fix below to do automatic log in and save player info
     Player currentPlayer = new Player();
 
+
+    // Access a Cloud Firestore instance from your Activity
     FirebaseFirestore db;
+
+    db = FirebaseFirestore.getInstance();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
