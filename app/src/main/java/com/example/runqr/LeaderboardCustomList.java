@@ -27,18 +27,18 @@ public class LeaderboardCustomList extends ArrayAdapter<LeaderboardItem> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent){
         View view = convertView;
         if (view==null){
-            /*uncomment when resource file made*/
-            //view = LayoutInflater.from(context).inflate(R.layout.content, parent, false);
+
+            view = LayoutInflater.from(context).inflate(R.layout.leaderboard_content, parent, false);
 
         }
 
         LeaderboardItem leaderboardItem = leaderboard_items.get(position);
 
         /*uncomment following four lines when resource file made*/
-        //TextView playerName = view.findViewById(R.id.player_name);
-        //TextView playerScore = view.findViewById(player_score);
-        //playerName.setText(leaderboardItem.getPlayer());
-        //playerScore.setText(leaderboardItem.getScore());
+        TextView playerName = view.findViewById(R.id.player_text);
+        TextView playerScore = view.findViewById(R.id.score_text);
+        playerName.setText(leaderboardItem.getPlayer());
+        playerScore.setText(leaderboardItem.getScore());
 
         return view;
     }

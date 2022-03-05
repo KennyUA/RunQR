@@ -6,4 +6,11 @@
     android:layout_height="match_parent"
     tools:context=".LeaderboardActivity">
 
+    <ListView
+        android:id="@+id/leaderboard_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </ListView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
