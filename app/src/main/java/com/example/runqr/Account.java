@@ -11,12 +11,15 @@ public class Account  implements Serializable {
 
     private ArrayList<QRCode> QRLibrary;
 
-    //public ArrayList<>
-
-    public void Account(){
-        this.playerStats = new PlayerStats();
+    public Account(String username, PlayerStats playerStats, String contactEmail) {
+        this.username = username;
+        this.playerStats = playerStats;
+        this.contactEmail = contactEmail;
     }
 
+    public String getUsername(){
+        return this.username;
+    }
 
     public void addQRCode(QRCode newQRCode){
         QRLibrary.add(newQRCode);

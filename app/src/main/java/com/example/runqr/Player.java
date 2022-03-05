@@ -11,15 +11,17 @@ import java.io.Serializable;
 public class Player  implements Serializable {
     private Account playerAccount;
 
-    public void Player(){
-        this.playerAccount = new Account();
+    public Player(Account playerAccount) {
+        this.playerAccount = playerAccount;
     }
-
 
     public void addQRCode(QRCode QRCodeToAdd){
         playerAccount.addQRCode(QRCodeToAdd);
     }
 
+    public Account getPlayerAccount(){
+        return this.playerAccount;
+    }
 
 
     public void scanQR(){
