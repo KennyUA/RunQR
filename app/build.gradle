@@ -51,5 +51,6 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     implementation 'com.google.guava:guava:31.0.1-jre'
     implementation 'com.android.support:multidex:1.0.3'
+    implementation 'com.mapbox.maps:android:10.3.0'
 
 }

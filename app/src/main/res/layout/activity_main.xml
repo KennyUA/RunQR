@@ -30,10 +30,55 @@
     -->
 
     <FrameLayout
+
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/addQRFragment_container"
         android:layout_margin="5dp">
+
+        <com.mapbox.maps.MapView
+            xmlns:mapbox="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            mapbox:mapbox_cameraTargetLat="53.5232"
+            mapbox:mapbox_cameraTargetLng="-113.5263"
+            mapbox:mapbox_cameraZoom="9.0"
+            android:id="@+id/map"/>
+
+
+        <Button
+            android:id="@+id/add_qr_button"
+            android:layout_width="143dp"
+            android:layout_height="53dp"
+            android:layout_marginTop="16dp"
+            android:text="Add QR Code"
+            android:layout_gravity="right" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_margin="10px">
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/refreshBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15px"
+                android:background="@drawable/ic_refresh"
+                android:tint="@android:color/black" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/searchLocationsBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/refreshBtn"
+                android:background="@drawable/ic_locations"
+                android:tint="@android:color/white" />
+
+
+
+        </RelativeLayout>
 
     </FrameLayout>
 
@@ -56,15 +101,6 @@
     </androidx.appcompat.widget.LinearLayoutCompat>
     -->
 
-    <Button
-        android:id="@+id/add_qr_button"
-        android:layout_width="143dp"
-        android:layout_height="53dp"
-        android:layout_marginTop="16dp"
-        android:text="Add QR Code"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.914"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
