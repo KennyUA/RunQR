@@ -10,15 +10,15 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class QRList extends ArrayAdapter<QRCode> {
 
-    private ArrayList<QRCode> QRCodes;
+    private QRLibrary QRCodes;
     private Context context;
 
-    public QRList(Context context, ArrayList<QRCode> QRCodes){
-        super(context,0, QRCodes);
+    public QRList(Context context, QRLibrary QRCodes){
+        super(context,0, (List<QRCode>) QRCodes);
         this.QRCodes = QRCodes;
         this.context = context;
     }
@@ -34,12 +34,12 @@ public class QRList extends ArrayAdapter<QRCode> {
             view = LayoutInflater.from(context).inflate(R.layout.activity_qrlibrary, parent,false);
         }
 
-        QRCode QRcode = QRCodes.get(position);
+        QRCode QRcode = QRCodes.getQRCode(position);
 
-        TextView QRCode = view.findViewById(R.id.qrcode_text);
+        TextView QRCodeScore = view.findViewById(R.id.qrcode_score_text);
         TextView QRCodeHash = view.findViewById(R.id.qrcode_hash_text);
 
-        QRCode.setText("QR Code");
+        QRCodeScore.setText("Score: "+ QRcode.getScore());
         QRCodeHash.setText(QRcode.getHash());
 
         return view;

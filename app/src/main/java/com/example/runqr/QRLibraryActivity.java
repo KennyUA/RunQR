@@ -1,7 +1,5 @@
 package com.example.runqr;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -9,23 +7,28 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
-import java.util.ArrayList;
+import androidx.appcompat.app.AppCompatActivity;
 
 public class QRLibraryActivity extends AppCompatActivity {
 
     ListView QRList;
     ArrayAdapter<QRCode> QRAdapter;
-    ArrayList<QRCode> QRDataList;
+    QRLibrary QRDataList;
+    Account playerAccount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qrlibrary);
 
+        // get intent
+        // To retrieve object in second Activity
+        QRLibrary playerQRLibrary = (QRLibrary) getIntent().getSerializableExtra("Player QRLibrary");
+
         QRList = findViewById(R.id.qrlibrary_list);
 
-        QRDataList = new ArrayList<QRCode>(); //convert string list to arraylist
-
+        //QRDataList = new ArrayList<QRCode>(); //convert string list to arraylist
+        QRDataList = playerQRLibrary;
 
 
         QRAdapter = new QRList(this, QRDataList);
@@ -38,14 +41,15 @@ public class QRLibraryActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
 
-                Button deleteButton = (Button) findViewById(R.id.button3);
+                Button deleteButton = (Button) findViewById(R.id.delete_qr_button);
                 deleteButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         //Object listCity = cityList.getItemAtPosition(position);
-                        dataList.remove(position);
-                        cityList.setAdapter(cityAdapter);
-
+                        QRCode QRCodeToDelete = QRDataList.getQRCode(position);
+                        QRDataList.deleteQRCode(QRCodeToDelete);
+                        //QRList.setAdapter(QRAdapter);
+                        QRAdapter.notifyDataSetChanged();
 
                     }
                 });

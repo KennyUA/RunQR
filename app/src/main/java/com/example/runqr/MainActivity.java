@@ -1,48 +1,35 @@
 package com.example.runqr;
 
-import static java.security.AccessController.getContext;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-//import android.support.v4.app.Fragment;
-//import android.support.v4.app.FragmentManager;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
-//import android.app.FragmentManager;
-//import android.app.FragmentTransaction;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.MediaStore;
-
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
+
+import java.util.HashMap;
+
+//import android.support.v4.app.Fragment;
+//import android.support.v4.app.FragmentManager;
+//import android.app.FragmentManager;
+//import android.app.FragmentTransaction;
+/*
 import com.mapbox.maps.MapView;
 import com.mapbox.maps.Style;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+ */
 
 public class MainActivity extends AppCompatActivity implements AddQRFragment.OnConfirmPressed {
 
@@ -52,7 +39,11 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnC
 
     // Access a Cloud Firestore instance from your Activity
     FirebaseFirestore db;
+
+    /*
     MapView mapView;
+
+     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,10 +84,19 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnC
 
          */
 
+
+        /*
         //Map Stuff
 
         mapView = findViewById(R.id.map);
         mapView.getMapboxMap().loadStyleUri(Style.MAPBOX_STREETS);
+
+         */
+
+
+
+
+
 
         // The set method sets a unique id for the document
         HashMap<String, String> accountData = new HashMap<>();
@@ -138,6 +138,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnC
 
     }
 
+    /*
     public void onStart(){
         super.onStart();
         mapView.onStart();
@@ -157,6 +158,11 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnC
         super.onDestroy();
         mapView.onDestroy();
     }
+
+
+     */
+
+
 
 
     public void openAddQRFragment(Button addQR){
@@ -207,7 +213,10 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnC
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch(item.getItemId()) {
             case R.id.qr_library_item:
-                ;
+                //Open activity to show QRLibrary
+                Intent intent = new Intent(this, QRLibraryActivity.class);
+                intent.putExtra("Player QRLibrary", currentPlayer.getPlayerQRLibrary());
+                startActivity(intent);
 
 
 
