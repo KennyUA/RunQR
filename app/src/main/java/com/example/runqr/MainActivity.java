@@ -18,6 +18,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.MediaStore;
+
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -37,6 +38,8 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.mapbox.maps.MapView;
+import com.mapbox.maps.Style;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnC
 
     // Access a Cloud Firestore instance from your Activity
     FirebaseFirestore db;
+    MapView mapView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +92,11 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnC
 
 
          */
+
+        //Map Stuff
+
+        mapView = findViewById(R.id.map);
+        mapView.getMapboxMap().loadStyleUri(Style.MAPBOX_STREETS);
 
         // The set method sets a unique id for the document
         HashMap<String, String> accountData = new HashMap<>();
@@ -129,6 +138,26 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnC
 
     }
 
+    public void onStart(){
+        super.onStart();
+        mapView.onStart();
+    }
+
+    public void onStop(){
+        super.onStop();
+        mapView.onStop();
+    }
+
+    public void onLowMemory(){
+        super.onLowMemory();
+        mapView.onLowMemory();
+    }
+
+    public void onDestroy(){
+        super.onDestroy();
+        mapView.onDestroy();
+    }
+
 
     public void openAddQRFragment(Button addQR){
         // open addQRFragment to scan QRcode and add it to player's account
@@ -159,10 +188,12 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnC
     }
 
 
+
     @Override
     public void onConfirmPressed(QRCode qrCodeData) {
         currentPlayer.addQRCode(qrCodeData);
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
