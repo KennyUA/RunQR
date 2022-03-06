@@ -1,12 +1,9 @@
 package com.example.runqr;
 
+import static java.sql.Types.NULL;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-<<<<<<< Updated upstream
-
-import android.content.Intent;
-import android.os.Bundle;
-=======
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -14,26 +11,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
->>>>>>> Stashed changes
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-<<<<<<< Updated upstream
-
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.util.HashMap;
-=======
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -49,7 +31,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 import java.util.regex.Pattern;
->>>>>>> Stashed changes
 
 public class Login extends AppCompatActivity {
 
@@ -58,14 +39,9 @@ public class Login extends AppCompatActivity {
     FirebaseFirestore db;
     Button loginQR;
     Button signupButton;
-<<<<<<< Updated upstream
-    TextView errorLength;
-    EditText email;
-=======
     TextView usernameMessage;
     EditText email;
     TextView validEmailTextView;
->>>>>>> Stashed changes
     EditText username;
     Player currentPlayer;
     final String TAG = "Sample";
@@ -80,52 +56,12 @@ public class Login extends AppCompatActivity {
         loginQR = findViewById(R.id.login_qr_button);
         signupButton = findViewById(R.id.signup_button);
         email = findViewById(R.id.email);
-<<<<<<< Updated upstream
-        errorLength = findViewById(R.id.sizeError);
-        username = findViewById(R.id.username);
-=======
         usernameMessage = findViewById(R.id.sizeError);
         username = findViewById(R.id.username);
         validEmailTextView = findViewById(R.id.validEmail);
 
->>>>>>> Stashed changes
         db = FirebaseFirestore.getInstance();
-
-
         final CollectionReference collectionReference = db.collection("Accounts");
-<<<<<<< Updated upstream
-
-        username.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    String usernameText=username.getText().toString();
-                    if(usernameText.length()<=5){
-                        errorLength.setVisibility(View.VISIBLE);
-                    }
-                    else {
-                        errorLength.setVisibility(View.INVISIBLE);
-                        DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
-                        DatabaseReference userNameRef = rootRef.child("Accounts").child(usernameText);
-                        ValueEventListener eventListener = new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                if (!dataSnapshot.exists()) {
-                                    usernameExists = Boolean.TRUE;
-                                }
-                                else{
-                                    usernameExists = Boolean.FALSE;
-                                    errorLength.setText("This username is used");
-                                }
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-                            }
-                        };
-                        userNameRef.addListenerForSingleValueEvent(eventListener);
-                    }
-=======
         username.addTextChangedListener(new TextWatcher() {
 
             public void afterTextChanged(Editable s) {
@@ -181,7 +117,6 @@ public class Login extends AppCompatActivity {
                     validEmailTextView.setVisibility(View.INVISIBLE);
                 }else{
                     validEmailTextView.setVisibility(View.VISIBLE);
->>>>>>> Stashed changes
                 }
             }
         });
@@ -191,23 +126,46 @@ public class Login extends AppCompatActivity {
             public void onClick(View view) {
                 final String usernameData = username.getText().toString();
                 final String emailData = email.getText().toString();
+
+                Log.d(TAG, "Here!");
                 HashMap<String, String> data = new HashMap<>();
-<<<<<<< Updated upstream
-                if (usernameExists) {
-=======
                 if (usernameExists && emailExists) {
->>>>>>> Stashed changes
                     data.put("Email", emailData);
                     PlayerStats stats = new PlayerStats();
                     Account newAccount = new Account(usernameData, stats, emailData);
                     currentPlayer = new Player(newAccount);
                     collectionReference
                             .document(usernameData)
-                            .set(emailData)
+                            .set(data)
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
 // These are a method which gets executed when the task is succeeded
+                                    HashMap<String, Integer> statdata = new HashMap<>();
+                                    statdata.put("number_of_scanned", 0);
+                                    statdata.put("high_score", NULL);
+                                    statdata.put("low_score", NULL);
+                                    statdata.put("total_score", NULL);
+                                    statdata.put("high_score_ranking", NULL);
+                                    statdata.put("number_of_scanned_ranking", NULL);
+                                    statdata.put("total_score_ranking", NULL);
+                                    collectionReference
+                                            .document(usernameData)
+                                            .set(statdata)
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+// These are a method which gets executed when the task is succeeded
+                                                    Log.d(TAG, "Data has been added successfully!");
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+// These are a method which gets executed if there’s any problem
+                                                    Log.d(TAG, "Data could not be added!" + e.toString());
+                                                }
+                                            });
                                     Log.d(TAG, "Data has been added successfully!");
                                     Intent intent = new Intent(Login.this, MainActivity.class);
                                     startActivity(intent);
@@ -221,13 +179,14 @@ public class Login extends AppCompatActivity {
                                 }
                             });
                 }
+
+
+
+
             }
         });
 
 
-<<<<<<< Updated upstream
-
-=======
         loginQR.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view){
@@ -273,6 +232,6 @@ public class Login extends AppCompatActivity {
                 + "([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\\.([0-1]?"
                 + "[0-9]{1,2}|25[0-5]|2[0-4][0-9])){1}|"
                 + "([a-zA-Z]+[\\w-]+\\.)+[a-zA-Z]{2,4})$").matcher(email).matches();
->>>>>>> Stashed changes
     }
+
 }

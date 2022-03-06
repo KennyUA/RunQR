@@ -40,14 +40,8 @@ import java.util.HashMap;
 public class MainActivity extends AppCompatActivity implements AddQRFragment.OnConfirmPressed {
 
     /// fix below to do automatic log in and save player info
-<<<<<<< Updated upstream
-    Player currentPlayer;
-    final String TAG = "Sample";
-
-=======
     final String TAG = "Sample";
     Player currentPlayer;
->>>>>>> Stashed changes
     // Access a Cloud Firestore instance from your Activity
     FirebaseFirestore db;
 

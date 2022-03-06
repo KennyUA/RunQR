@@ -11,18 +11,11 @@ import java.io.Serializable;
 public class Player  implements Serializable {
     private Account playerAccount;
 
-<<<<<<< Updated upstream
-    public Player(Account playerAccount) {
-        this.playerAccount = playerAccount;
-    }
-
-=======
 
     public Player(Account playerAccount) {
         this.playerAccount = playerAccount;
     }
 
->>>>>>> Stashed changes
     public void addQRCode(QRCode QRCodeToAdd){
         playerAccount.addQRCode(QRCodeToAdd);
     }
