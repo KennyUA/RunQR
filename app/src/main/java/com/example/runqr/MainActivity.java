@@ -18,6 +18,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.MediaStore;
+
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -25,31 +27,108 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.mapbox.maps.MapView;
+import com.mapbox.maps.Style;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity implements AddQRFragment.OnConfirmPressed {
 
     /// fix below to do automatic log in and save player info
     Player currentPlayer = new Player();
+    final String TAG = "Sample";
 
+    // Access a Cloud Firestore instance from your Activity
+    FirebaseFirestore db;
+    MapView mapView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        db = FirebaseFirestore.getInstance();
+        // Get a top level reference to the collection
+        final CollectionReference collectionReference = db.collection("Accounts");
+
+        /*
+        HashMap<String, Account> accountData = new HashMap<>();
+        //HashMap<String, String> accountData = new HashMap<>();
+        //accountData.put("Account", currentPlayer.getPlayerAccount().getUsername());
+
+
+        // The set method sets a unique id for the document
+        collectionReference
+                .document("test_username")
+                .set(accountData)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+// These are a method which gets executed when the task is succeeded
+
+                        Log.d(TAG, "Data has been added successfully!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+// These are a method which gets executed if there’s any problem
+                        Log.d(TAG, "Data could not be added!" + e.toString());
+                    }
+                });
+
+
+
+         */
+
+        //Map Stuff
+
+        mapView = findViewById(R.id.map);
+        mapView.getMapboxMap().loadStyleUri(Style.MAPBOX_STREETS);
+
+        // The set method sets a unique id for the document
+        HashMap<String, String> accountData = new HashMap<>();
+        //accountData.put("Account Username", currentPlayer.getPlayerAccount().getUsername());
+        accountData.put("Account Username", "test_username");
+        Log.v("Hello", "test_message");
+        collectionReference
+                .document("Usernames")
+                .set(accountData)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        // These are a method which gets executed when the task is succeeded
+
+                        Log.v(TAG, "Data has been added successfully!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // These are a method which gets executed if there’s any problem
+                        Log.v(TAG, "Data could not be added!" + e.toString());
+                    }
+                });
+        Log.v("Hello", "test_message");
 
 
         final Button addQR = findViewById(R.id.add_qr_button);
         addQR.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-
+            public void onClick(View view){
                 openAddQRFragment(addQR);
-
 
             }
 
@@ -57,6 +136,26 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnC
         });
 
 
+    }
+
+    public void onStart(){
+        super.onStart();
+        mapView.onStart();
+    }
+
+    public void onStop(){
+        super.onStop();
+        mapView.onStop();
+    }
+
+    public void onLowMemory(){
+        super.onLowMemory();
+        mapView.onLowMemory();
+    }
+
+    public void onDestroy(){
+        super.onDestroy();
+        mapView.onDestroy();
     }
 
 
@@ -89,10 +188,12 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnC
     }
 
 
+
     @Override
     public void onConfirmPressed(QRCode qrCodeData) {
         currentPlayer.addQRCode(qrCodeData);
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

@@ -14,9 +14,14 @@ public class Account  implements Serializable {
     //public ArrayList<>
 
     public void Account(){
+
         this.playerStats = new PlayerStats();
+        this.username = "test_username";
     }
 
+    public String getUsername(){
+        return this.username;
+    }
 
     public void addQRCode(QRCode newQRCode){
         QRLibrary.add(newQRCode);

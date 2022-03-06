@@ -20,6 +20,9 @@ public class Player  implements Serializable {
         playerAccount.addQRCode(QRCodeToAdd);
     }
 
+    public Account getPlayerAccount(){
+        return this.playerAccount;
+    }
 
 
     public void scanQR(){
