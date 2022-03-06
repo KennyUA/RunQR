@@ -9,11 +9,14 @@ import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.ArrayList;
+
 public class QRLibraryActivity extends AppCompatActivity {
 
     ListView QRList;
     ArrayAdapter<QRCode> QRAdapter;
-    QRLibrary QRDataList;
+    //QRLibrary QRDataList;
+    ArrayList<QRCode> QRDataList;
     Account playerAccount;
 
     @Override
@@ -28,7 +31,8 @@ public class QRLibraryActivity extends AppCompatActivity {
         QRList = findViewById(R.id.qrlibrary_list);
 
         //QRDataList = new ArrayList<QRCode>(); //convert string list to arraylist
-        QRDataList = playerQRLibrary;
+        //QRDataList = playerQRLibrary;
+        QRDataList = playerQRLibrary.getQRCodeList();
 
 
         QRAdapter = new QRList(this, QRDataList);
@@ -45,9 +49,11 @@ public class QRLibraryActivity extends AppCompatActivity {
                 deleteButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        //Object listCity = cityList.getItemAtPosition(position);
-                        QRCode QRCodeToDelete = QRDataList.getQRCode(position);
-                        QRDataList.deleteQRCode(QRCodeToDelete);
+
+                        //QRCode QRCodeToDelete = QRDataList.getQRCode(position);
+                        QRCode QRCodeToDelete = QRDataList.get(position);
+                        //QRDataList.deleteQRCode(QRCodeToDelete);
+                        playerQRLibrary.deleteQRCode(QRCodeToDelete);
                         //QRList.setAdapter(QRAdapter);
                         QRAdapter.notifyDataSetChanged();
 

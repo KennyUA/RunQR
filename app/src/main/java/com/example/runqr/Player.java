@@ -12,6 +12,7 @@ public class Player implements Serializable {
     private Account playerAccount;
     private PlayerStats playerStats;
     private QRLibrary playerQRLibrary;
+    //private ArrayList<QRCode> playerQRLibrary;
 
     public void Player(){
 
@@ -39,6 +40,9 @@ public class Player implements Serializable {
     public QRLibrary getPlayerQRLibrary() {
         return this.playerQRLibrary;
     }
+
+
+
     public void scanQR(){
 
     }
