@@ -1,5 +1,7 @@
 package com.example.runqr;
 
+import android.util.Log;
+
 import java.io.Serializable;
 
 /**
@@ -14,7 +16,7 @@ public class Player implements Serializable {
     private QRLibrary playerQRLibrary;
     //private ArrayList<QRCode> playerQRLibrary;
 
-    public void Player(){
+    public Player(){
 
         this.playerAccount = new Account();
         this.playerStats = new PlayerStats();
@@ -23,7 +25,9 @@ public class Player implements Serializable {
 
 
     public void addQRCode(QRCode QRCodeToAdd){
+
         this.playerQRLibrary.addQRCode(QRCodeToAdd);
+        Log.d("QR Code Hash: ", QRCodeToAdd.getHash());
     }
 
     public void deleteQRCode(QRCode QRCodeToDelete) {

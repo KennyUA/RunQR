@@ -35,11 +35,12 @@ public class QRList extends ArrayAdapter<QRCode> implements Serializable {
         View view = convertView;
 
         if(view == null){
-            view = LayoutInflater.from(context).inflate(R.layout.activity_qrlibrary, parent,false);
+            view = LayoutInflater.from(context).inflate(R.layout.qrlibrary_content, parent,false);
         }
 
         //QRCode QRcode = QRCodes.getQRCode(position);
         QRCode QRcode = QRCodes.get(position);
+
 
         TextView QRCodeScore = view.findViewById(R.id.qrcode_score_text);
         TextView QRCodeHash = view.findViewById(R.id.qrcode_hash_text);

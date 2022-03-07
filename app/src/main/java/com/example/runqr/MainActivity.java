@@ -31,7 +31,7 @@ import java.util.HashMap;
 
 
 
-public class MainActivity extends AppCompatActivity implements AddQRFragment.OnConfirmPressed {
+public class MainActivity extends AppCompatActivity implements AddQRFragment.OnFragmentInteractionListener {
 
     /// fix below to do automatic log in and save player info
     Player currentPlayer = new Player();
@@ -194,7 +194,9 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnC
 
     @Override
     public void onConfirmPressed(QRCode qrCodeData) {
-        currentPlayer.addQRCode(qrCodeData);
+        //String test = qrCodeData.getHash();
+        currentPlayer.getPlayerQRLibrary().addQRCode(qrCodeData);
+        //Log.e("QRCodeHash on confirm: ", qrCodeData.getHash());
     }
 
 

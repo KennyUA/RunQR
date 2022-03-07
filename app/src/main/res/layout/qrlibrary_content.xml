@@ -11,7 +11,7 @@
         android:layout_height="96dp"
         android:layout_marginLeft="20dp"
         android:text="QRCode Hash"
-        android:textSize="30sp"></TextView>
+        android:textSize="10sp"></TextView>
 
     <TextView
         android:id="@+id/qrcode_score_text"
@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:padding="20dp"
         android:text="QRCode Score"
-        android:textSize="30sp"></TextView>
+        android:textSize="15sp"></TextView>
 
 
 </LinearLayout>

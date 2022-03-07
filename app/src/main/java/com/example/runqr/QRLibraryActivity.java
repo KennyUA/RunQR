@@ -4,10 +4,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
@@ -32,8 +33,16 @@ public class QRLibraryActivity extends AppCompatActivity {
 
         //QRDataList = new ArrayList<QRCode>(); //convert string list to arraylist
         //QRDataList = playerQRLibrary;
+
+
         QRDataList = playerQRLibrary.getQRCodeList();
 
+        /*
+        QRDataList = new ArrayList<QRCode>();
+        QRCode testcode = new QRCode("696ce4dbd7bb57cbfe58b64f530f428b74999cb37e2ee60980490cd9552de3a6");
+        QRDataList.add(testcode);
+
+         */
 
         QRAdapter = new QRList(this, QRDataList);
 
@@ -45,7 +54,7 @@ public class QRLibraryActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
 
-                Button deleteButton = (Button) findViewById(R.id.delete_qr_button);
+                FloatingActionButton deleteButton = (FloatingActionButton) findViewById(R.id.delete_qr_button);
                 deleteButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
