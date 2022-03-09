@@ -23,7 +23,6 @@ allprojects {
 
         // Trying to fix Mapbox errors
         mavenCentral()
-        maven { url 'https://mapbox.bintray.com/mapbox' }
         //
 
         maven {

@@ -37,7 +37,7 @@
         android:id="@+id/addQRFragment_container"
         android:layout_margin="5dp">
 
-        <!--
+
         <com.mapbox.maps.MapView
             xmlns:mapbox="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
@@ -46,8 +46,9 @@
             mapbox:mapbox_cameraTargetLng="-113.5263"
             mapbox:mapbox_cameraZoom="9.0"
             android:id="@+id/map"/>
-            -->
 
+
+        <!--
         <com.mapbox.mapboxsdk.maps.MapView
             android:id="@+id/map"
             android:layout_width="match_parent"
@@ -56,7 +57,7 @@
             mapbox:mapbox_cameraTargetLng="-113.5263"
             mapbox:mapbox_cameraZoom="9.0"
             mapbox:mapbox_styleUrl="@string/mapbox_style_mapbox_streets"/>
-
+        -->
 
         <Button
             android:id="@+id/add_qr_button"

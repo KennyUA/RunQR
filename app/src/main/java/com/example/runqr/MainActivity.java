@@ -18,8 +18,8 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.mapbox.mapboxsdk.Mapbox;
-import com.mapbox.mapboxsdk.maps.MapView;
+import com.mapbox.maps.MapView;
+import com.mapbox.maps.Style;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -53,17 +53,18 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
         super.onCreate(savedInstanceState);
         //public access
         //Mapbox.getInstance(this, "pk.eyJ1IjoiYXl1c2hyb3k5OSIsImEiOiJjbDBkYTBlZWUwMzZ4M2xudTJ6bWQ2cXJwIn0.RB_toZgU5VAOQakuwywfFg");
+        //Mapbox.getInstance(this, getString((R.string.mapbox_access_token)));
 
-        //private access
-        Mapbox.getInstance(this, getString((R.string.access_token)));
+        //private access, Team24Secret
+        //Mapbox.getInstance(this, getString((R.string.access_token)));
         setContentView(R.layout.activity_main);
 
         //Map Stuff
 
         mapView = (MapView) findViewById(R.id.map);
 
-        //mapView.getMapboxMap().loadStyleUri(Style.MAPBOX_STREETS);
-        mapView.onCreate(savedInstanceState);
+        mapView.getMapboxMap().loadStyleUri(Style.MAPBOX_STREETS);
+        //mapView.onCreate(savedInstanceState);
 
 
         db = FirebaseFirestore.getInstance();
@@ -155,28 +156,31 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 
     }
 
-
+    @Override
     public void onStart(){
         super.onStart();
         mapView.onStart();
     }
-
+    @Override
     public void onStop(){
         super.onStop();
         mapView.onStop();
     }
-
+    @Override
     public void onLowMemory(){
         super.onLowMemory();
         mapView.onLowMemory();
     }
-
+    /*
+    @Override
     public void onResume(){
         super.onResume();
         mapView.onResume();
     }
 
+     */
 
+    @Override
     public void onDestroy(){
         super.onDestroy();
         mapView.onDestroy();
