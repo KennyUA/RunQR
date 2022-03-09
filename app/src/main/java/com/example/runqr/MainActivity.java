@@ -196,6 +196,30 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
     public void onConfirmPressed(QRCode qrCodeData) {
         //String test = qrCodeData.getHash();
         currentPlayer.getPlayerQRLibrary().addQRCode(qrCodeData);
+        final CollectionReference collectionReference = db.collection("QR Codes");
+        HashMap<String, String> qrData = new HashMap<>();
+        //accountData.put("Account Username", currentPlayer.getPlayerAccount().getUsername());
+        qrData.put("Location_x", "53.5232");
+        qrData.put("Location_y", "113.5263");
+        //Log.v("Hello", "test_message");
+        collectionReference
+                .document(qrCodeData.getHash())
+                .set(qrData)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        // These are a method which gets executed when the task is succeeded
+
+                        Log.v(TAG, "Data has been added successfully!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // These are a method which gets executed if there’s any problem
+                        Log.v(TAG, "Data could not be added!" + e.toString());
+                    }
+                });
         //Log.e("QRCodeHash on confirm: ", qrCodeData.getHash());
     }
 
