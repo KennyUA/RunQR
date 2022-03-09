@@ -39,8 +39,10 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 
     // Access a Cloud Firestore instance from your Activity
     FirebaseFirestore db;
-
-
+    static CollectionReference collectionReference;
+    static CollectionReference QRCodesReference;
+    static HashMap<String, String> qrData = new HashMap<>();
+    static HashMap<String, String> accountData = new HashMap<>();
     MapView mapView;
 
 
@@ -52,7 +54,13 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 
         db = FirebaseFirestore.getInstance();
         // Get a top level reference to the collection
-        final CollectionReference collectionReference = db.collection("Accounts");
+        collectionReference = db.collection("Accounts");
+        //HashMap<String, String> accountData = new HashMap<>();
+
+        // Creating collection for global QRCodes
+        QRCodesReference = db.collection("QR Codes");
+        //HashMap<String, String> qrData = new HashMap<>();
+
 
         /*
         HashMap<String, Account> accountData = new HashMap<>();
@@ -96,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 
 
         // The set method sets a unique id for the document
-        HashMap<String, String> accountData = new HashMap<>();
+        //HashMap<String, String> accountData = new HashMap<>();
         //accountData.put("Account Username", currentPlayer.getPlayerAccount().getUsername());
         accountData.put("Account Username", "test_username");
         Log.v("Hello", "test_message");
@@ -119,6 +127,10 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
                     }
                 });
         Log.v("Hello", "test_message");
+
+
+
+
 
 
         final Button addQR = findViewById(R.id.add_qr_button);
@@ -196,13 +208,30 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
     public void onConfirmPressed(QRCode qrCodeData) {
         //String test = qrCodeData.getHash();
         currentPlayer.getPlayerQRLibrary().addQRCode(qrCodeData);
-        final CollectionReference collectionReference = db.collection("QR Codes");
-        HashMap<String, String> qrData = new HashMap<>();
-        //accountData.put("Account Username", currentPlayer.getPlayerAccount().getUsername());
-        qrData.put("Location_x", "53.5232");
-        qrData.put("Location_y", "113.5263");
-        //Log.v("Hello", "test_message");
-        collectionReference
+
+        // Start new activity for fragment which prompts user to access location and take picture
+
+
+
+        //
+
+        // call method to add location data to qrCodeCollection
+
+        if (qrCodeData.getLocation() != null) {
+            addQRLocationGlobally(qrCodeData, qrData, QRCodesReference );
+
+        }
+    }
+
+    public void addQRLocationGlobally(QRCode qrCodeData,HashMap<String, String> qrData, CollectionReference QRCodesReference ) {
+        // Creating collection for global QRCodes
+        //final CollectionReference QRCodesReference = db.collection("QR Codes");
+        //HashMap<String, String> qrData = new HashMap<>();
+
+        qrData.put("Location_X", String.valueOf(qrCodeData.getLocation().getX()));
+        qrData.put("Location_Y", String.valueOf(qrCodeData.getLocation().getY()));
+
+        QRCodesReference
                 .document(qrCodeData.getHash())
                 .set(qrData)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -210,19 +239,18 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
                     public void onSuccess(Void aVoid) {
                         // These are a method which gets executed when the task is succeeded
 
-                        Log.v(TAG, "Data has been added successfully!");
+                        Log.v(TAG, "Global QRData has been added successfully!");
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         // These are a method which gets executed if there’s any problem
-                        Log.v(TAG, "Data could not be added!" + e.toString());
+                        Log.v(TAG, "Global QRData could not be added!" + e.toString());
                     }
                 });
-        //Log.e("QRCodeHash on confirm: ", qrCodeData.getHash());
-    }
 
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
