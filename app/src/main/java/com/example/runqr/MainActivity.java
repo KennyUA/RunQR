@@ -18,8 +18,8 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.mapbox.maps.MapView;
-import com.mapbox.maps.Style;
+import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.maps.MapView;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -43,14 +43,28 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
     static CollectionReference QRCodesReference;
     static HashMap<String, String> qrData = new HashMap<>();
     static HashMap<String, String> accountData = new HashMap<>();
-    MapView mapView;
+    //MapView mapView;
+    private MapView mapView;
 
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //public access
+        //Mapbox.getInstance(this, "pk.eyJ1IjoiYXl1c2hyb3k5OSIsImEiOiJjbDBkYTBlZWUwMzZ4M2xudTJ6bWQ2cXJwIn0.RB_toZgU5VAOQakuwywfFg");
+
+        //private access
+        Mapbox.getInstance(this, getString((R.string.access_token)));
         setContentView(R.layout.activity_main);
+
+        //Map Stuff
+
+        mapView = (MapView) findViewById(R.id.map);
+
+        //mapView.getMapboxMap().loadStyleUri(Style.MAPBOX_STREETS);
+        mapView.onCreate(savedInstanceState);
+
 
         db = FirebaseFirestore.getInstance();
         // Get a top level reference to the collection
@@ -92,12 +106,6 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 
          */
 
-
-
-        //Map Stuff
-
-        mapView = findViewById(R.id.map);
-        mapView.getMapboxMap().loadStyleUri(Style.MAPBOX_STREETS);
 
 
 
@@ -162,6 +170,12 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
         super.onLowMemory();
         mapView.onLowMemory();
     }
+
+    public void onResume(){
+        super.onResume();
+        mapView.onResume();
+    }
+
 
     public void onDestroy(){
         super.onDestroy();
