@@ -7,6 +7,7 @@ buildscript {
     dependencies {
         classpath "com.android.tools.build:gradle:7.0.4"
         classpath 'com.google.gms:google-services:4.3.10'
+        classpath "com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin:2.0.0"
         //classpath 'com.google.gms:google-services:4.2.0'
 
         // NOTE: Do not place your application dependencies here; they belong
@@ -21,27 +22,6 @@ allprojects {
         mavenCentral()
         jcenter() // Warning: this repository is going to shut down soon
 
-        // Trying to fix Mapbox errors
-        mavenCentral()
-        //
-
-        maven {
-            url 'https://api.mapbox.com/downloads/v2/releases/maven'
-            authentication {
-                basic(BasicAuthentication)
-            }
-            credentials {
-                // Do not change the username below.
-                // This should always be `mapbox` (not your username).
-                username = "mapbox"
-                // Use the secret token you stored in gradle.properties as the password
-                password = System.getenv("MAPBOX_DOWNLOADS_TOKEN") ?: project.property("MAPBOX_DOWNLOADS_TOKEN") as String
-
-
-
-                //password = project.properties['sk.eyJ1IjoiYXl1c2hyb3k5OSIsImEiOiJjbDBkYWY0eXAwNzY5M2RvZGNmaGp5N3FzIn0.3vWHx5WpYVKkSi_CYBr3JQ'] ?: ""
-            }
-        }
     }
 }
 

@@ -1,11 +1,14 @@
-/*
+
 plugins {
-    id 'com.android.application'
-    id 'com.google.gms.google-services'
+    //id 'com.android.application'
+    //id 'com.google.gms.google-services'
+
 }
-*/
+
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
+
 
 android {
     compileSdk 32
@@ -52,7 +55,8 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     implementation 'com.google.guava:guava:31.0.1-jre'
     implementation 'com.android.support:multidex:1.0.3'
-    implementation 'com.mapbox.maps:android:10.3.0'
+    //implementation 'com.mapbox.maps:android:10.3.0'
+    implementation 'com.google.android.gms:play-services-maps:18.0.2'
 
     // trying to fix Mapbox errors
     //implementation 'com.mapbox.mapboxsdk:mapbox-android-navigation-ui:0.26.0'
