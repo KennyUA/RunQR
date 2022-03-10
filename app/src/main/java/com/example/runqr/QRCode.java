@@ -48,6 +48,7 @@ public class QRCode implements Serializable {
     public int scoreQRCode(String hash){
         int QRScore = 0;
 
+        /*
         ArrayList<Character> hashCharArray = new ArrayList<Character>();
         // Creating array of string length
         char[] ch = new char[hash.length()];
@@ -64,6 +65,10 @@ public class QRCode implements Serializable {
         }
 
         groupElements(hashCharArray, hashCharArray.size());
+
+         */
+
+
 
         //DO SCORING
         HashMap<Character, Integer> charCount = characterCount(hash);
@@ -87,7 +92,7 @@ public class QRCode implements Serializable {
         return QRScore;
     }
 
-    static HashMap<Character, Integer>  characterCount(String inputString)
+    public HashMap<Character, Integer>  characterCount(String inputString)
     {
         // Creating a HashMap containing char
         // as a key and occurrences as  a value
@@ -127,7 +132,7 @@ public class QRCode implements Serializable {
 
 
     // A simple method to group all occurrences of individual elements
-    static void groupElements(ArrayList<Character> arr, int n) {
+    public void groupElements(ArrayList<Character> arr, int n) {
 
         // Initialize all elements as not visited
         boolean visited[] = new boolean[n];
