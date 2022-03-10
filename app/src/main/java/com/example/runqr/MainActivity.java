@@ -14,12 +14,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.mapbox.maps.MapView;
-import com.mapbox.maps.Style;
+
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -31,7 +38,7 @@ import java.util.HashMap;
 
 
 
-public class MainActivity extends AppCompatActivity implements AddQRFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements AddQRFragment.OnFragmentInteractionListener, OnMapReadyCallback {
 
     /// fix below to do automatic log in and save player info
     Player currentPlayer = new Player();
@@ -43,8 +50,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
     static CollectionReference QRCodesReference;
     static HashMap<String, String> qrData = new HashMap<>();
     static HashMap<String, String> accountData = new HashMap<>();
-    MapView mapView;
-
+    SupportMapFragment mapFragment;
 
 
     @Override
@@ -60,6 +66,11 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
         // Creating collection for global QRCodes
         QRCodesReference = db.collection("QR Codes");
         //HashMap<String, String> qrData = new HashMap<>();
+
+        //Have to cite the https://developers.google.com/maps/documentation/android-sdk/map
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+            .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
 
 
         /*
@@ -96,8 +107,8 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 
         //Map Stuff
 
-        mapView = findViewById(R.id.map);
-        mapView.getMapboxMap().loadStyleUri(Style.MAPBOX_STREETS);
+        //mapView = findViewById(R.id.map);
+
 
 
 
@@ -150,22 +161,22 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 
     public void onStart(){
         super.onStart();
-        mapView.onStart();
+
     }
 
     public void onStop(){
         super.onStop();
-        mapView.onStop();
+
     }
 
     public void onLowMemory(){
         super.onLowMemory();
-        mapView.onLowMemory();
+
     }
 
     public void onDestroy(){
         super.onDestroy();
-        mapView.onDestroy();
+
     }
 
 
@@ -274,4 +285,18 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
         }
         return super.onOptionsItemSelected(item);
     }
-}
+
+    @Override
+    public void onMapReady(@NonNull GoogleMap googleMap) {
+        googleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+        googleMap.addMarker(new MarkerOptions()
+                .position(new LatLng(53.5232, -113.5263))
+                .title("UofA"));
+        //cite https://stackoverflow.com/questions/57096105/google-map-not-centered-in-desired-location
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(new LatLng(53.631611, -113.323975)).zoom(9).build();
+        googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+    }
+    }
+
