@@ -6,32 +6,28 @@ import java.util.ArrayList;
 public class Account  implements Serializable {
 
     private String username;
-    private PlayerStats playerStats;
     private String contactEmail;
 
-    private ArrayList<QRCode> QRLibrary;
+    public Account() {
+    }
 
-    //public ArrayList<>
-
-    public Account(String username, PlayerStats playerStats, String contactEmail) {
+    public Account(String username, String contactEmail) {
         this.username = username;
-        this.playerStats = playerStats;
         this.contactEmail = contactEmail;
     }
 
-    public void Account(){
+    //public ArrayList<>
 
-        this.playerStats = new PlayerStats();
+    public void Account(){
         this.username = "test_username";
     }
+
 
     public String getUsername(){
         return this.username;
     }
 
-    public void addQRCode(QRCode newQRCode){
-        QRLibrary.add(newQRCode);
-    }
+
 
 
 
