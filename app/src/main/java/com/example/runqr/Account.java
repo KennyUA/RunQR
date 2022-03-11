@@ -8,6 +8,7 @@ public class Account  implements Serializable {
     private String username;
     private String contactEmail;
 
+
     public Account() {
     }
 
@@ -18,9 +19,6 @@ public class Account  implements Serializable {
 
     //public ArrayList<>
 
-    public void Account(){
-        this.username = "test_username";
-    }
 
 
     public String getUsername(){

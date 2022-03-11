@@ -16,13 +16,12 @@ public class Player implements Serializable {
     private QRLibrary playerQRLibrary;
     //private ArrayList<QRCode> playerQRLibrary;
 
-
     public Player(Account playerAccount, PlayerStats playerStats, QRLibrary playerQRLibrary) {
         this.playerAccount = playerAccount;
         this.playerStats = playerStats;
         this.playerQRLibrary = playerQRLibrary;
-    }
 
+    }
 
     public Player(){
 

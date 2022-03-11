@@ -27,12 +27,14 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 
 import java.io.Serializable;
 import java.lang.reflect.Type;
+
 import java.util.HashMap;
 
 //import android.support.v4.app.Fragment;
@@ -45,7 +47,9 @@ import java.util.HashMap;
 public class MainActivity extends AppCompatActivity implements AddQRFragment.OnFragmentInteractionListener, OnMapReadyCallback {
 
     /// fix below to do automatic log in and save player info
+
     Player currentPlayer ;
+
     final String TAG = "Sample";
 
     // Access a Cloud Firestore instance from your Activity
@@ -62,6 +66,90 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         loadPlayer();
+        db = FirebaseFirestore.getInstance();
+        // Get a top level reference to the collection
+        collectionReference = db.collection("Accounts");
+        //HashMap<String, String> accountData = new HashMap<>();
+
+        // Creating collection for global QRCodes
+        QRCodesReference = db.collection("QR Codes");
+        //HashMap<String, String> qrData = new HashMap<>();
+
+        //Have to cite the https://developers.google.com/maps/documentation/android-sdk/map
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+            .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+
+
+        /*
+        HashMap<String, Account> accountData = new HashMap<>();
+        //HashMap<String, String> accountData = new HashMap<>();
+        //accountData.put("Account", currentPlayer.getPlayerAccount().getUsername());
+
+
+        // The set method sets a unique id for the document
+        collectionReference
+                .document("test_username")
+                .set(accountData)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+// These are a method which gets executed when the task is succeeded
+
+                        Log.d(TAG, "Data has been added successfully!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+// These are a method which gets executed if there’s any problem
+                        Log.d(TAG, "Data could not be added!" + e.toString());
+                    }
+                });
+
+
+
+         */
+
+
+
+        //Map Stuff
+
+        //mapView = findViewById(R.id.map);
+
+
+
+
+
+
+        // The set method sets a unique id for the document
+        //HashMap<String, String> accountData = new HashMap<>();
+        //accountData.put("Account Username", currentPlayer.getPlayerAccount().getUsername());
+        accountData.put("Account Username", "test_username");
+        Log.v("Hello", "test_message");
+        collectionReference
+                .document("Usernames")
+                .set(accountData)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        // These are a method which gets executed when the task is succeeded
+
+                        Log.v(TAG, "Data has been added successfully!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // These are a method which gets executed if there’s any problem
+                        Log.v(TAG, "Data could not be added!" + e.toString());
+                    }
+                });
+        Log.v("Hello", "test_message");
+
+
+
+
         db = FirebaseFirestore.getInstance();
         // Get a top level reference to the collection
         collectionReference = db.collection("Accounts");
@@ -202,10 +290,6 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 
 
 
-
-
-
-
     public void openAddQRFragment(Button addQR){
         // open addQRFragment to scan QRcode and add it to player's account
         addQR.setVisibility(View.GONE);
@@ -253,6 +337,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
             addQRLocationGlobally(qrCodeData, qrData, QRCodesReference );
 
         }
+
     }
 
     public void addQRLocationGlobally(QRCode qrCodeData,HashMap<String, String> qrData, CollectionReference QRCodesReference ) {
@@ -291,6 +376,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
         return true;
 
     }
+
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
