@@ -1,5 +1,6 @@
 package com.example.runqr;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -10,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 public class QRLibraryActivity extends AppCompatActivity {
@@ -19,6 +21,7 @@ public class QRLibraryActivity extends AppCompatActivity {
     //QRLibrary QRDataList;
     ArrayList<QRCode> QRDataList;
     Account playerAccount;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,12 +51,36 @@ public class QRLibraryActivity extends AppCompatActivity {
 
         QRList.setAdapter(QRAdapter);
 
+        FloatingActionButton deleteButton = (FloatingActionButton) findViewById(R.id.delete_qr_button);
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                QRList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                        //QRCode QRCodeToDelete = QRDataList.getQRCode(position);
+                        QRCode QRCodeToDelete = QRDataList.get(position);
+                        //QRDataList.deleteQRCode(QRCodeToDelete);
+                        playerQRLibrary.deleteQRCode(QRCodeToDelete);
+                        //QRList.setAdapter(QRAdapter);
+                        QRAdapter.notifyDataSetChanged();
+                    }
+                });
+            }});
+
 
         // Code below borrows from: https://stackoverflow.com/questions/4709870/setonitemclicklistener-on-custom-listview
         QRList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
 
+                // Open DisplayQRCode activity, pass in QRCode object
+                QRCode codeToShow = QRDataList.get(position);
+                Intent intent = new Intent(QRLibraryActivity.this, DisplayQRCode.class);
+                intent.putExtra("QRCode to display", (Serializable) codeToShow);
+                startActivity(intent);
+
+                /*
                 FloatingActionButton deleteButton = (FloatingActionButton) findViewById(R.id.delete_qr_button);
                 deleteButton.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -69,16 +96,25 @@ public class QRLibraryActivity extends AppCompatActivity {
                     }
                 });
 
-            }
+                 */
 
+
+            }
 
         });
 
+        final FloatingActionButton backButton = (FloatingActionButton)  findViewById(R.id.back_button);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                QRLibraryActivity.super.onBackPressed();
+            }
+        });
+
+
     }
 
 
 
 
-
-
-    }
+}
