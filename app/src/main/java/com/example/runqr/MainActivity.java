@@ -279,7 +279,11 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
                 Intent intent = new Intent(this, QRLibraryActivity.class);
                 intent.putExtra("Player QRLibrary", (Serializable) currentPlayer.getPlayerQRLibrary());
                 startActivity(intent);
-
+            case R.id.profile_item:
+                //open player profile activity
+                Intent intent1 = new Intent(this, ProfileActivity.class);
+                intent1.putExtra("Player", (Serializable) currentPlayer);
+                startActivity(intent1);
 
 
         }
