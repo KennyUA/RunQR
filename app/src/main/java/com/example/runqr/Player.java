@@ -16,13 +16,22 @@ public class Player implements Serializable {
     private QRLibrary playerQRLibrary;
     //private ArrayList<QRCode> playerQRLibrary;
 
+    public Player(Account playerAccount, PlayerStats playerStats, QRLibrary playerQRLibrary) {
+        this.playerAccount = playerAccount;
+        this.playerStats = playerStats;
+        this.playerQRLibrary = playerQRLibrary;
+
+    }
+
     public Player(){
 
         this.playerAccount = new Account();
         this.playerStats = new PlayerStats();
         this.playerQRLibrary = new QRLibrary();
     }
-
+    public Player(Account playerAccount) {
+        this.playerAccount = playerAccount;
+    }
 
     public void addQRCode(QRCode QRCodeToAdd){
 

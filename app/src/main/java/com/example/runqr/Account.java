@@ -9,12 +9,16 @@ public class Account  implements Serializable {
     private String contactEmail;
 
 
+    public Account() {
+    }
+
+    public Account(String username, String contactEmail) {
+        this.username = username;
+        this.contactEmail = contactEmail;
+    }
 
     //public ArrayList<>
 
-    public void Account(){
-        this.username = "test_username";
-    }
 
 
     public String getUsername(){
