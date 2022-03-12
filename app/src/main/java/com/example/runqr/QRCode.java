@@ -16,6 +16,7 @@ public class QRCode implements Serializable {
     private int score;
     private Location location;
     private String hash;
+    private Photo photo;
 
 
     public QRCode(String hash){
@@ -25,11 +26,20 @@ public class QRCode implements Serializable {
 
     }
 
-    public QRCode(int score, String hash, Location location) {
-        this.score = score;
+    public QRCode(String hash, Location location) {
+        this.score = scoreQRCode(hash);
         this.hash = hash;
         this.location = location;
     }
+
+    public QRCode(String hash, Location location, Photo photo) {
+        this.score = scoreQRCode(hash);
+        this.hash = hash;
+        this.location = location;
+        this.photo = photo;
+    }
+
+
 
     public int getScore() {
         return score;
@@ -39,6 +49,7 @@ public class QRCode implements Serializable {
         return hash;
     }
 
+    public Photo getPhoto(){ return photo;}
 
 
     public Location getLocation(){

@@ -1,6 +1,7 @@
 package com.example.runqr;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -16,7 +17,6 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
@@ -26,9 +26,11 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.Serializable;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 
 //import android.support.v4.app.Fragment;
@@ -41,7 +43,9 @@ import java.util.HashMap;
 public class MainActivity extends AppCompatActivity implements AddQRFragment.OnFragmentInteractionListener, OnMapReadyCallback {
 
     /// fix below to do automatic log in and save player info
-    Player currentPlayer = new Player();
+
+    Player currentPlayer ;
+
     final String TAG = "Sample";
 
     // Access a Cloud Firestore instance from your Activity
@@ -59,8 +63,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
+        loadPlayer();
         db = FirebaseFirestore.getInstance();
         // Get a top level reference to the collection
         collectionReference = db.collection("Accounts");
@@ -69,12 +72,6 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
         // Creating collection for global QRCodes
         QRCodesReference = db.collection("QR Codes");
         //HashMap<String, String> qrData = new HashMap<>();
-
-        //Have to cite the https://developers.google.com/maps/documentation/android-sdk/map
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-            .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-
 
         /*
         HashMap<String, Account> accountData = new HashMap<>();
@@ -106,6 +103,50 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 
          */
 
+
+
+        // The set method sets a unique id for the document
+        //HashMap<String, String> accountData = new HashMap<>();
+        //accountData.put("Account Username", currentPlayer.getPlayerAccount().getUsername());
+        accountData.put("Account Username", "test_username");
+        Log.v("Hello", "test_message");
+        collectionReference
+                .document("Usernames")
+                .set(accountData)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        // These are a method which gets executed when the task is succeeded
+
+                        Log.v(TAG, "Data has been added successfully!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // These are a method which gets executed if there’s any problem
+                        Log.v(TAG, "Data could not be added!" + e.toString());
+                    }
+                });
+        Log.v("Hello", "test_message");
+
+
+
+
+
+        db = FirebaseFirestore.getInstance();
+        // Get a top level reference to the collection
+        collectionReference = db.collection("Accounts");
+        //HashMap<String, String> accountData = new HashMap<>();
+
+        // Creating collection for global QRCodes
+        QRCodesReference = db.collection("QR Codes");
+        //HashMap<String, String> qrData = new HashMap<>();
+
+        //Have to cite the https://developers.google.com/maps/documentation/android-sdk/map
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+            .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
 
 
 
@@ -185,9 +226,22 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 
     }
 
+    void savePlayer(){
+        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        String json =gson.toJson(currentPlayer);
+        editor.putString("player", json);
+        editor.apply();
+    }
 
-
-
+    void loadPlayer(){
+        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = sharedPreferences.getString("player", null);
+        Type type = new TypeToken<Player>(){}.getType();
+        currentPlayer = gson.fromJson(json, type);
+    }
 
 
 
@@ -224,6 +278,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
     @Override
     public void onConfirmPressed(QRCode qrCodeData) {
         //String test = qrCodeData.getHash();
+
         currentPlayer.getPlayerQRLibrary().addQRCode(qrCodeData);
 
         // Start new activity for fragment which prompts user to access location and take picture
@@ -234,10 +289,11 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 
         // call method to add location data to qrCodeCollection
 
-        if (qrCodeData.getLocation() != null) {
+        if (qrCodeData.getLocation() != null) { // and if it's not in the database
             addQRLocationGlobally(qrCodeData, qrData, QRCodesReference );
 
         }
+
     }
 
     public void addQRLocationGlobally(QRCode qrCodeData,HashMap<String, String> qrData, CollectionReference QRCodesReference ) {
@@ -276,6 +332,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
         return true;
 
     }
+
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {

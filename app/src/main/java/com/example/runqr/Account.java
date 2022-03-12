@@ -1,7 +1,6 @@
 package com.example.runqr;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
 public class Account  implements Serializable {
 
@@ -9,11 +8,12 @@ public class Account  implements Serializable {
     private String contactEmail;
 
 
+    public Account() {
+    }
 
-    //public ArrayList<>
-
-    public void Account(){
-        this.username = "test_username";
+    public Account(String username, String contactEmail) {
+        this.username = username;
+        this.contactEmail = contactEmail;
     }
 
 
