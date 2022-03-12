@@ -19,7 +19,16 @@ public class DisplayQRCode extends AppCompatActivity {
         TextView QRCodeStats = findViewById(R.id.statInfo);
         TextView QRCodeLocation = findViewById(R.id.locationInfo);
 
-        if (codeToDisplay.getLocation() != null){}
+        QRCodeLocation.setText("Location: \n");
+        if (codeToDisplay.getLocation() != null){
+            QRCodeLocation.append("X "+codeToDisplay.getLocation().getX()+"\n"+"Y "+codeToDisplay.getLocation().getY());
+
+        }
+        if (codeToDisplay.getPhoto() != null){
+            //QRCodePhoto.setImageBitmap(codeToDisplay.getPhoto());
+
+        }
+        QRCodeStats.setText("Score: "+codeToDisplay.getScore());
 
     }
 }

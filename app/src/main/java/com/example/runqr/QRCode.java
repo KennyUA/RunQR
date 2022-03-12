@@ -100,7 +100,7 @@ public class QRCode implements Serializable {
 
         }
 
-        return QRScore;
+        return (int) Math.floor(Math.log(QRScore));
     }
 
     public HashMap<Character, Integer>  characterCount(String inputString)

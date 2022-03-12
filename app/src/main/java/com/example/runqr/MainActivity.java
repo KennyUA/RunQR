@@ -7,8 +7,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -181,7 +179,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 
 
 
-
+/*
         final Button addQR = findViewById(R.id.add_qr_button);
         addQR.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -193,6 +191,8 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 
         });
 
+
+ */
 
     }
 
@@ -245,9 +245,10 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 
 
 
-    public void openAddQRFragment(Button addQR){
+//    public void openAddQRFragment(Button addQR){
+     public void openAddQRFragment(){
         // open addQRFragment to scan QRcode and add it to player's account
-        addQR.setVisibility(View.GONE);
+        //addQR.setVisibility(View.GONE);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         AddQRFragment addQRFragment = new AddQRFragment();
@@ -342,6 +343,10 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
                 Intent intent = new Intent(this, QRLibraryActivity.class);
                 intent.putExtra("Player QRLibrary", (Serializable) currentPlayer.getPlayerQRLibrary());
                 startActivity(intent);
+            case R.id.add_qr_item:
+                //Open fragment to scan QR code
+                openAddQRFragment();
+
 
 
 
