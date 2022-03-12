@@ -35,7 +35,6 @@ public class ProfileCustomList extends ArrayAdapter<ProfileItem> {
 
         ProfileItem profileItem = profile_items.get(position);
 
-        /*uncomment following four lines when resource file made*/
         TextView itemName = view.findViewById(R.id.item_text);
         TextView itemValue = view.findViewById(R.id.value_text);
         itemName.setText(profileItem.getItem());

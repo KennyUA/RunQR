@@ -222,8 +222,6 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 
         // Start new activity for fragment which prompts user to access location and take picture
 
-
-
         //
 
         // call method to add location data to qrCodeCollection

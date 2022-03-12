@@ -147,10 +147,27 @@ public class AddQRFragment extends Fragment {
 
     public interface OnConfirmPressed {
         void onConfirmPressed(QRCode qrCodeData);
+
+        /*adding playerstats*/
+        /*
+
+        int number_scanned = currentPlayer.playerStats.getNum_of_scanned();
+        currentPlayer.playerStats.setNum_of_scanned(number_scanned+1);
+
+        if QRCode.getScore() > currentPlayer.playerStats.getHigh_qr() {
+            currentPlayer.playerStats.setHigh_qr(QRCode.getScore());
+            }
+        if QRCode.getScore() < currentPlayer.playerStats.getLow_qr() {
+            currentPlayer.playerStats.setLow_qr(QRCode.getScore());
+            }
+
+        */
     }
 
     public void passData(QRCode data) {
         dataPasser.onConfirmPressed(data);
+        /*add playerstats data here?*/
+
     }
 
 
