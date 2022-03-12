@@ -13,7 +13,7 @@ import java.lang.Math;
 
 public class QRCode implements Serializable {
 
-    private int score;
+    private static int score;
     private Location location;
     private String hash;
 
@@ -31,7 +31,7 @@ public class QRCode implements Serializable {
         this.location = location;
     }
 
-    public int getScore() {
+    public static int getScore() {
         return score;
     }
 

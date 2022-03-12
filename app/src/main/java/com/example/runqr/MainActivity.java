@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 
     /// fix below to do automatic log in and save player info
     Player currentPlayer = new Player();
+    PlayerStats playerStats;
     final String TAG = "Sample";
 
     // Access a Cloud Firestore instance from your Activity
@@ -223,6 +224,8 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
         // Start new activity for fragment which prompts user to access location and take picture
 
         //
+
+
 
         // call method to add location data to qrCodeCollection
 
