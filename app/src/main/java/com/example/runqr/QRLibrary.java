@@ -21,6 +21,12 @@ public class QRLibrary implements Serializable {
         this.QRLibraryScore = 0;
     }
 
+    public QRLibrary(ArrayList<QRCode> QRCodeList, int score){
+
+        this.QRCodeList = QRCodeList;
+        this.QRLibraryScore = score;
+    }
+
     /**
      * This method adds a new QRCode to player's QRLibrary and increments total score.
      *

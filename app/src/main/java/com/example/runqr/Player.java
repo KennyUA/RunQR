@@ -33,6 +33,12 @@ public class Player implements Serializable {
         this.playerAccount = playerAccount;
     }
 
+    public Player(Account playerAccount, QRLibrary library) {
+
+        this.playerAccount = playerAccount;
+        this.playerQRLibrary = library;
+    }
+
     /**
      * This method adds a QRCode scanned by the player to their QRLibrary by calling QRLibrary's addQRCode() method.
      * @param QRCodeToAdd

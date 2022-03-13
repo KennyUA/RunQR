@@ -30,8 +30,12 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Pattern;
+
+// COMMENT: Initializing with PlayerStats object is giving errors with opening app
+// For now: run without adding PlayerStats to currentPLayer
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -176,10 +180,15 @@ public class LoginActivity extends AppCompatActivity {
                     Log.d(TAG, "Here!");
                     HashMap<String, Player> data = new HashMap<>();
                     if (usernameExists && emailExists) {
-                        PlayerStats stats = new PlayerStats();
+                        //PlayerStats newStats = new PlayerStats(null, null, 0, 0, null, null, null);
+                        PlayerStats newStats = new PlayerStats(0, 0);
+                        //    public PlayerStats(QRCode highQR, QRCode lowQR, Integer sumScores, Integer numScanned, Integer rankHighQR,
+                        //                       Integer rankNumScanned, Integer rankSumScores) {
                         Account newAccount = new Account(usernameData, emailData);
-                        QRLibrary newLibrary = new QRLibrary();
-                        currentPlayer = new Player(newAccount);
+                        QRLibrary newLibrary = new QRLibrary(new ArrayList<QRCode>(),0 );
+                        currentPlayer = new Player(newAccount, newStats, newLibrary);
+                        //currentPlayer = new Player(newAccount, newLibrary);
+                        //currentPlayer = new Player(newAccount);
                         data.put("playerInfo", currentPlayer);
                         collectionReference
                                 .document(usernameData)
