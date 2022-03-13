@@ -1,13 +1,12 @@
 package com.example.runqr;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,7 +15,6 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
@@ -26,39 +24,43 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.Serializable;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 
-//import android.support.v4.app.Fragment;
-//import android.support.v4.app.FragmentManager;
-//import android.app.FragmentManager;
-//import android.app.FragmentTransaction;
-
+// Main activity of the RunQR game has an app bar with 2 icons: dropdown menu and an add QR Button which opens scanner for player to scan QRCodes.
+// Main activity also contains a map with a refresh button and a nearbySearch button (AYUSH can elaborate on this).
 
 
 public class MainActivity extends AppCompatActivity implements AddQRFragment.OnFragmentInteractionListener, OnMapReadyCallback {
 
     /// fix below to do automatic log in and save player info
+
     Player currentPlayer = new Player();
     PlayerStats playerStats;
+
     final String TAG = "Sample";
 
     // Access a Cloud Firestore instance from your Activity
     FirebaseFirestore db;
     static CollectionReference collectionReference;
     static CollectionReference QRCodesReference;
+    // Create HashMaps to store QRCode and account data in Firestore.
     static HashMap<String, String> qrData = new HashMap<>();
     static HashMap<String, String> accountData = new HashMap<>();
+
     SupportMapFragment mapFragment;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        loadPlayer();
         db = FirebaseFirestore.getInstance();
         // Get a top level reference to the collection
         collectionReference = db.collection("Accounts");
@@ -67,12 +69,6 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
         // Creating collection for global QRCodes
         QRCodesReference = db.collection("QR Codes");
         //HashMap<String, String> qrData = new HashMap<>();
-
-        //Have to cite the https://developers.google.com/maps/documentation/android-sdk/map
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-            .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-
 
         /*
         HashMap<String, Account> accountData = new HashMap<>();
@@ -106,15 +102,6 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 
 
 
-        //Map Stuff
-
-        //mapView = findViewById(R.id.map);
-
-
-
-
-
-
         // The set method sets a unique id for the document
         //HashMap<String, String> accountData = new HashMap<>();
         //accountData.put("Account Username", currentPlayer.getPlayerAccount().getUsername());
@@ -144,7 +131,24 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 
 
 
+        db = FirebaseFirestore.getInstance();
+        // Get a top level reference to the collection
+        collectionReference = db.collection("Accounts");
+        //HashMap<String, String> accountData = new HashMap<>();
 
+        // Creating collection for global QRCodes
+        QRCodesReference = db.collection("QR Codes");
+        //HashMap<String, String> qrData = new HashMap<>();
+
+        //Have to cite the https://developers.google.com/maps/documentation/android-sdk/map
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+
+
+
+
+        /*
         final Button addQR = findViewById(R.id.add_qr_button);
         addQR.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -157,38 +161,62 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
         });
 
 
+        */
+
     }
 
-
+    @Override
     public void onStart(){
         super.onStart();
 
     }
-
+    @Override
     public void onStop(){
         super.onStop();
 
     }
-
+    @Override
     public void onLowMemory(){
         super.onLowMemory();
 
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+
+    }
+
+
+    @Override
     public void onDestroy(){
         super.onDestroy();
 
     }
 
+    void savePlayer(){
+        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        String json =gson.toJson(currentPlayer);
+        editor.putString("player", json);
+        editor.apply();
+    }
+
+    void loadPlayer(){
+        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = sharedPreferences.getString("player", null);
+        Type type = new TypeToken<Player>(){}.getType();
+        currentPlayer = gson.fromJson(json, type);
+    }
 
 
 
-
-
-
-    public void openAddQRFragment(Button addQR){
+//    public void openAddQRFragment(Button addQR){
+     public void openAddQRFragment(){
         // open addQRFragment to scan QRcode and add it to player's account
-        addQR.setVisibility(View.GONE);
+        //addQR.setVisibility(View.GONE);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         AddQRFragment addQRFragment = new AddQRFragment();
@@ -219,20 +247,23 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
     @Override
     public void onConfirmPressed(QRCode qrCodeData) {
         //String test = qrCodeData.getHash();
+
         currentPlayer.getPlayerQRLibrary().addQRCode(qrCodeData);
 
-        // Start new activity for fragment which prompts user to access location and take picture
 
-        //
+        // THIS NEEDS TO BE UPDATED BY KENNY
+        // Below: open activity/fragment which prompts user to access their device's location and take photo of the object containing scannedQRCode
 
 
 
-        // call method to add location data to qrCodeCollection
 
-        if (qrCodeData.getLocation() != null) {
+
+        // call method to add location data to qrCodeCollection for nearbyQRCodeSearch algorithm
+        if (qrCodeData.getLocation() != null) { // and if it's not in the database
             addQRLocationGlobally(qrCodeData, qrData, QRCodesReference );
 
         }
+
     }
 
     public void addQRLocationGlobally(QRCode qrCodeData,HashMap<String, String> qrData, CollectionReference QRCodesReference ) {
@@ -272,6 +303,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 
     }
 
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch(item.getItemId()) {
@@ -280,11 +312,19 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
                 Intent intent = new Intent(this, QRLibraryActivity.class);
                 intent.putExtra("Player QRLibrary", (Serializable) currentPlayer.getPlayerQRLibrary());
                 startActivity(intent);
+
             case R.id.profile_item:
                 //open player profile activity
                 Intent intent1 = new Intent(this, ProfileActivity.class);
                 intent1.putExtra("Player", (Serializable) currentPlayer);
                 startActivity(intent1);
+
+            case R.id.add_qr_item:
+                //Open fragment to scan QR code
+                openAddQRFragment();
+
+            // TO OPEN LEADERBOARD ACTIVITY add code below
+
 
 
         }
