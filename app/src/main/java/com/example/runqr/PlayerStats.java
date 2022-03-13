@@ -1,5 +1,13 @@
 package com.example.runqr;
 
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.io.Serializable;
 
 public class PlayerStats implements Serializable {
@@ -38,7 +46,7 @@ public class PlayerStats implements Serializable {
         //rank_sum_of_scores = rankSumScores;
     }
 
-    /*public PlayerStats(String username) {
+    public PlayerStats(String username) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference userRef = db.collection("Accounts").document(username);
 
@@ -59,14 +67,10 @@ public class PlayerStats implements Serializable {
                     }
                 }
             }
-        }
-    }*/
-
-    /*
-    public PlayerStats(Player player) {
-        this.player = player;
+        });
     }
-     */
+
+
 
     public int getHigh_qr() {
         return high_qr;
