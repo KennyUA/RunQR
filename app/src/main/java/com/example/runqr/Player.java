@@ -98,15 +98,6 @@ public class Player implements Serializable {
     }
 
 
-    // DO WE NEED THIS FUNCTION??
-    public void scanQR(){
-
-    }
-
-
-
-
-
 
 
 }

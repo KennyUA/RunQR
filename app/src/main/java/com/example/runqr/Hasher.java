@@ -12,6 +12,9 @@ import java.nio.charset.StandardCharsets;
  */
 public class Hasher implements Serializable {
 
+    public Hasher() {
+    }
+
     public String hashQRCode(String rawContent){
 
         String sha256hex = Hashing.sha256()

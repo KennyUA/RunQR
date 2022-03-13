@@ -80,4 +80,12 @@ public class QRLibrary implements Serializable {
         return QRCodeList.get(position);
     }
 
+    /**
+     * This method gets the size (number of QRCode objects) of the QRLibrary's data list QRCodeList
+     * @return
+     *      An int representing number of QRCodes stored in QRLibrary.
+     */
+    public int getSize(){
+        return this.QRCodeList.size();
+    }
 }
