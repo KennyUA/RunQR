@@ -5,10 +5,10 @@ import java.io.Serializable;
 public class PlayerStats implements Serializable {
 
     /*stats*/
-    private QRCode high_qr;
-    private QRCode low_qr;
-    private Integer sum_of_scores;
-    private Integer num_of_scanned;
+    private int high_qr;
+    private int low_qr;
+    private int sum_of_scores;
+    private int num_of_scanned;
 
     /* in activity, string of rank will be displayed according to int stored in PlayerStats object*/
     /*according to range, will be Platinum, Gold, etc*/
@@ -17,13 +17,13 @@ public class PlayerStats implements Serializable {
     private Integer rank_sum_of_scores;
 
     public PlayerStats() {
-        high_qr = null;
-        low_qr = null;
+        high_qr = 0;
+        low_qr = 0;
         sum_of_scores = 0;
         num_of_scanned = 0;
-        rank_high_qr = null;
-        rank_num_of_scanned = null;
-        rank_sum_of_scores = null;
+        rank_high_qr = 0;
+        rank_num_of_scanned = 0;
+        rank_sum_of_scores = 0;
     }
 
     //public PlayerStats(QRCode highQR, QRCode lowQR, Integer sumScores, Integer numScanned, Integer rankHighQR,

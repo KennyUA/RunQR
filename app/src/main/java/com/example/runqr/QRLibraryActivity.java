@@ -78,7 +78,7 @@ public class QRLibraryActivity extends AppCompatActivity {
                 intent.putExtra("QRCode to display", (Serializable) codeToShow);
                 startActivity(intent);
 
-                /*
+
                 FloatingActionButton deleteButton = (FloatingActionButton) findViewById(R.id.delete_qr_button);
                 deleteButton.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -111,7 +111,7 @@ public class QRLibraryActivity extends AppCompatActivity {
                     }
                 });
 
-                 */
+
 
 
             }

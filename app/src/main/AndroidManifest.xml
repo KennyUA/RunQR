@@ -17,7 +17,7 @@
 
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".ProfileActivity"
+            android:name=".ProfileActivity"/>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -54,8 +54,9 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
 
-            android:exported="false">
+
 
 
         </activity>
