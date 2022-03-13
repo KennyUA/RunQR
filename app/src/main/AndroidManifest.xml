@@ -17,7 +17,7 @@
 
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".DisplayQRCode"
+            android:name=".DisplayQRCodeActivity"
             android:exported="false" />
 
         <meta-data

@@ -6,7 +6,12 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class DisplayQRCode extends AppCompatActivity {
+// This class is the activity that displays the details of QRCodes and allows player to browse their QRCodes.
+// Once an item, corresponding to a QRCode, in ListView of QRLibraryActivity is clicked the DisplayQRActivity is opened to display QRCode details.
+// QRCode details being displayed so far are: score, location (X and Y coordinates) if it exists, and image if it exists.
+
+
+public class DisplayQRCodeActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,7 +26,7 @@ public class DisplayQRCode extends AppCompatActivity {
 
         QRCodeLocation.setText("Location: \n");
         if (codeToDisplay.getLocation() != null){
-            QRCodeLocation.append("X "+codeToDisplay.getLocation().getX()+"\n"+"Y "+codeToDisplay.getLocation().getY());
+            QRCodeLocation.append("X: "+codeToDisplay.getLocation().getX()+"\n"+"Y: "+codeToDisplay.getLocation().getY());
 
         }
         if (codeToDisplay.getPhoto() != null){

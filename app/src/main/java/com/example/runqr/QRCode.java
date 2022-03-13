@@ -1,15 +1,17 @@
 package com.example.runqr;
 
-import android.util.Log;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java. util. Map;
+import java.util.Map;
 
-import java.lang.Math;
-
+/**
+ * This class represents a QRCode object that is scanned by a player via a Scanner object and added to player's QRLibrary.
+ * QRCodes have 4 main attributes: score, hash, location and photo.
+ * Location and photo may be null if user declines the option.
+ * Hash and score can not be null.
+ */
 
 public class QRCode implements Serializable {
 
@@ -19,6 +21,7 @@ public class QRCode implements Serializable {
     private Photo photo;
 
 
+    // If both location and photo are denied
     public QRCode(String hash){
 
         this.hash = hash;
@@ -26,12 +29,14 @@ public class QRCode implements Serializable {
 
     }
 
+    // If location is allowed and photo is denied
     public QRCode(String hash, Location location) {
         this.score = scoreQRCode(hash);
         this.hash = hash;
         this.location = location;
     }
 
+    // If both location and photo are allowed
     public QRCode(String hash, Location location, Photo photo) {
         this.score = scoreQRCode(hash);
         this.hash = hash;
@@ -40,22 +45,53 @@ public class QRCode implements Serializable {
     }
 
 
-
+    /**
+     * This method gets the QRCode's score.
+     * @return
+     *      An int representing the score of the QRCode.
+     */
     public int getScore() {
-        return score;
+        return this.score;
     }
 
+    /**
+     * This method gets the QRCode's hash.
+     * @return
+     *      String representing the hash (SHA-256 Hash) of the QRCode's contents.
+     */
     public String getHash() {
-        return hash;
+        return this.hash;
     }
 
-    public Photo getPhoto(){ return photo;}
+    /**
+     * This method gets the photo associated with the QRCode.
+     * @return
+     *      Photo object representing an image of the object on which the QRCode exists.
+     */
+
+    public Photo getPhoto() {
+        return this.photo;
+    }
 
 
+    /**
+     * This method gets the location associated with the QRCode.
+     * @return
+     *      Location object representing the geolocation coordinates (X,Y) at which the QRCode was found.
+     */
     public Location getLocation(){
         return this.location;
     }
 
+    /**
+     * This method calculates the score of the QRCode from the hash using the following scoring algorithm:
+     * number of occurrences, n, of each hexadecimal digit in the hash is counted and adds to score in the following way: score += digit ^ (n-1).
+     * After incrementing the score for each digit and its corresponding occurrence, the final score returned is: floor(log(score_after_sum)) where score_after_sum is score after incrementing for each digit.
+     * @param hash
+     *      The String representing the hash of the QRCode from which the score is calculated.
+     * @return
+     *      An int representing the score of the QRCode after applying above scoring algorithm.
+     */
     public int scoreQRCode(String hash){
         int QRScore = 0;
 
@@ -103,6 +139,15 @@ public class QRCode implements Serializable {
         return (int) Math.floor(Math.log(QRScore));
     }
 
+    /**
+     * This is a method borrowed from GeeksForGeeks which counts the number of occurrences for each character in a given string.
+     * The information is then stored in the form of HashMap<Character, Integer>.
+     * Source URL: https://www.geeksforgeeks.org/java-program-to-count-the-occurrence-of-each-character-in-a-string-using-hashmap/.
+     * @param inputString
+     *      The String argument for which character occurrences are counted.
+     * @return
+     *      The HashMap<Character, Integer> which stores the number of occurrences for each character in inputString.
+     */
     public HashMap<Character, Integer>  characterCount(String inputString)
     {
         // Creating a HashMap containing char
@@ -130,18 +175,11 @@ public class QRCode implements Serializable {
             }
         }
 
-        ///*
-        // Printing the charCountMap
-        for (Map.Entry entry : charCountMap.entrySet()) {
-            Log.d("PRINT1", entry.getKey() + " " + entry.getValue());
-        }
-        //*/
-
         return charCountMap;
     }
 
 
-
+    /*
     // A simple method to group all occurrences of individual elements
     public void groupElements(ArrayList<Character> arr, int n) {
 
@@ -169,6 +207,8 @@ public class QRCode implements Serializable {
             }
         }
     }
+
+     */
 
 
 }

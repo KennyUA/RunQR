@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,10 +20,10 @@ import com.budiyev.android.codescanner.CodeScannerView;
 import com.budiyev.android.codescanner.DecodeCallback;
 import com.google.zxing.Result;
 
-//import android.support.v4.app.Fragment;
-//import android.support.v4.app.FragmentManager;
-//import android.app.FragmentManager;
-//import android.app.FragmentTransaction;
+// This class is the Fragment used to host a codeScanner which allows players to scan QRCodes and uses Hasher to hash code contents.
+// The newly created QRCode is passed back to MainActivity through method onConfirmPressed and added to player's QRLibrary there.
+// This class uses CodeScanner object to scan QRCodes and borrows code from: https://github.com/yuriy-budiyev/code-scanner.
+
 
 public class AddQRFragment extends Fragment {
 
@@ -35,7 +34,6 @@ public class AddQRFragment extends Fragment {
     private OnFragmentInteractionListener listener;
 
 
-    OnConfirmPressed dataPasser;
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -48,7 +46,6 @@ public class AddQRFragment extends Fragment {
                     " must implement OnFragmentInteractionListener");
         }
 
-        //dataPasser = (AddQRFragment.OnConfirmPressed) context;
     }
 
     public interface OnFragmentInteractionListener {
@@ -68,24 +65,28 @@ public class AddQRFragment extends Fragment {
         Button cancelAddQR = root.findViewById(R.id.cancel_addQR_button);
 
         Scanner QRCodeScanner = new Scanner();
+        //Hasher QRCodeHasher = new Hasher();
         mCodeScanner = new CodeScanner(activity, scannerView);
         mCodeScanner.setDecodeCallback(new DecodeCallback() {
             @Override
             public void onDecoded(@NonNull final Result result) {
-                // result is string corresponding to contents of QRCode
-                // hash the result string of the QR Code and store hash in the QRCode
-
+                // result contains the String representing the QRCode's contents
                 QRString = result.getText();
 
+                /*
+                // Below code shows QRCode string contents on screen, remove this for privacy purposes
                 activity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         Toast.makeText(activity, result.getText(), Toast.LENGTH_SHORT).show();
                     }
                 });
+
+                 */
             }
         });
 
+        // Deal with camera permissions for scanner
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (getActivity().checkSelfPermission(Manifest.permission.CAMERA) !=
                     PackageManager.PERMISSION_GRANTED) {
@@ -105,20 +106,22 @@ public class AddQRFragment extends Fragment {
                 //add QRCode
                 if (QRString != null){
                     String hashedString = QRCodeScanner.hashQRCode(QRString);
-                    QRCode QRCodeToAdd = QRCodeScanner.scanQRCode(hashedString);
-                    // send QRCode to MainActivity to add it to player's QRLibrary
+                    QRCode QRCodeToAdd = new QRCode(hashedString);
+                    // send QRCodeToAdd to MainActivity to add it to the player's QRLibrary
                     listener.onConfirmPressed(QRCodeToAdd);
 
 
                     // prompt user to enter geolocation and/or photo of object hosting the QRCode
-
-
                     //ignore for now
 
 
                     getFragmentManager().beginTransaction().remove(AddQRFragment.this).commit();
+                    /*
+                    // Set's ADD QR BUTTON VISIBILITY
                     final Button addQRButton = getActivity().findViewById(R.id.add_qr_button);
                     addQRButton.setVisibility(View.VISIBLE);
+
+                     */
                 }
 
             }
@@ -127,10 +130,15 @@ public class AddQRFragment extends Fragment {
         cancelAddQR.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // cancel Scanner by returning to main activity
+                // cancel ScannerFragment and return to main activity with no changes
                 getFragmentManager().beginTransaction().remove(AddQRFragment.this).commit();
+
+                /*
+                // Set's ADD QR BUTTON VISIBILITY
                 final Button addQRButton = getActivity().findViewById(R.id.add_qr_button);
                 addQRButton.setVisibility(View.VISIBLE);
+
+                 */
 
 
             }
@@ -145,13 +153,6 @@ public class AddQRFragment extends Fragment {
         return root;
     }
 
-    public interface OnConfirmPressed {
-        void onConfirmPressed(QRCode qrCodeData);
-    }
-
-    public void passData(QRCode data) {
-        dataPasser.onConfirmPressed(data);
-    }
 
 
     @Override

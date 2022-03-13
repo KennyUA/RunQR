@@ -14,13 +14,16 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+// This class is the activity that displays a list of QRCode items from a player's QRLibrary in a ListView format.
+// This activity has a delete button which allows players to delete QRCodes from their QRLibrary.
+
 public class QRLibraryActivity extends AppCompatActivity {
 
     ListView QRList;
     ArrayAdapter<QRCode> QRAdapter;
     //QRLibrary QRDataList;
     ArrayList<QRCode> QRDataList;
-    Account playerAccount;
+
 
 
     @Override
@@ -28,16 +31,12 @@ public class QRLibraryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qrlibrary);
 
-        // get intent
-        // To retrieve object in second Activity
+        // Get intent that started this activity to retrieve player's QRLibrary object which contains QRCodes to display in this activity
         QRLibrary playerQRLibrary = (QRLibrary) getIntent().getSerializableExtra("Player QRLibrary");
-
         QRList = findViewById(R.id.qrlibrary_list);
 
         //QRDataList = new ArrayList<QRCode>(); //convert string list to arraylist
         //QRDataList = playerQRLibrary;
-
-
         QRDataList = playerQRLibrary.getQRCodeList();
 
         /*
@@ -48,7 +47,6 @@ public class QRLibraryActivity extends AppCompatActivity {
          */
 
         QRAdapter = new QRList(this, QRDataList);
-
         QRList.setAdapter(QRAdapter);
 
         FloatingActionButton deleteButton = (FloatingActionButton) findViewById(R.id.delete_qr_button);
@@ -58,6 +56,8 @@ public class QRLibraryActivity extends AppCompatActivity {
                 QRList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                        // delete QRCode item in ListView that player clicked on after clicking delete button
+
                         //QRCode QRCodeToDelete = QRDataList.getQRCode(position);
                         QRCode QRCodeToDelete = QRDataList.get(position);
                         //QRDataList.deleteQRCode(QRCodeToDelete);
@@ -69,14 +69,12 @@ public class QRLibraryActivity extends AppCompatActivity {
             }});
 
 
-        // Code below borrows from: https://stackoverflow.com/questions/4709870/setonitemclicklistener-on-custom-listview
         QRList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-
-                // Open DisplayQRCode activity, pass in QRCode object
+                // Open DisplayQRCode activity to display details of clicked QRCode object, pass QRCode object to DisplayQRCodeActivity through intent
                 QRCode codeToShow = QRDataList.get(position);
-                Intent intent = new Intent(QRLibraryActivity.this, DisplayQRCode.class);
+                Intent intent = new Intent(QRLibraryActivity.this, DisplayQRCodeActivity.class);
                 intent.putExtra("QRCode to display", (Serializable) codeToShow);
                 startActivity(intent);
 

@@ -3,42 +3,74 @@ package com.example.runqr;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+/**
+ * This class represents the QRLibrary of a Player object which is an ArrayList of QRCode objects.
+ * QRLibrary stores the QRCodes scanned by a player in the game and adjusts the total score accordingly.
+ * Allows for adding and removing of QRCodes.
+ * This class abstracts ArrayList<QRCode> with additional QRLibraryScore attribute.
+ */
 public class QRLibrary implements Serializable {
 
-    //private ArrayList<QRCode> QRLibrary;
+
     private ArrayList<QRCode> QRCodeList;
     private int QRLibraryScore;
 
     public QRLibrary(){
-        //this.QRLibrary = new ArrayList<QRCode>();
+
         this.QRCodeList = new ArrayList<QRCode>();
         this.QRLibraryScore = 0;
     }
 
+    /**
+     * This method adds a new QRCode to player's QRLibrary and increments total score.
+     *
+     * @param newQRCode
+     *      The QRCode object to add to QRLibrary.
+     */
     public void addQRCode(QRCode newQRCode){
 
-        //QRLibrary.add(newQRCode);
         QRCodeList.add(newQRCode);
         QRLibraryScore += newQRCode.getScore();
     }
 
-    //public ArrayList<QRCode> getQRLibrary(){
-    public ArrayList<QRCode> getQRCodeList(){
-        //return this.QRLibrary;
-        return this.QRCodeList;
-    }
-
-    public int getQRLibraryScore() {
-        return this.QRLibraryScore;
-    }
+    /**
+     * This method deletes a QRCode from QRLibrary and decrements total score.
+     * @param removeQRCode
+     *      The QRCode to be removed from QRLibrary.
+     */
     public void deleteQRCode(QRCode removeQRCode) {
-        //QRLibrary.remove(removeQRCode);
         QRCodeList.remove(removeQRCode);
         QRLibraryScore -= removeQRCode.getScore();
     }
 
+    /**
+     * This method gets the ArrayList of QRCode objects contained in QRLibrary.
+     * @return
+     *      ArrayList of QRCode objects in QRLibrary.
+     */
+    public ArrayList<QRCode> getQRCodeList(){
+        return this.QRCodeList;
+    }
+
+    /**
+     * This method gets the total score of QRCodes in QRLibrary.
+     * @return
+     *      Integer representing total score across all QRCodes.
+     */
+    public int getQRLibraryScore() {
+        return this.QRLibraryScore;
+    }
+
+
+
+    /**
+     * This method gets the QRCode at a given position in the QRLibrary's ArrayList.
+     * @param position
+     *      The index at which the QRCode to be returned is in the list.
+     * @return
+     *      The QRCode at index position in the ArrayList.
+     */
     public QRCode getQRCode(int position) {
-        //return QRLibrary.get(position);
         return QRCodeList.get(position);
     }
 
