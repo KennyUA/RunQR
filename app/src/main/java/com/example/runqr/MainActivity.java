@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -22,12 +23,20 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -35,6 +44,7 @@ import com.google.gson.reflect.TypeToken;
 import java.io.Serializable;
 import java.lang.reflect.Type;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 //import android.support.v4.app.Fragment;
@@ -59,6 +69,14 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
     static HashMap<String, String> qrData = new HashMap<>();
     static HashMap<String, String> accountData = new HashMap<>();
     SupportMapFragment mapFragment;
+    FloatingActionButton loadBtn;
+    FloatingActionButton listBtn;
+    ArrayList<Marker> markerArrayList;
+    GoogleMap currentMap;
+    //cite https://stackoverflow.com/questions/48699032/how-to-set-addsnapshotlistener-and-remove-in-populateviewholder-in-recyclerview
+    EventListener<QuerySnapshot> eventListener;
+    ListenerRegistration listenerReg;
+
 
 
     @Override
@@ -110,12 +128,69 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 
 
          */
+        /*QRCodesReference = db.collection("QR Codes");
+        qrData.put("Location X", "53.5627");
+        qrData.put("Location Y", "-113.5055");
+        int random_int = (int)Math.floor(Math.random()*(100-0+1)+0);
+
+        QRCodesReference
+                .document(String.valueOf(random_int))
+                .set(qrData)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        // These are a method which gets executed when the task is succeeded
+
+                        Log.v(TAG, "Global QRData has been added successfully!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // These are a method which gets executed if there’s any problem
+                        Log.v(TAG, "Global QRData could not be added!" + e.toString());
+                    }
+                });*/
+
+        markerArrayList = new ArrayList<Marker>();
+        QRCodesReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+               if(!markerArrayList.isEmpty()){
+                    for(Marker marker: markerArrayList){
+                       marker.remove();
+                   }}
+
+               markerArrayList.clear();
 
 
+                for(QueryDocumentSnapshot doc: queryDocumentSnapshots){
+                    if((String) doc.getId() != "unique hash"){
+                        Log.v("id", (String)doc.getId());
+                        Log.v("x",String.valueOf(doc.getData().get("Location X")) );
+                        Log.v("y", String.valueOf(doc.getData().get("Location Y")));
+                        Float x = Float.parseFloat((String)doc.getData().get("Location X"));
+                        Float y = Float.parseFloat((String)doc.getData().get("Location Y"));
+                        Marker newMarker = currentMap.addMarker(new MarkerOptions()
+                                .position(new LatLng(x, y))
+                                .title("new Marker"));
+
+                        markerArrayList.add(newMarker);
+                    }
+
+                }
+            }
+        });
 
         //Map Stuff
 
         //mapView = findViewById(R.id.map);
+
+
+        listBtn = findViewById(R.id.searchLocationsBtn);
+
+
+
 
 
 
@@ -156,7 +231,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
         //HashMap<String, String> accountData = new HashMap<>();
 
         // Creating collection for global QRCodes
-        QRCodesReference = db.collection("QR Codes");
+
         //HashMap<String, String> qrData = new HashMap<>();
 
         //Have to cite the https://developers.google.com/maps/documentation/android-sdk/map
@@ -343,8 +418,8 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
         //final CollectionReference QRCodesReference = db.collection("QR Codes");
         //HashMap<String, String> qrData = new HashMap<>();
 
-        qrData.put("Location_X", String.valueOf(qrCodeData.getLocation().getX()));
-        qrData.put("Location_Y", String.valueOf(qrCodeData.getLocation().getY()));
+        qrData.put("Location X", String.valueOf(qrCodeData.getLocation().getX()));
+        qrData.put("Location Y", String.valueOf(qrCodeData.getLocation().getY()));
 
         QRCodesReference
                 .document(qrCodeData.getHash())
@@ -393,15 +468,17 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
-        googleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-        googleMap.addMarker(new MarkerOptions()
-                .position(new LatLng(53.5232, -113.5263))
-                .title("UofA"));
-        //cite https://stackoverflow.com/questions/57096105/google-map-not-centered-in-desired-location
-        CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(new LatLng(53.631611, -113.323975)).zoom(9).build();
-        googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-
+        this.currentMap = googleMap;
+        if(this.currentMap != null) {
+            this.currentMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+            this.currentMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(53.5232, -113.5263))
+                    .title("UofA"));
+            //cite https://stackoverflow.com/questions/57096105/google-map-not-centered-in-desired-location
+            CameraPosition cameraPosition = new CameraPosition.Builder()
+                    .target(new LatLng(53.631611, -113.323975)).zoom(9).build();
+            this.currentMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        }
     }
     }
 
