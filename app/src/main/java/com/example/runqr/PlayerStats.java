@@ -1,15 +1,5 @@
 package com.example.runqr;
 
-import android.util.Log;
-
-import androidx.annotation.NonNull;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-
 public class PlayerStats {
     private Player player;
 
@@ -33,6 +23,18 @@ public class PlayerStats {
         rank_high_qr = null;
         rank_num_of_scanned = null;
         rank_sum_of_scores = null;
+    }
+
+    //public PlayerStats(QRCode highQR, QRCode lowQR, Integer sumScores, Integer numScanned, Integer rankHighQR,
+                       //Integer rankNumScanned, Integer rankSumScores) {
+    public PlayerStats(Integer sumScores, Integer numScanned) {
+        //high_qr = highQR;
+        //low_qr = lowQR;
+        sum_of_scores = sumScores;
+        num_of_scanned = numScanned;
+        //rank_high_qr = rankHighQR;
+        //rank_num_of_scanned = rankNumScanned;
+        //rank_sum_of_scores = rankSumScores;
     }
 
     /*public PlayerStats(String username) {
