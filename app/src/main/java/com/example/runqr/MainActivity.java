@@ -308,9 +308,11 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
                 Intent intent = new Intent(this, QRLibraryActivity.class);
                 intent.putExtra("Player QRLibrary", (Serializable) currentPlayer.getPlayerQRLibrary());
                 startActivity(intent);
+                return true;
             case R.id.add_qr_item:
                 //Open fragment to scan QR code
                 openAddQRFragment();
+                return true;
 
             // TO OPEN LEADERBOARD ACTIVITY add code below
 
