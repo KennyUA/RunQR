@@ -7,8 +7,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,7 +16,6 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
@@ -37,28 +34,25 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-
 import java.io.Serializable;
 import java.lang.reflect.Type;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 
-//import android.support.v4.app.Fragment;
-//import android.support.v4.app.FragmentManager;
-//import android.app.FragmentManager;
-//import android.app.FragmentTransaction;
-
+// Main activity of the RunQR game has an app bar with 2 icons: dropdown menu and an add QR Button which opens scanner for player to scan QRCodes.
+// Main activity also contains a map with a refresh button and a nearbySearch button (AYUSH can elaborate on this).
 
 
 public class MainActivity extends AppCompatActivity implements AddQRFragment.OnFragmentInteractionListener, OnMapReadyCallback {
 
     /// fix below to do automatic log in and save player info
 
-    Player currentPlayer ;
+    Player currentPlayer = new Player();
+    PlayerStats playerStats;
 
     final String TAG = "Sample";
 
@@ -66,8 +60,10 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
     FirebaseFirestore db;
     static CollectionReference collectionReference;
     static CollectionReference QRCodesReference;
+    // Create HashMaps to store QRCode and account data in Firestore.
     static HashMap<String, String> qrData = new HashMap<>();
     static HashMap<String, String> accountData = new HashMap<>();
+
     SupportMapFragment mapFragment;
     FloatingActionButton loadBtn;
     FloatingActionButton listBtn;
@@ -76,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
     //cite https://stackoverflow.com/questions/48699032/how-to-set-addsnapshotlistener-and-remove-in-populateviewholder-in-recyclerview
     EventListener<QuerySnapshot> eventListener;
     ListenerRegistration listenerReg;
+
 
 
 
@@ -92,12 +89,6 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
         // Creating collection for global QRCodes
         QRCodesReference = db.collection("QR Codes");
         //HashMap<String, String> qrData = new HashMap<>();
-
-        //Have to cite the https://developers.google.com/maps/documentation/android-sdk/map
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-            .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-
 
         /*
         HashMap<String, Account> accountData = new HashMap<>();
@@ -182,6 +173,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
             }
         });
 
+
         //Map Stuff
 
         //mapView = findViewById(R.id.map);
@@ -225,6 +217,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 
 
 
+
         db = FirebaseFirestore.getInstance();
         // Get a top level reference to the collection
         collectionReference = db.collection("Accounts");
@@ -235,80 +228,14 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
         //HashMap<String, String> qrData = new HashMap<>();
 
         //Have to cite the https://developers.google.com/maps/documentation/android-sdk/map
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+
 
 
 
         /*
-        HashMap<String, Account> accountData = new HashMap<>();
-        //HashMap<String, String> accountData = new HashMap<>();
-        //accountData.put("Account", currentPlayer.getPlayerAccount().getUsername());
-
-
-        // The set method sets a unique id for the document
-        collectionReference
-                .document("test_username")
-                .set(accountData)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-// These are a method which gets executed when the task is succeeded
-
-                        Log.d(TAG, "Data has been added successfully!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-// These are a method which gets executed if there’s any problem
-                        Log.d(TAG, "Data could not be added!" + e.toString());
-                    }
-                });
-
-
-
-         */
-
-
-
-        //Map Stuff
-
-        //mapView = findViewById(R.id.map);
-
-
-
-
-
-
-        // The set method sets a unique id for the document
-        //HashMap<String, String> accountData = new HashMap<>();
-        //accountData.put("Account Username", currentPlayer.getPlayerAccount().getUsername());
-        accountData.put("Account Username", "test_username");
-        Log.v("Hello", "test_message");
-        collectionReference
-                .document("Usernames")
-                .set(accountData)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        // These are a method which gets executed when the task is succeeded
-
-                        Log.v(TAG, "Data has been added successfully!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        // These are a method which gets executed if there’s any problem
-                        Log.v(TAG, "Data could not be added!" + e.toString());
-                    }
-                });
-        Log.v("Hello", "test_message");
-
-
-
-
-
-
         final Button addQR = findViewById(R.id.add_qr_button);
         addQR.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -321,24 +248,34 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
         });
 
 
+        */
+
     }
 
-
+    @Override
     public void onStart(){
         super.onStart();
 
     }
-
+    @Override
     public void onStop(){
         super.onStop();
 
     }
-
+    @Override
     public void onLowMemory(){
         super.onLowMemory();
 
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+
+    }
+
+
+    @Override
     public void onDestroy(){
         super.onDestroy();
 
@@ -363,9 +300,10 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 
 
 
-    public void openAddQRFragment(Button addQR){
+//    public void openAddQRFragment(Button addQR){
+     public void openAddQRFragment(){
         // open addQRFragment to scan QRcode and add it to player's account
-        addQR.setVisibility(View.GONE);
+        //addQR.setVisibility(View.GONE);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         AddQRFragment addQRFragment = new AddQRFragment();
@@ -396,17 +334,19 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
     @Override
     public void onConfirmPressed(QRCode qrCodeData) {
         //String test = qrCodeData.getHash();
+
         currentPlayer.getPlayerQRLibrary().addQRCode(qrCodeData);
 
-        // Start new activity for fragment which prompts user to access location and take picture
+
+        // THIS NEEDS TO BE UPDATED BY KENNY
+        // Below: open activity/fragment which prompts user to access their device's location and take photo of the object containing scannedQRCode
 
 
 
-        //
 
-        // call method to add location data to qrCodeCollection
 
-        if (qrCodeData.getLocation() != null) {
+        // call method to add location data to qrCodeCollection for nearbyQRCodeSearch algorithm
+        if (qrCodeData.getLocation() != null) { // and if it's not in the database
             addQRLocationGlobally(qrCodeData, qrData, QRCodesReference );
 
         }
@@ -459,6 +399,18 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
                 Intent intent = new Intent(this, QRLibraryActivity.class);
                 intent.putExtra("Player QRLibrary", (Serializable) currentPlayer.getPlayerQRLibrary());
                 startActivity(intent);
+
+            case R.id.profile_item:
+                //open player profile activity
+                Intent intent1 = new Intent(this, ProfileActivity.class);
+                intent1.putExtra("Player", (Serializable) currentPlayer);
+                startActivity(intent1);
+
+            case R.id.add_qr_item:
+                //Open fragment to scan QR code
+                openAddQRFragment();
+
+            // TO OPEN LEADERBOARD ACTIVITY add code below
 
 
 
