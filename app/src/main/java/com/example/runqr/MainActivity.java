@@ -31,17 +31,13 @@ import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 
-//import android.support.v4.app.Fragment;
-//import android.support.v4.app.FragmentManager;
-//import android.app.FragmentManager;
-//import android.app.FragmentTransaction;
-
+// Main activity of the RunQR game has an app bar with 2 icons: dropdown menu and an add QR Button which opens scanner for player to scan QRCodes.
+// Main activity also contains a map with a refresh button and a nearbySearch button (AYUSH can elaborate on this).
 
 
 public class MainActivity extends AppCompatActivity implements AddQRFragment.OnFragmentInteractionListener, OnMapReadyCallback {
 
     /// fix below to do automatic log in and save player info
-
     Player currentPlayer ;
 
     final String TAG = "Sample";
@@ -50,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
     FirebaseFirestore db;
     static CollectionReference collectionReference;
     static CollectionReference QRCodesReference;
+    // Create HashMaps to store QRCode and account data in Firestore.
     static HashMap<String, String> qrData = new HashMap<>();
     static HashMap<String, String> accountData = new HashMap<>();
 
@@ -149,37 +146,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 
 
 
-
-        // The set method sets a unique id for the document
-        //HashMap<String, String> accountData = new HashMap<>();
-        //accountData.put("Account Username", currentPlayer.getPlayerAccount().getUsername());
-        accountData.put("Account Username", "test_username");
-        Log.v("Hello", "test_message");
-        collectionReference
-                .document("Usernames")
-                .set(accountData)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        // These are a method which gets executed when the task is succeeded
-
-                        Log.v(TAG, "Data has been added successfully!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        // These are a method which gets executed if there’s any problem
-                        Log.v(TAG, "Data could not be added!" + e.toString());
-                    }
-                });
-        Log.v("Hello", "test_message");
-
-
-
-
-
-/*
+        /*
         final Button addQR = findViewById(R.id.add_qr_button);
         addQR.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -192,7 +159,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
         });
 
 
- */
+        */
 
     }
 
@@ -211,14 +178,13 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
         super.onLowMemory();
 
     }
-    /*
+
     @Override
     public void onResume(){
         super.onResume();
-        mapView.onResume();
+
     }
 
-     */
 
     @Override
     public void onDestroy(){
@@ -282,14 +248,13 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 
         currentPlayer.getPlayerQRLibrary().addQRCode(qrCodeData);
 
-        // Start new activity for fragment which prompts user to access location and take picture
+        // THIS NEEDS TO BE UPDATED BY KENNY
+        // Below: open activity/fragment which prompts user to access their device's location and take photo of the object containing scannedQRCode
 
 
 
-        //
 
-        // call method to add location data to qrCodeCollection
-
+        // call method to add location data to qrCodeCollection for nearbyQRCodeSearch algorithm
         if (qrCodeData.getLocation() != null) { // and if it's not in the database
             addQRLocationGlobally(qrCodeData, qrData, QRCodesReference );
 
@@ -347,7 +312,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
                 //Open fragment to scan QR code
                 openAddQRFragment();
 
-
+            // TO OPEN LEADERBOARD ACTIVITY add code below
 
 
         }

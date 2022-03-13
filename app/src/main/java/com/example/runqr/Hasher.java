@@ -11,7 +11,7 @@ import java.nio.charset.StandardCharsets;
  * Once hashed, Scanner creates a new QRCode object with the resulting hash.
  * Scanner is used so that the String contents of QRCode are not stored or known by the QRCode object.
  */
-public class Scanner implements Serializable {
+public class Hasher implements Serializable {
 
     private String hash;
 

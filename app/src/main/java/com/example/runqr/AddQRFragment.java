@@ -64,8 +64,8 @@ public class AddQRFragment extends Fragment {
         Button confirmAddQR = root.findViewById(R.id.confirm_addQR_button);
         Button cancelAddQR = root.findViewById(R.id.cancel_addQR_button);
 
-        Scanner QRCodeScanner = new Scanner();
-        //Hasher QRCodeHasher = new Hasher();
+        Hasher QRCodeHasher = new Hasher();
+
         mCodeScanner = new CodeScanner(activity, scannerView);
         mCodeScanner.setDecodeCallback(new DecodeCallback() {
             @Override
@@ -105,7 +105,7 @@ public class AddQRFragment extends Fragment {
             public void onClick(View view) {
                 //add QRCode
                 if (QRString != null){
-                    String hashedString = QRCodeScanner.hashQRCode(QRString);
+                    String hashedString = QRCodeHasher.hashQRCode(QRString);
                     QRCode QRCodeToAdd = new QRCode(hashedString);
                     // send QRCodeToAdd to MainActivity to add it to the player's QRLibrary
                     listener.onConfirmPressed(QRCodeToAdd);
