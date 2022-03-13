@@ -16,7 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.RunQR"
 
-        android:usesCleartextTraffic="true">
+        >
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBCVF_eq7zdUk2jwTJTKK0rCOISbiLlqlY" />
@@ -28,7 +28,7 @@
 
         <activity
             android:name=".LoginActivity"
-            android:exported="true">
+            android:exported="true"/>
 
         <activity
             android:name=".QRLibraryActivity"
@@ -48,15 +48,7 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".QRLibraryActivity"
-            android:exported="false" />
-        <activity
-            android:name=".LeaderboardActivity"
-            android:exported="false" />
-        <activity
-            android:name=".MainActivity"
-            android:exported="false"/>
+
 
     </application>
 
