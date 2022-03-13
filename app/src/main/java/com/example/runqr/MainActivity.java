@@ -139,9 +139,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
         //HashMap<String, String> qrData = new HashMap<>();
 
         //Have to cite the https://developers.google.com/maps/documentation/android-sdk/map
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-            .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+
 
 
 

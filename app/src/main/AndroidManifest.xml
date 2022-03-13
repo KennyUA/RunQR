@@ -15,6 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.RunQR"
 
+
         android:usesCleartextTraffic="true">
         <activity
             android:name=".DisplayQRCodeActivity"
