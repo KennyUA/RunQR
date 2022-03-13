@@ -15,7 +15,7 @@ import java.util.Map;
 
 public class QRCode implements Serializable {
 
-    private int score;
+    private static int score;
     private Location location;
     private String hash;
     private Photo photo;
@@ -36,6 +36,7 @@ public class QRCode implements Serializable {
         this.location = location;
     }
 
+
     // If both location and photo are allowed
     public QRCode(String hash, Location location, Photo photo) {
         this.score = scoreQRCode(hash);
@@ -52,6 +53,7 @@ public class QRCode implements Serializable {
      */
     public int getScore() {
         return this.score;
+
     }
 
     /**

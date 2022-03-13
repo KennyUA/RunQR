@@ -154,6 +154,18 @@ public class AddQRFragment extends Fragment {
     }
 
 
+    public interface OnConfirmPressed {
+        void onConfirmPressed(QRCode qrCodeData);
+
+    }
+
+    public void passData(QRCode data) {
+        dataPasser.onConfirmPressed(data);
+        /*add playerstats data here?*/
+
+    }
+
+
 
     @Override
     public void onResume() {

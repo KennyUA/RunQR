@@ -38,7 +38,9 @@ import java.util.HashMap;
 public class MainActivity extends AppCompatActivity implements AddQRFragment.OnFragmentInteractionListener, OnMapReadyCallback {
 
     /// fix below to do automatic log in and save player info
-    Player currentPlayer ;
+
+    Player currentPlayer = new Player();
+    PlayerStats playerStats;
 
     final String TAG = "Sample";
 
@@ -248,8 +250,10 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 
         currentPlayer.getPlayerQRLibrary().addQRCode(qrCodeData);
 
+
         // THIS NEEDS TO BE UPDATED BY KENNY
         // Below: open activity/fragment which prompts user to access their device's location and take photo of the object containing scannedQRCode
+
 
 
 
@@ -308,11 +312,19 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
                 Intent intent = new Intent(this, QRLibraryActivity.class);
                 intent.putExtra("Player QRLibrary", (Serializable) currentPlayer.getPlayerQRLibrary());
                 startActivity(intent);
+
+            case R.id.profile_item:
+                //open player profile activity
+                Intent intent1 = new Intent(this, ProfileActivity.class);
+                intent1.putExtra("Player", (Serializable) currentPlayer);
+                startActivity(intent1);
+
             case R.id.add_qr_item:
                 //Open fragment to scan QR code
                 openAddQRFragment();
 
             // TO OPEN LEADERBOARD ACTIVITY add code below
+
 
 
         }
