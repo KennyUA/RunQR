@@ -10,7 +10,7 @@ import java.util.Map;
 /**
  * Tests Hasher and QRCode classes
  */
-public class QRCodeTest {
+public class QRCodeHasherTest {
 
     Hasher testHasher = new Hasher();
     String testString = "hello";
