@@ -66,6 +66,7 @@
             mapbox:mapbox_styleUrl="@string/mapbox_style_mapbox_streets"/>
         -->
 
+        <!--
         <Button
             android:id="@+id/add_qr_button"
             android:layout_width="143dp"
@@ -73,7 +74,8 @@
             android:layout_gravity="right"
             android:layout_marginTop="16dp"
             android:text="Add QR Code" />
-
+        -->
+        
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
