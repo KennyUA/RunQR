@@ -23,6 +23,7 @@ public class QRLibraryActivity extends AppCompatActivity {
     ArrayAdapter<QRCode> QRAdapter;
     //QRLibrary QRDataList;
     ArrayList<QRCode> QRDataList;
+    Boolean delete_code = false;
 
 
 
@@ -53,43 +54,22 @@ public class QRLibraryActivity extends AppCompatActivity {
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                QRList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                        // delete QRCode item in ListView that player clicked on after clicking delete button
+                delete_code = true;
 
-                        //QRCode QRCodeToDelete = QRDataList.getQRCode(position);
-                        QRCode QRCodeToDelete = QRDataList.get(position);
-                        //QRDataList.deleteQRCode(QRCodeToDelete);
-                        playerQRLibrary.deleteQRCode(QRCodeToDelete);
-                        //QRList.setAdapter(QRAdapter);
-                        QRAdapter.notifyDataSetChanged();
-                    }
-                });
             }});
+
 
 
         QRList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                // Open DisplayQRCode activity to display details of clicked QRCode object, pass QRCode object to DisplayQRCodeActivity through intent
-                QRCode codeToShow = QRDataList.get(position);
-                Intent intent = new Intent(QRLibraryActivity.this, DisplayQRCodeActivity.class);
-                intent.putExtra("QRCode to display", (Serializable) codeToShow);
-                startActivity(intent);
 
+                if (delete_code) {
+                    //QRCode QRCodeToDelete = QRDataList.getQRCode(position);
+                    QRCode QRCodeToDelete = QRDataList.get(position);
 
-                FloatingActionButton deleteButton = (FloatingActionButton) findViewById(R.id.delete_qr_button);
-                deleteButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-
-                        //QRCode QRCodeToDelete = QRDataList.getQRCode(position);
-                        QRCode QRCodeToDelete = QRDataList.get(position);
-
-
-                        /*updating playerstats*/
-                        /*get highest and lowest*/
+                    /*updating playerstats*/
+                    /*get highest and lowest*/
                         /*
 
                         int number_scanned = currentPlayer.playerStats.getNum_of_scanned();
@@ -102,17 +82,39 @@ public class QRLibraryActivity extends AppCompatActivity {
                             //find next lowest
                               }
                         */
+                    //QRDataList.deleteQRCode(QRCodeToDelete);
+                    playerQRLibrary.deleteQRCode(QRCodeToDelete);
+                    //QRList.setAdapter(QRAdapter);
+                    QRAdapter.notifyDataSetChanged();
+                    delete_code = false;
+                }
 
-                        //QRDataList.deleteQRCode(QRCodeToDelete);
-                        playerQRLibrary.deleteQRCode(QRCodeToDelete);
-                        //QRList.setAdapter(QRAdapter);
-                        QRAdapter.notifyDataSetChanged();
-
-                    }
-                });
-
+                else {
+                    // Open DisplayQRCode activity to display details of clicked QRCode object, pass QRCode object to DisplayQRCodeActivity through intent
+                    QRCode codeToShow = QRDataList.get(position);
+                    Intent intent = new Intent(QRLibraryActivity.this, DisplayQRCodeActivity.class);
+                    intent.putExtra("QRCode to display", (Serializable) codeToShow);
+                    startActivity(intent);
 
 
+                    /*
+                    FloatingActionButton deleteButton = (FloatingActionButton) findViewById(R.id.delete_qr_button);
+                    deleteButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                            //QRCode QRCodeToDelete = QRDataList.getQRCode(position);
+                            QRCode QRCodeToDelete = QRDataList.get(position);
+                            //QRDataList.deleteQRCode(QRCodeToDelete);
+                            playerQRLibrary.deleteQRCode(QRCodeToDelete);
+                            //QRList.setAdapter(QRAdapter);
+                            QRAdapter.notifyDataSetChanged();
+
+                        }
+                    });
+
+                 */
+                }
 
             }
 
@@ -122,6 +124,9 @@ public class QRLibraryActivity extends AppCompatActivity {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent intent = new Intent();
+                intent.putExtra("Player QRLibrary", playerQRLibrary);
+                setResult(RESULT_OK, intent);
                 QRLibraryActivity.super.onBackPressed();
             }
         });

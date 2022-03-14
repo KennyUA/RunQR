@@ -150,7 +150,7 @@ public class QRCode implements Serializable {
      * @return
      *      The HashMap<Character, Integer> which stores the number of occurrences for each character in inputString.
      */
-    public HashMap<Character, Integer>  characterCount(String inputString)
+    public HashMap<Character, Integer> characterCount(String inputString)
     {
         // Creating a HashMap containing char
         // as a key and occurrences as  a value

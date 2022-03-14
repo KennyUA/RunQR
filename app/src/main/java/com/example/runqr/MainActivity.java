@@ -46,7 +46,8 @@ import java.util.HashMap;
 
 // Main activity of the RunQR game has an app bar with 2 icons: dropdown menu and an add QR Button which opens scanner for player to scan QRCodes.
 // Main activity also contains a map with a refresh button and a nearbySearch button (AYUSH can elaborate on this).
-
+// CURRENT ISSUES:
+// - after destroying app and opening again, player's QRLibrary is null and pressing QRLibrary in menu causes app to crash
 
 public class MainActivity extends AppCompatActivity implements AddQRFragment.OnFragmentInteractionListener, OnMapReadyCallback {
 
@@ -263,6 +264,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 
         */
 
+
     }
 
     @Override
@@ -275,6 +277,14 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
         super.onStop();
 
     }
+    // Trying to fix null objects on second time opening the app
+    @Override
+    public void onPause(){
+        savePlayer();
+        super.onPause();
+
+    }
+
     @Override
     public void onLowMemory(){
         super.onLowMemory();
@@ -283,6 +293,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 
     @Override
     public void onResume(){
+
         super.onResume();
 
     }
@@ -290,6 +301,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 
     @Override
     public void onDestroy(){
+        savePlayer();
         super.onDestroy();
 
     }
@@ -317,12 +329,17 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
      public void openAddQRFragment(){
         // open addQRFragment to scan QRcode and add it to player's account
         //addQR.setVisibility(View.GONE);
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        AddQRFragment addQRFragment = new AddQRFragment();
+
+         final FloatingActionButton searchLocationsMap = findViewById(R.id.searchLocationsBtn);
+
+         searchLocationsMap.setVisibility(View.GONE);
+
+         FragmentManager fragmentManager = getSupportFragmentManager();
+         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+         AddQRFragment addQRFragment = new AddQRFragment();
         //fragmentTransaction.add(R.id.addQRFragment_container,addQRFragment);\
-        fragmentTransaction.add(R.id.addQRFragment_container, addQRFragment, "Add QR Code");
-        fragmentTransaction.commit();
+         fragmentTransaction.add(R.id.addQRFragment_container, addQRFragment, "Add QR Code");
+         fragmentTransaction.commit();
         //addQR.setVisibility(View.VISIBLE);
 
         //getSupportFragmentManager().beginTransaction().add(R.id.container, new AddQRFragment()).commit();
@@ -330,9 +347,12 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
         //final View addQR = findViewById(R.id.fragment_container_view);
         //addQR.setVisibility(View.VISIBLE);
 
+         searchLocationsMap.setVisibility(View.VISIBLE);
 
 
-        //AddQRFragment addQRFragment = new AddQRFragment();
+
+
+         //AddQRFragment addQRFragment = new AddQRFragment();
         //FragmentManager manager = getFragmentManager();
         //FragmentTransaction transaction = manager.beginTransaction();
         //transaction.add(R.id.fragment_container_view,AddQRFragment.class,"OPEN_SCANNER");
@@ -411,17 +431,21 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
                 //Open activity to show QRLibrary
                 Intent intent = new Intent(this, QRLibraryActivity.class);
                 intent.putExtra("Player QRLibrary", (Serializable) currentPlayer.getPlayerQRLibrary());
-                startActivity(intent);
+                startActivityForResult(intent, 1);
+                return true;
 
             case R.id.profile_item:
                 //open player profile activity
                 Intent intent1 = new Intent(this, ProfileActivity.class);
                 intent1.putExtra("Player", (Serializable) currentPlayer);
                 startActivity(intent1);
+                return true;
+
 
             case R.id.add_qr_item:
                 //Open fragment to scan QR code
                 openAddQRFragment();
+                return true;
 
             // TO OPEN LEADERBOARD ACTIVITY add code below
 
@@ -430,6 +454,17 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
         }
         return super.onOptionsItemSelected(item);
     }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if(resultCode == RESULT_OK) {
+                QRLibrary updatedQRLibrary = (QRLibrary) data.getSerializableExtra("Player QRLibrary");
+                currentPlayer.setPlayerQRLibrary(updatedQRLibrary);
+            }
+        }
+    }
+
 
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {

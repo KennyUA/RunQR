@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Pattern;
 
-// COMMENT: Initializing with PlayerStats object is giving errors with opening app
+// COMMENT: Initializing with PlayerStats object is giving errors with opening app, need to make getter/setter for private attributes
 // For now: run without adding PlayerStats to currentPLayer
 
 public class LoginActivity extends AppCompatActivity {
@@ -181,13 +181,15 @@ public class LoginActivity extends AppCompatActivity {
                     HashMap<String, Player> data = new HashMap<>();
                     if (usernameExists && emailExists) {
                         //PlayerStats newStats = new PlayerStats(null, null, 0, 0, null, null, null);
-                        PlayerStats newStats = new PlayerStats(0, 0);
+                        //PlayerStats newStats = new PlayerStats(0, 0);
                         //    public PlayerStats(QRCode highQR, QRCode lowQR, Integer sumScores, Integer numScanned, Integer rankHighQR,
                         //                       Integer rankNumScanned, Integer rankSumScores) {
+
+                        //PlayerStats newStats = new PlayerStats();
                         Account newAccount = new Account(usernameData, emailData);
                         QRLibrary newLibrary = new QRLibrary(new ArrayList<QRCode>(),0 );
-                        currentPlayer = new Player(newAccount, newStats, newLibrary);
-                        //currentPlayer = new Player(newAccount, newLibrary);
+                        //currentPlayer = new Player(newAccount, newStats, newLibrary);
+                        currentPlayer = new Player(newAccount, newLibrary);
                         //currentPlayer = new Player(newAccount);
                         data.put("playerInfo", currentPlayer);
                         collectionReference
