@@ -19,6 +19,7 @@ import java.util.ArrayList;
  * Test QRCodes are added to QRLibrary and deleted. QRCode is clicked to display score currently (location and photo will be added in next part).
  * Robotium test framework is used.
  * NOTES: Don't know how to manually add QRCodes to the QRLibrary and test that QRCode is there and when clicked, opens a new activity.
+ * POSSIBLE SOLUTION FOR NOW: instantiate player with some test QRCodes already present in QRLibrary 
  */
 public class QRLibraryActivityTest {
 
