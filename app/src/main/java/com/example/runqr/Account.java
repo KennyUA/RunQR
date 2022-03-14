@@ -38,8 +38,6 @@ public class Account  implements Serializable {
      * @return
      *      String representing the account's email.
      */
-
-
     public String getContactEmail() { return this.contactEmail; }
 
 
