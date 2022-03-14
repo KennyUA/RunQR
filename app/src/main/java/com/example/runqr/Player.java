@@ -1,5 +1,7 @@
 package com.example.runqr;
 
+import android.util.Log;
+
 import java.io.Serializable;
 
 /**
@@ -24,7 +26,7 @@ public class Player implements Serializable {
     public Player(){
 
         this.playerAccount = new Account();
-        this.playerStats = new PlayerStats();
+        this.playerStats = new PlayerStats("a",0,0,0,0,0,0,0);
         this.playerQRLibrary = new QRLibrary();
     }
 
@@ -38,6 +40,8 @@ public class Player implements Serializable {
         this.playerAccount = playerAccount;
         this.playerQRLibrary = playerQRLibrary;
     }
+
+
 
     /**
      * This method adds a QRCode scanned by the player to their QRLibrary by calling QRLibrary's addQRCode() method.
