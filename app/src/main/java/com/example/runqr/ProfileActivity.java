@@ -3,9 +3,12 @@ package com.example.runqr;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 
 import com.google.android.gms.maps.SupportMapFragment;
@@ -24,6 +27,7 @@ public class ProfileActivity extends AppCompatActivity {
     ArrayList<ProfileItem> profileDataList;
     String[] items;
     String[] values;
+
 
 
     @Override
@@ -50,6 +54,20 @@ public class ProfileActivity extends AppCompatActivity {
         profileAdapter = new ProfileCustomList(this, profileDataList);
         profileList.setAdapter(profileAdapter);
 
+
+        Button backButton = (Button) findViewById(R.id.back_button);
+        backButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                //Intent i = new Intent(this, MainActivity.class);
+                //startActivity(i);
+                finish();
+            }
+
+        });
+
     }
+
+
 
 }
