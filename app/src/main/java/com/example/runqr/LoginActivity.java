@@ -1,12 +1,5 @@
 package com.example.runqr;
 
-import static java.sql.Types.NULL;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -17,11 +10,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-
-
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -30,8 +25,6 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -39,10 +32,17 @@ import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.regex.Pattern;
 
-public class LoginActivity extends AppCompatActivity implements AddQRFragment.OnConfirmPressed {
+/** Represents login screen. When yser opens the app, he has two options:
+ * 1) Create a new valid user (username should be at least 5 characters and must be unique. Email should also follow appropriate format.)
+ * 2) Login using qr code identifier attached to a player (is not yet implemented).
+ * This activity stores a newly created player to the database.
+ * This activity stores a unique identifier to the phone so that if user is already logged in, he could directly move to main activity.
+ * This activity sends the newest player information from database to the main activity if user has an existing account on the device.
+ */
+
+public class LoginActivity extends AppCompatActivity {
 
     String hashUsername;
     Boolean emailExists;
@@ -84,6 +84,10 @@ public class LoginActivity extends AppCompatActivity implements AddQRFragment.On
                                         DocumentSnapshot document = task.getResult();
                                         if (document.exists()) {
                                             currentPlayer = document.toObject(Player.class);
+                                            savePlayer();
+                                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                            startActivity(intent);
+                                            kill_activity();
                                         } else {
                                             Log.d(TAG, "No such document");
                                         }
@@ -101,10 +105,7 @@ public class LoginActivity extends AppCompatActivity implements AddQRFragment.On
                     }
                 }
             });
-            savePlayer();
-            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-            startActivity(intent);
-            kill_activity();
+
         }
         else {
             usernameExists = Boolean.FALSE;
@@ -185,10 +186,17 @@ public class LoginActivity extends AppCompatActivity implements AddQRFragment.On
                     Log.d(TAG, "Here!");
                     HashMap<String, Player> data = new HashMap<>();
                     if (usernameExists && emailExists) {
-                        PlayerStats stats = new PlayerStats();
+                        //PlayerStats newStats = new PlayerStats(null, null, 0, 0, null, null, null);
+                        //PlayerStats newStats = new PlayerStats(0, 0);
+                        //    public PlayerStats(QRCode highQR, QRCode lowQR, Integer sumScores, Integer numScanned, Integer rankHighQR,
+                        //                       Integer rankNumScanned, Integer rankSumScores) {
+
+                        //PlayerStats newStats = new PlayerStats();
                         Account newAccount = new Account(usernameData, emailData);
-                        QRLibrary newLibrary = new QRLibrary();
-                        currentPlayer = new Player(newAccount);
+                        QRLibrary newLibrary = new QRLibrary(new ArrayList<QRCode>(),0 );
+                        //currentPlayer = new Player(newAccount, newStats, newLibrary);
+                        currentPlayer = new Player(newAccount, newLibrary);
+                        //currentPlayer = new Player(newAccount);
                         data.put("playerInfo", currentPlayer);
                         collectionReference
                                 .document(usernameData)
@@ -276,9 +284,7 @@ public class LoginActivity extends AppCompatActivity implements AddQRFragment.On
 
     }
 
-    public void onConfirmPressed(QRCode qrCodeData) {
 
-    }
     private boolean isValidEmailId(String email){
 
         return Pattern.compile("^(([\\w-]+\\.)+[\\w-]+|([a-zA-Z]{1}|[\\w-]{2,}))@"
