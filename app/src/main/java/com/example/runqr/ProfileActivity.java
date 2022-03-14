@@ -1,24 +1,14 @@
 package com.example.runqr;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.FirebaseFirestore;
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * This class represents a ProfileActivity object in the RunQR game.
@@ -61,14 +51,19 @@ public class ProfileActivity extends AppCompatActivity {
         profileList.setAdapter(profileAdapter);
 
 
+
         Button backButton = (Button) findViewById(R.id.back_button);
         backButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                finish();
+                ProfileActivity.super.onBackPressed();
+                //finish();
             }
 
         });
+
+
+
 
     }
 

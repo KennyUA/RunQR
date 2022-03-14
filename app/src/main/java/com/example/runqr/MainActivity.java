@@ -27,15 +27,12 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -282,6 +279,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
     @Override
     public void onPause(){
         savePlayer();
+        savePlayerToDatabase();
         super.onPause();
 
     }
@@ -305,6 +303,30 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
         savePlayer();
         super.onDestroy();
 
+    }
+
+    void savePlayerToDatabase() {
+        String usernameData = currentPlayer.getPlayerAccount().getUsername();
+        HashMap<String, Player> data = new HashMap<>();
+        data.put("playerInfo", currentPlayer);
+        collectionReference
+                .document(usernameData)
+                .set(data)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        // These are a method which gets executed when the task is succeeded
+                        Log.d(TAG, "Data has been added successfully!");
+                    }
+
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // These are a method which gets executed if there’s any problem
+                        Log.d(TAG, "Data could not be added!" + e.toString());
+                    }
+                });
     }
 
     void savePlayer(){
@@ -373,10 +395,10 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 
         /*update PlayerStats*/
         PlayerStats playerStats = currentPlayer.getPlayerStats();
-        int current_codes = playerStats.getNumOfScanned();
-        playerStats.setNumOfScanned(current_codes + 1);
-        int current_score = playerStats.getSumOfScores();
-        playerStats.setSumOfScores(current_score + qrCodeData.getScore());
+        int currentCodes = playerStats.getNumOfScanned();
+        playerStats.setNumOfScanned(currentCodes+ 1);
+        int currentScore = playerStats.getSumOfScores();
+        playerStats.setSumOfScores(currentScore + qrCodeData.getScore());
         if (playerStats.getLowQr() == 0) {
             playerStats.setLowQr(qrCodeData.getScore());
         }
@@ -444,26 +466,41 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
         switch(item.getItemId()) {
             case R.id.qr_library_item:
                 //Open activity to show QRLibrary
                 Intent intent = new Intent(this, QRLibraryActivity.class);
-                intent.putExtra("Player QRLibrary", (Serializable) currentPlayer.getPlayerQRLibrary());
+                //intent.putExtra("Player QRLibrary", (Serializable) currentPlayer.getPlayerQRLibrary());
+                intent.putExtra("Player QRLibraryActivity", (Serializable) currentPlayer);
                 startActivityForResult(intent, 1);
-                return true;
+
+                /*
+                //update PlayerStats to account for deletion of codes//
+
+                // THIS NEEDS TO BE FIXED, PROFILE DOESN'T TRACK DELETION OF QRCODES //
+                // Note; seems to be a delay in updating numScanned
+                PlayerStats playerStats = currentPlayer.getPlayerStats();
+                int currentCodes = currentPlayer.getPlayerQRLibrary().getSize();
+                playerStats.setNumOfScanned(currentCodes);
+                */
+                break;
+                //return true;
 
             case R.id.profile_item:
                 //open player profile activity
                 Intent intent1 = new Intent(this, ProfileActivity.class);
                 intent1.putExtra("Player", (Serializable) currentPlayer);
                 startActivity(intent1);
-                return true;
+                break;
+                //return true;
 
 
             case R.id.add_qr_item:
                 //Open fragment to scan QR code
                 openAddQRFragment();
-                return true;
+                break;
+                //return true;
 
             // TO OPEN LEADERBOARD ACTIVITY add code below
 
@@ -477,8 +514,10 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
             if(resultCode == RESULT_OK) {
-                QRLibrary updatedQRLibrary = (QRLibrary) data.getSerializableExtra("Player QRLibrary");
-                currentPlayer.setPlayerQRLibrary(updatedQRLibrary);
+                //QRLibrary updatedQRLibrary = (QRLibrary) data.getSerializableExtra("Player QRLibrary");
+                Player updatedCurrentPlayer = (Player) data.getSerializableExtra("Player QRLibrary Updated");
+                //currentPlayer.setPlayerQRLibrary(updatedQRLibrary);
+                currentPlayer = updatedCurrentPlayer;
             }
         }
     }
