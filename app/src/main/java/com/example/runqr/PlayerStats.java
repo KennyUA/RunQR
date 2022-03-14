@@ -16,6 +16,15 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.io.Serializable;
 import java.util.HashMap;
 
+/**
+ * This class represents a PlayerStats object in the RunQR game.
+ * Each Player object has an associated PlayerStats object
+ * This class handles PlayerStats attributes such has high score QR code, number of scanned codes, etc
+ * These attributes are displayed in ProfileActivity and can be modified in other activities
+ * This class will also be used later for the Leaderboard Activity
+ *
+ */
+
 public class PlayerStats implements Serializable {
 
     public String username;
@@ -32,7 +41,26 @@ public class PlayerStats implements Serializable {
     public int rankHighQr;
     public int rankSumOfScores;
 
-
+    /**
+     * This method creates a new PlayerStats object within the app and populates it with 0's
+     * @param username
+     *      given to identify which player this is for
+     * @param highQr
+     *      initialized to 0
+     * @param lowQr
+     *      initialized to 0
+     * @param sumScores
+     *      initialized to 0
+     * @param numScanned
+     *      initialized to 0
+     * @param rankHighQr
+     *      initialized to 0
+     * @param rankNumScanned
+     *      initialized to 0
+     * @param rankSumScores
+     *      initialized to 0
+     *
+     */
     public PlayerStats(String username, int highQr, int lowQr, int sumScores, int numScanned, int rankHighQr, int rankNumScanned, int rankSumScores) {
         highQr = highQr;
         lowQr = lowQr;
@@ -45,6 +73,11 @@ public class PlayerStats implements Serializable {
 
     }
 
+    /**
+     * This method creates a new PlayerStats activity and connects it with the firebase object based on username
+     * @param username
+     *      given to identify which player this is for
+     */
     public PlayerStats(String username) {
         this.username = username;
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -69,7 +102,13 @@ public class PlayerStats implements Serializable {
         });
     }
 
-
+    /**
+     * This method is called each time an attribute of PlayerStats is changed using one of the class's setters
+     * @param field
+     *      given to identify which attribute is being altered
+     * @param value
+     *      new value of this field
+     */
     public void updatePlayerStats(String field, String value) {
         final String TAG = "Error Message: ";
         HashMap<String, String> data = new HashMap<>();

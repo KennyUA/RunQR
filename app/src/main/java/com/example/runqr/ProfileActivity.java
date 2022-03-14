@@ -20,6 +20,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * This class represents a ProfileActivity object in the RunQR game.
+ * This class displays all Player Stats such as high score QR, number of scanned codes, etc
+ *
+ */
+
 public class ProfileActivity extends AppCompatActivity {
 
     ListView profileList;
