@@ -186,6 +186,7 @@ public class LoginActivity extends AppCompatActivity {
                         //                       Integer rankNumScanned, Integer rankSumScores) {
 
                         //PlayerStats newStats = new PlayerStats();
+
                         Account newAccount = new Account(usernameData, emailData);
                         QRLibrary newLibrary = new QRLibrary(new ArrayList<QRCode>(),0 );
                         //currentPlayer = new Player(newAccount, newStats, newLibrary);
