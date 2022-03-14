@@ -17,15 +17,15 @@
         <!--activity
             android:name=".CustomListAdapter"
             android:exported="false"--> />
-
+        <activity
+            android:name=".ProfileActivity"/>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBCVF_eq7zdUk2jwTJTKK0rCOISbiLlqlY" />
 
-        android:usesCleartextTraffic="true">
-        <activity
-            android:name=".ProfileActivity"/>
+
+
 
 
       
@@ -34,17 +34,16 @@
 
             android:exported="false" />
 
->>>>>>> 044c747830027185ae914f0c85cf79224feb4964
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
         <activity
             android:name=".LoginActivity"
-<<<<<<< HEAD
-            android:exported="true" />
-=======
-            android:exported="true">
+
+            android:exported="true" >
+
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -52,7 +51,6 @@
             </intent-filter>
         </activity>
 
->>>>>>> 044c747830027185ae914f0c85cf79224feb4964
         <activity
             android:name=".QRLibraryActivity"
             android:exported="false" />
@@ -61,10 +59,7 @@
             android:exported="false" />
         <activity
             android:name=".MainActivity"
-<<<<<<< HEAD
-=======
 
->>>>>>> 044c747830027185ae914f0c85cf79224feb4964
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
