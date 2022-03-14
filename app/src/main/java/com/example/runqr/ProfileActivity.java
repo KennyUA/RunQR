@@ -35,6 +35,8 @@ public class ProfileActivity extends AppCompatActivity {
         Player player = (Player) getIntent().getSerializableExtra("Player");
         PlayerStats playerStats = player.getPlayerStats();
 
+
+
         profileList = findViewById(R.id.profile_list);
 
         String[] items = {"Scanned QR Codes: ", "Total Score: ", "Rank (number of codes): ", "Rank (player): ", "Rank (highest scoring code): ", "Highest Scoring: ", "Lowest Scoring: "};

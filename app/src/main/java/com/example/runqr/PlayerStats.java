@@ -12,6 +12,8 @@ import java.io.Serializable;
 
 public class PlayerStats implements Serializable {
 
+    private String username;
+
     /*stats*/
     private int high_qr;
     private int low_qr;
@@ -47,6 +49,7 @@ public class PlayerStats implements Serializable {
     }
 
     public PlayerStats(String username) {
+        this.username = username;
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference userRef = db.collection("Accounts").document(username);
 
@@ -71,6 +74,13 @@ public class PlayerStats implements Serializable {
     }
 
 
+    public void updatePlayerStats(String field, String value) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference docRef = db.collection("Accounts").document(this.username);
+        docRef.update(field, value);
+    }
+
+
 
     public int getHigh_qr() {
         return high_qr;
@@ -78,6 +88,7 @@ public class PlayerStats implements Serializable {
 
     public void setHigh_qr(int high_qr) {
         this.high_qr = high_qr;
+        updatePlayerStats("playerStats.high_qr", String.valueOf(high_qr));
     }
 
     public int getLow_qr() {
@@ -86,6 +97,7 @@ public class PlayerStats implements Serializable {
 
     public void setLow_qr(int low_qr) {
         this.low_qr = low_qr;
+        updatePlayerStats("playerStats.low_qr", String.valueOf(low_qr));
     }
 
     public int getSum_of_scores() {
@@ -94,6 +106,7 @@ public class PlayerStats implements Serializable {
 
     public void setSum_of_scores(int sum_of_scores) {
         this.sum_of_scores = sum_of_scores;
+        updatePlayerStats("playerStats.sum_or_scores", String.valueOf(sum_of_scores));
     }
 
     public int getNum_of_scanned() {
@@ -102,6 +115,7 @@ public class PlayerStats implements Serializable {
 
     public void setNum_of_scanned(int num_of_scanned) {
         this.num_of_scanned = num_of_scanned;
+        updatePlayerStats("playerStats.num_of_scanned", String.valueOf(num_of_scanned));
     }
 
     public int getRank_num_of_scanned() {
@@ -110,6 +124,7 @@ public class PlayerStats implements Serializable {
 
     public void setRank_num_of_scanned(int rank_num_of_scanned) {
         this.rank_num_of_scanned = rank_num_of_scanned;
+        updatePlayerStats("playerStats.rank_num_of_scanned", String.valueOf(num_of_scanned));
     }
 
     public int getRank_high_qr() {
@@ -118,6 +133,7 @@ public class PlayerStats implements Serializable {
 
     public void setRank_high_qr(int rank_high_qr) {
         this.rank_high_qr = rank_high_qr;
+        updatePlayerStats("playerStats.rank_high_qr", String.valueOf(rank_high_qr));
     }
 
     public int getRank_sum_of_scores() {
@@ -126,5 +142,6 @@ public class PlayerStats implements Serializable {
 
     public void setRank_sum_of_scores(int rank_sum_of_scores) {
         this.rank_sum_of_scores = rank_sum_of_scores;
+        updatePlayerStats("playerStats.rank_sum_of_scores", String.valueOf(rank_sum_of_scores));
     }
 }

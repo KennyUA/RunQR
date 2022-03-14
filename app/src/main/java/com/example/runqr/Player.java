@@ -75,7 +75,17 @@ public class Player implements Serializable {
      *      The PlayerStats object associated with given player.
      */
     public PlayerStats getPlayerStats() {
-        return this.playerStats;
+
+        if (this.playerStats != null) {
+            return this.playerStats;
+        }
+
+        else{
+            String username = this.playerAccount.getUsername();
+            PlayerStats player_stats = new PlayerStats(username);
+            this.playerStats = player_stats;
+            return this.playerStats;
+        }
     }
 
     /**
