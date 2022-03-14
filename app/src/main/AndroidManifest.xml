@@ -31,7 +31,6 @@
       
         <activity
             android:name=".DisplayQRCodeActivity"
-
             android:exported="false" />
 
         <meta-data
@@ -59,16 +58,12 @@
             android:exported="false" />
         <activity
             android:name=".MainActivity"
-
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
-
-
-
+            android:exported="false">
 
         </activity>
     </application>
 
 </manifest>
+
+
+
