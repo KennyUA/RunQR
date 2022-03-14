@@ -53,8 +53,9 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 
     /// fix below to do automatic log in and save player info
 
+    /*next two lines are needed*/
     Player currentPlayer = new Player();
-    PlayerStats playerStats;
+    //PlayerStats playerStats;
 
     final String TAG = "Sample";
 
@@ -358,11 +359,26 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 
         currentPlayer.getPlayerQRLibrary().addQRCode(qrCodeData);
 
+        /*update PlayerStats*/
+        PlayerStats playerStats = currentPlayer.getPlayerStats();
+        int current_codes = playerStats.getNum_of_scanned();
+        playerStats.setNum_of_scanned(current_codes + 1);
+        int current_score = playerStats.getSum_of_scores();
+        playerStats.setSum_of_scores(current_score + qrCodeData.getScore());
+        if (playerStats.getLow_qr() == 0) {
+            playerStats.setLow_qr(qrCodeData.getScore());
+        }
+        if (qrCodeData.getScore() < playerStats.getLow_qr()){
+            playerStats.setLow_qr(qrCodeData.getScore());
+        }
+        if (qrCodeData.getScore() > playerStats.getHigh_qr()){
+            playerStats.setHigh_qr(qrCodeData.getScore());
+        }
+
+
 
         // THIS NEEDS TO BE UPDATED BY KENNY
         // Below: open activity/fragment which prompts user to access their device's location and take photo of the object containing scannedQRCode
-
-
 
 
 
@@ -371,6 +387,8 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
             addQRLocationGlobally(qrCodeData, qrData, QRCodesReference );
 
         }
+
+
 
     }
 

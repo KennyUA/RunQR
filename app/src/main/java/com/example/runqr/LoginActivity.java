@@ -185,11 +185,12 @@ public class LoginActivity extends AppCompatActivity {
                         //    public PlayerStats(QRCode highQR, QRCode lowQR, Integer sumScores, Integer numScanned, Integer rankHighQR,
                         //                       Integer rankNumScanned, Integer rankSumScores) {
 
-                        //PlayerStats newStats = new PlayerStats();
+                        PlayerStats newStats = new PlayerStats(usernameData, 0,0,0,0,0,0,0);
+                        //PlayerStats newStats = new PlayerStats(usernameData);
                         Account newAccount = new Account(usernameData, emailData);
                         QRLibrary newLibrary = new QRLibrary(new ArrayList<QRCode>(),0 );
-                        //currentPlayer = new Player(newAccount, newStats, newLibrary);
-                        currentPlayer = new Player(newAccount, newLibrary);
+                        currentPlayer = new Player(newAccount, newStats, newLibrary);
+                        //currentPlayer = new Player(newAccount, newLibrary);
                         //currentPlayer = new Player(newAccount);
                         data.put("playerInfo", currentPlayer);
                         collectionReference
