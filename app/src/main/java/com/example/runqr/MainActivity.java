@@ -373,18 +373,18 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 
         /*update PlayerStats*/
         PlayerStats playerStats = currentPlayer.getPlayerStats();
-        int current_codes = playerStats.getNum_of_scanned();
-        playerStats.setNum_of_scanned(current_codes + 1);
-        int current_score = playerStats.getSum_of_scores();
-        playerStats.setSum_of_scores(current_score + qrCodeData.getScore());
-        if (playerStats.getLow_qr() == 0) {
-            playerStats.setLow_qr(qrCodeData.getScore());
+        int current_codes = playerStats.getNumOfScanned();
+        playerStats.setNumOfScanned(current_codes + 1);
+        int current_score = playerStats.getSumOfScores();
+        playerStats.setSumOfScores(current_score + qrCodeData.getScore());
+        if (playerStats.getLowQr() == 0) {
+            playerStats.setLowQr(qrCodeData.getScore());
         }
-        if (qrCodeData.getScore() < playerStats.getLow_qr()){
-            playerStats.setLow_qr(qrCodeData.getScore());
+        if (qrCodeData.getScore() < playerStats.getLowQr()){
+            playerStats.setLowQr(qrCodeData.getScore());
         }
-        if (qrCodeData.getScore() > playerStats.getHigh_qr()){
-            playerStats.setHigh_qr(qrCodeData.getScore());
+        if (qrCodeData.getScore() > playerStats.getHighQr()){
+            playerStats.setHighQr(qrCodeData.getScore());
         }
 
 
