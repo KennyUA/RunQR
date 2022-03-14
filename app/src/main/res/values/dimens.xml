@@ -1,4 +1,9 @@
+<<<<<<< HEAD
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="text_margin">16dp</dimen>
+=======
+<resources>
+    <dimen name="fab_margin">16dp</dimen>
+>>>>>>> 044c747830027185ae914f0c85cf79224feb4964
 </resources>

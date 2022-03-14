@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">RunQR</string>
     <string name="mapbox_access_token">pk.eyJ1IjoiYXl1c2hyb3k5OSIsImEiOiJjbDBkYTBlZWUwMzZ4M2xudTJ6bWQ2cXJwIn0.RB_toZgU5VAOQakuwywfFg</string>
+    <string name="access_token">sk.eyJ1IjoiYXl1c2hyb3k5OSIsImEiOiJjbDBkYWY0eXAwNzY5M2RvZGNmaGp5N3FzIn0.3vWHx5WpYVKkSi_CYBr3JQ</string>
 </resources>
