@@ -48,6 +48,7 @@
             />
 
 
+
         <Button
             android:id="@+id/add_qr_button"
             android:layout_width="143dp"

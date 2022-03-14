@@ -72,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
     FloatingActionButton loadBtn;
     FloatingActionButton listBtn;
     ArrayList<Marker> markerArrayList;
+    ArrayList<MarkerOptions> markerOptionsArrayList;
     GoogleMap currentMap;
     //cite https://stackoverflow.com/questions/48699032/how-to-set-addsnapshotlistener-and-remove-in-populateviewholder-in-recyclerview
     EventListener<QuerySnapshot> eventListener;
@@ -129,8 +130,8 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 
          */
         /*QRCodesReference = db.collection("QR Codes");
-        qrData.put("Location X", "53.5627");
-        qrData.put("Location Y", "-113.5055");
+        qrData.put("Location X", "53.5198");
+        qrData.put("Location Y", "-113.4970");
         int random_int = (int)Math.floor(Math.random()*(100-0+1)+0);
 
         QRCodesReference
@@ -151,7 +152,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
                         Log.v(TAG, "Global QRData could not be added!" + e.toString());
                     }
                 });*/
-
+        markerOptionsArrayList = new ArrayList<MarkerOptions>();
         markerArrayList = new ArrayList<Marker>();
         QRCodesReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
@@ -161,8 +162,10 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
                        marker.remove();
                    }}
 
-               markerArrayList.clear();
 
+
+               markerArrayList.clear();
+               markerOptionsArrayList.clear();
 
                 for(QueryDocumentSnapshot doc: queryDocumentSnapshots){
                     if((String) doc.getId() != "unique hash"){
@@ -171,10 +174,12 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
                         Log.v("y", String.valueOf(doc.getData().get("Location Y")));
                         Float x = Float.parseFloat((String)doc.getData().get("Location X"));
                         Float y = Float.parseFloat((String)doc.getData().get("Location Y"));
-                        Marker newMarker = currentMap.addMarker(new MarkerOptions()
+                        MarkerOptions newMarkerOptions = new MarkerOptions()
                                 .position(new LatLng(x, y))
-                                .title("new Marker"));
+                                .title("new Marker");
+                        Marker newMarker = currentMap.addMarker(newMarkerOptions);
 
+                        markerOptionsArrayList.add(newMarkerOptions);
                         markerArrayList.add(newMarker);
                     }
 
@@ -189,7 +194,14 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 
         listBtn = findViewById(R.id.searchLocationsBtn);
 
+        listBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MarkerFragment locationFragment = MarkerFragment.newInstance(markerOptionsArrayList);
+                locationFragment.show(getSupportFragmentManager(), "LOCATIONS");
 
+            }
+        });
 
 
 
