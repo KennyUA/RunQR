@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.runqr">
 
-
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -14,14 +13,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.RunQR"
-
         android:usesCleartextTraffic="true">
+        <!--activity
+            android:name=".CustomListAdapter"
+            android:exported="false"--> />
         <activity
             android:name=".ProfileActivity"/>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBCVF_eq7zdUk2jwTJTKK0rCOISbiLlqlY" />
+
+
+
+
+
       
         <activity
             android:name=".DisplayQRCodeActivity"
@@ -34,7 +40,10 @@
 
         <activity
             android:name=".LoginActivity"
-            android:exported="true">
+
+            android:exported="true" >
+
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -60,9 +69,6 @@
 
 
         </activity>
-
-
-
     </application>
 
 </manifest>
