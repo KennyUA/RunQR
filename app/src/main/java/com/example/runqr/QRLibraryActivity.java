@@ -67,6 +67,21 @@ public class QRLibraryActivity extends AppCompatActivity {
                 if (delete_code) {
                     //QRCode QRCodeToDelete = QRDataList.getQRCode(position);
                     QRCode QRCodeToDelete = QRDataList.get(position);
+
+                    /*updating playerstats*/
+                    /*get highest and lowest*/
+                        /*
+
+                        int number_scanned = currentPlayer.playerStats.getNum_of_scanned();
+                        currentPlayer.playerStats.setNum_of_scanned(number_scanned-1);
+
+                        if QRCodeToDelete.score = currentPlayer.getHigh_qr {
+                            //find next highest
+                              }
+                        if QRCodeToDelete.score = currentPlayer.getLow_qr {
+                            //find next lowest
+                              }
+                        */
                     //QRDataList.deleteQRCode(QRCodeToDelete);
                     playerQRLibrary.deleteQRCode(QRCodeToDelete);
                     //QRList.setAdapter(QRAdapter);
@@ -80,6 +95,7 @@ public class QRLibraryActivity extends AppCompatActivity {
                     Intent intent = new Intent(QRLibraryActivity.this, DisplayQRCodeActivity.class);
                     intent.putExtra("QRCode to display", (Serializable) codeToShow);
                     startActivity(intent);
+
 
                     /*
                     FloatingActionButton deleteButton = (FloatingActionButton) findViewById(R.id.delete_qr_button);
