@@ -33,10 +33,10 @@ public class Player implements Serializable {
         this.playerAccount = playerAccount;
     }
 
-    public Player(Account playerAccount, QRLibrary library) {
+    public Player(Account playerAccount, QRLibrary playerQRLibrary) {
 
         this.playerAccount = playerAccount;
-        this.playerQRLibrary = library;
+        this.playerQRLibrary = playerQRLibrary;
     }
 
     /**
@@ -88,13 +88,14 @@ public class Player implements Serializable {
     }
 
 
- // DO WE NEED THIS FUNCTION??
-    public void scanQR(){
-
+    /**
+     * This method sets the player's library of added QRCodes to the updated version after deletion changes in QRLibraryActivity.
+     * @param updatedQRLibrary
+     *      The updated version of player's QRLibrary object.
+     */
+    public void setPlayerQRLibrary(QRLibrary updatedQRLibrary) {
+        this.playerQRLibrary = updatedQRLibrary;
     }
-
-
-
 
 
 
