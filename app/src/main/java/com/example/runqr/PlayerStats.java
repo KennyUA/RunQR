@@ -90,29 +90,6 @@ public class PlayerStats implements Serializable {
                     }
                 });;
     }
-/*
-    public void setPlayerStats(String field, String value) {
-        final String TAG = "Error Message: ";
-        HashMap<String, String> data = new HashMap<>();
-        data.put(field, value);
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        DocumentReference docRef = db.collection("Accounts").document(this.username);
-        data.put(field, value);
-        docRef.set(data)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "DocumentSnapshot successfully written!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error writing document", e);
-                    }
-                });;
-    }
-*/
 
 
     public int getHighQr() {
@@ -121,7 +98,7 @@ public class PlayerStats implements Serializable {
 
     public void setHighQr(int highQr) {
         this.highQr = highQr;
-        updatePlayerStats("playerInfo.playerStats.high_qr", String.valueOf(highQr));
+        updatePlayerStats("playerInfo.playerStats.highQr", String.valueOf(highQr));
     }
 
     public int getLowQr() {
@@ -130,7 +107,7 @@ public class PlayerStats implements Serializable {
 
     public void setLowQr(int lowQr) {
         this.lowQr = lowQr;
-        updatePlayerStats("playerInfo.playerStats.low_qr", String.valueOf(lowQr));
+        updatePlayerStats("playerInfo.playerStats.lowQr", String.valueOf(lowQr));
     }
 
     public int getSumOfScores() {
@@ -139,7 +116,7 @@ public class PlayerStats implements Serializable {
 
     public void setSumOfScores(int sumOfScores) {
         this.sumOfScores = sumOfScores;
-        updatePlayerStats("playerInfo.playerStats.sum_of_scores", String.valueOf(sumOfScores));
+        updatePlayerStats("playerInfo.playerStats.sumOfScores", String.valueOf(sumOfScores));
     }
 
     public int getNumOfScanned() {
@@ -148,7 +125,7 @@ public class PlayerStats implements Serializable {
 
     public void setNumOfScanned(int numOfScanned) {
         this.numOfScanned = numOfScanned;
-        updatePlayerStats("playerInfo.playerStats.num_of_scanned", String.valueOf(numOfScanned));
+        updatePlayerStats("playerInfo.playerStats.numOfScanned", String.valueOf(numOfScanned));
     }
 
     public int getRankNumOfScanned() {
@@ -157,7 +134,7 @@ public class PlayerStats implements Serializable {
 
     public void setRankNumOfScanned(int rankNumOfScanned) {
         this.rankNumOfScanned = rankNumOfScanned;
-        updatePlayerStats("playerInfo.playerStats.rank_num_of_scanned", String.valueOf(numOfScanned));
+        updatePlayerStats("playerInfo.playerStats.rankNumOfScanned", String.valueOf(numOfScanned));
     }
 
     public int getRankHighQr() {
@@ -166,7 +143,7 @@ public class PlayerStats implements Serializable {
 
     public void setRankHighQr(int rankHighQr) {
         this.rankHighQr = rankHighQr;
-        updatePlayerStats("playerInfo.playerStats.rank_high_qr", String.valueOf(rankHighQr));
+        updatePlayerStats("playerInfo.playerStats.rankHighQr", String.valueOf(rankHighQr));
     }
 
     public int getRankSumOfScores() {
@@ -175,6 +152,6 @@ public class PlayerStats implements Serializable {
 
     public void setRankSumOfScores(int rankSumOfScores) {
         this.rankSumOfScores = rankSumOfScores;
-        updatePlayerStats("playerInfo.playerStats.rank_sum_of_scores", String.valueOf(rankSumOfScores));
+        updatePlayerStats("playerInfo.playerStats.rankSumOfScores", String.valueOf(rankSumOfScores));
     }
 }
