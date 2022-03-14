@@ -14,6 +14,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class represents a custom ArrayAdapter<QRCode> class to display player's QRCodeLibrary in the form of a ListView in QRLibraryActivity.
+ * This class allows the hash and score of the QRCode to be displayed in QRLibraryActivity's ListView.
+ */
+
 public class QRList extends ArrayAdapter<QRCode> implements Serializable {
 
     //private QRLibrary QRCodes;
@@ -28,6 +33,17 @@ public class QRList extends ArrayAdapter<QRCode> implements Serializable {
     }
 
 
+    /**
+     * This method gets the view of the content of an item in the QRLibraryActivity's ListView.
+     * @param position
+     *      An int of the position on item in the ListView.
+     * @param convertView
+     *      A view object for an item in the ListView.
+     * @param parent
+     *      A ViewGroup which is parent for the ListView item's content view.
+     * @return
+     *      A view object for an item in the ListView whose contents are QRCode score and hash.
+     */
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -51,7 +67,6 @@ public class QRList extends ArrayAdapter<QRCode> implements Serializable {
         return view;
 
     }
-
 
 
 

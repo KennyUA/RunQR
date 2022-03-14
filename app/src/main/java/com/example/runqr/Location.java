@@ -1,5 +1,9 @@
 package com.example.runqr;
 
+/** Represents Location of qrCodes.
+ * Two coordinates on the map: x and y.
+ */
+
 public class Location {
     private int x;
     private int y;
