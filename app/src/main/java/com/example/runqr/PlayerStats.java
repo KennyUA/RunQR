@@ -30,16 +30,16 @@ public class PlayerStats implements Serializable {
     public String username;
 
     /*stats*/
-    public int highQr;
-    public int lowQr;
-    public int sumOfScores;
-    public int numOfScanned;
+    private int highQr;
+    private int lowQr;
+    private int sumOfScores;
+    private int numOfScanned;
 
     /* in activity, string of rank will be displayed according to int stored in PlayerStats object*/
     /*according to range, will be Platinum, Gold, etc*/
-    public int rankNumOfScanned;
-    public int rankHighQr;
-    public int rankSumOfScores;
+    private int rankNumOfScanned;
+    private int rankHighQr;
+    private int rankSumOfScores;
 
     /**
      * This method creates a new PlayerStats object within the app and populates it with 0's
