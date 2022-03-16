@@ -146,6 +146,10 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
                         Log.v(TAG, "Global QRData could not be added!" + e.toString());
                     }
                 });*/
+        
+        //Any change in the QR Codes collection in the database is noticed here and the map is updated accordingly
+        //markerOptionsArrayList used to store all marker options in order to be passed into fragment to display addresses of QR Codes
+        //markerArrayList is used to store Marker objects displayed on map so that each of their states can be easily manipulated
         markerOptionsArrayList = new ArrayList<MarkerOptions>();
         markerArrayList = new ArrayList<Marker>();
         QRCodesReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -182,11 +186,9 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
         });
 
 
-        //Map Stuff
+        
 
-        //mapView = findViewById(R.id.map);
-
-
+        //Button to display fragment of addresses
         listBtn = findViewById(R.id.searchLocationsBtn);
 
         listBtn.setOnClickListener(new View.OnClickListener() {
