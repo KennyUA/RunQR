@@ -16,17 +16,15 @@
         android:usesCleartextTraffic="true">
         <!--activity
             android:name=".CustomListAdapter"
-            android:exported="false"--> />
+            android:exported="false"-->
+
         <activity
-            android:name=".ProfileActivity"/>
+            android:name=".ProfileActivity"
+            android:exported="false" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBCVF_eq7zdUk2jwTJTKK0rCOISbiLlqlY" />
-
-
-
-
 
       
         <activity
@@ -39,9 +37,7 @@
 
         <activity
             android:name=".LoginActivity"
-
             android:exported="true" >
-
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -15,7 +15,7 @@ import java.util.Map;
 
 public class QRCode implements Serializable {
 
-    private static int score;
+    private int score;
     private Location location;
     private String hash;
     private Photo photo;
