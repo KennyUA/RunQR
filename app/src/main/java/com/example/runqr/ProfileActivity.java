@@ -40,7 +40,7 @@ public class ProfileActivity extends AppCompatActivity {
         profileList = findViewById(R.id.profile_list);
 
         String[] items = {"Scanned QR Codes: ", "Total Score: ", "Rank (number of codes): ", "Rank (player): ", "Rank (highest scoring code): ", "Highest Scoring: ", "Lowest Scoring: "};
-        String[] values = {String.valueOf(playerStats.getNumOfScanned()), String.valueOf(playerStats.getSumOfScores()), String.valueOf(playerStats.getRankNumOfScanned()), String.valueOf(playerStats.getRankSumOfScores()), String.valueOf(playerStats.getRankHighQr()), String.valueOf(playerStats.getHighQr()), String.valueOf(playerStats.getLowQr())};
+        String[] values = {String.valueOf(playerStats.getNumOfScanned()), String.valueOf(playerStats.getSumOfScores()), String.valueOf(playerStats.getRankNumOfScanned()), String.valueOf(playerStats.getRankSumOfScores()), String.valueOf(playerStats.getRankHighQr()), String.valueOf(playerStats.getHighQr().getScore()), String.valueOf(playerStats.getLowQr().getScore())};
 
         profileDataList = new ArrayList<>();
         for (int i = 0; i < items.length; i++) {

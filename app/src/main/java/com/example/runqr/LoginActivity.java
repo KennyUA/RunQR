@@ -194,7 +194,7 @@ public class LoginActivity extends AppCompatActivity {
                         //                       Integer rankNumScanned, Integer rankSumScores) {
 
 
-                        PlayerStats newStats = new PlayerStats(usernameData, 0,0,0,0,0,0,0);
+                        PlayerStats newStats = new PlayerStats(usernameData, null,null,0,0,0,0,0);
                         //PlayerStats newStats = new PlayerStats(usernameData);
 
                         Account newAccount = new Account(usernameData, emailData);
