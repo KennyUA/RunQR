@@ -400,14 +400,23 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
         playerStats.setNumOfScanned(currentCodes+ 1);
         int currentScore = playerStats.getSumOfScores();
         playerStats.setSumOfScores(currentScore + qrCodeData.getScore());
-        if (playerStats.getLowQr() == 0) {
-            playerStats.setLowQr(qrCodeData.getScore());
+        if (playerStats.getLowQr() == null) {
+            playerStats.setLowQr(qrCodeData);
         }
-        if (qrCodeData.getScore() < playerStats.getLowQr()){
-            playerStats.setLowQr(qrCodeData.getScore());
+        else {
+            if (qrCodeData.getScore() < playerStats.getLowQr().getScore()) {
+                playerStats.setLowQr(qrCodeData);
+            }
+
         }
-        if (qrCodeData.getScore() > playerStats.getHighQr()){
-            playerStats.setHighQr(qrCodeData.getScore());
+
+        if (playerStats.getHighQr() == null) {
+            playerStats.setHighQr(qrCodeData);
+        }
+        else {
+            if (qrCodeData.getScore() > playerStats.getHighQr().getScore()){
+                playerStats.setHighQr(qrCodeData);
+            }
         }
 
 
@@ -503,7 +512,17 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
                 break;
                 //return true;
 
-            // TO OPEN LEADERBOARD ACTIVITY add code below
+
+            case R.id.leaderboard_item:
+                //Open new activity to show leaderboards
+                Intent intent2 = new Intent(this, LeaderboardActivity.class);
+                intent2.putExtra("Player", (Serializable) currentPlayer);
+                startActivity(intent2);
+                break;
+            //return true;
+
+
+
 
 
 

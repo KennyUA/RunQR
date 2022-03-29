@@ -26,7 +26,7 @@ public class Player implements Serializable {
     public Player(){
 
         this.playerAccount = new Account();
-        this.playerStats = new PlayerStats("a",0,0,0,0,0,0,0);
+        this.playerStats = new PlayerStats("a",null,null,0,0,0,0,0);
         this.playerQRLibrary = new QRLibrary();
     }
 
