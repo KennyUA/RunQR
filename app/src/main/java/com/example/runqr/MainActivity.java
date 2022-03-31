@@ -70,7 +70,8 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
     ArrayList<Marker> markerArrayList;
     ArrayList<MarkerOptions> markerOptionsArrayList;
     GoogleMap currentMap;
-    
+    //cite https://stackoverflow.com/questions/48699032/how-to-set-addsnapshotlistener-and-remove-in-populateviewholder-in-recyclerview
+    EventListener<QuerySnapshot> eventListener;
     ListenerRegistration listenerReg;
 
 
@@ -551,8 +552,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
             this.currentMap.addMarker(new MarkerOptions()
                     .position(new LatLng(53.5232, -113.5263))
                     .title("UofA"));
-            //https://stackoverflow.com/questions/57096105/google-map-not-centered-in-desired-location
-            //User: https://stackoverflow.com/users/11797134/alex
+            //cite https://stackoverflow.com/questions/57096105/google-map-not-centered-in-desired-location
             CameraPosition cameraPosition = new CameraPosition.Builder()
                     .target(new LatLng(53.631611, -113.323975)).zoom(9).build();
             this.currentMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
