@@ -74,7 +74,6 @@ public class QRLibraryActivity extends AppCompatActivity {
                 if (delete_code) {
                     //QRCode QRCodeToDelete = QRDataList.getQRCode(position);
                         if (QRCodeToDelete.getScore() == currentPlayer.getPlayerStats().getHighQr().getScore()) {
-                            currentPlayer.getPlayerStats().setRankNumOfScanned(10);
                             //find next highest
                             int currentHighestScore = 0;
                             int i;
@@ -112,10 +111,6 @@ public class QRLibraryActivity extends AppCompatActivity {
 
                         }
 
-
-
-                    //for testing
-                    currentPlayer.getPlayerStats().setRankHighQr(3);
                     /*change general playerstats*/
                     int currentNumberScanned = currentPlayer.getPlayerStats().getNumOfScanned();
                     currentPlayer.getPlayerStats().setNumOfScanned(currentNumberScanned-1);
