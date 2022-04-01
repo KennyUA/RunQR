@@ -13,7 +13,7 @@ import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
+import androidx.fragment.app.DialogFragment;
 
 import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
@@ -25,7 +25,7 @@ import com.google.zxing.Result;
 // This class uses CodeScanner object to scan QRCodes and borrows code from: https://github.com/yuriy-budiyev/code-scanner.
 
 
-public class AddQRFragment extends Fragment {
+public class AddQRFragment extends DialogFragment {
 
     private static final int RC_PERMISSION = 10;
     private CodeScanner mCodeScanner;
