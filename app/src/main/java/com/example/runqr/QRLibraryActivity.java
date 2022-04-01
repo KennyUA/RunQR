@@ -70,42 +70,68 @@ public class QRLibraryActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
 
+                QRCode QRCodeToDelete = QRDataList.get(position);
                 if (delete_code) {
                     //QRCode QRCodeToDelete = QRDataList.getQRCode(position);
-                    QRCode QRCodeToDelete = QRDataList.get(position);
-
-
-                    // BELOW NEED TO FINISH IMPLEMENTING UPDATING OF SCORES SHOWN IN PROFILE ACTIVITY //
-                    // SO FAR: total number of scanned codes is updated properly upon deletion but not actual scores
-
-                    /*updating playerstats*/
-                    /*get highest and lowest*/
-
-
-                        int numberScanned = currentPlayer.getPlayerStats().getNumOfScanned();
-                        currentPlayer.getPlayerStats().setNumOfScanned(numberScanned-1);
-
-                        if (QRCodeToDelete.getScore() == currentPlayer.getPlayerStats().getHighQr()) {
+                        if (QRCodeToDelete.getScore() == currentPlayer.getPlayerStats().getHighQr().getScore()) {
                             //find next highest
-                            //needs updating
+                            int currentHighestScore = 0;
+                            int i;
+                            QRCode currentHighestQR = null;
+                            for (i = 0; i < playerQRLibrary.getQRCodeList().size();i++){
+                                    QRCode currentQR = playerQRLibrary.getQRCodeList().get(i);
+                                    if (QRCodeToDelete != currentQR) {
+                                        if (currentQR.getScore() > currentHighestScore) {
+                                            currentHighestQR = currentQR;
+                                            currentHighestScore = currentHighestQR.getScore();
+
+                                        }
+                                    }
+                            }
+
+                            currentPlayer.getPlayerStats().setHighQr(currentHighestQR);
+
                         }
-                        else if (QRCodeToDelete.getScore() == currentPlayer.getPlayerStats().getLowQr()) {
+                        else if (QRCodeToDelete.getScore() == currentPlayer.getPlayerStats().getLowQr().getScore()) {
                             //find next lowest
-                            //needs updating
+                            int currentLowestScore = 99999;
+                            int i;
+                            QRCode currentLowestQR = null;
+                            for (i = 0; i < playerQRLibrary.getQRCodeList().size();i++){
+                                QRCode currentQR = playerQRLibrary.getQRCodeList().get(i);
+                                if (QRCodeToDelete != currentQR) {
+                                    if (currentQR.getScore() < currentLowestScore) {
+                                        currentLowestQR = currentQR;
+                                        currentLowestScore = currentLowestQR.getScore();
+
+                                    }
+                                }
+                            }
+                            currentPlayer.getPlayerStats().setLowQr(currentLowestQR);
+
                         }
+
+                    /*change general playerstats*/
+                    int currentNumberScanned = currentPlayer.getPlayerStats().getNumOfScanned();
+                    currentPlayer.getPlayerStats().setNumOfScanned(currentNumberScanned-1);
+                    int currentSum = currentPlayer.getPlayerStats().getSumOfScores();
+                    currentPlayer.getPlayerStats().setSumOfScores(currentSum - QRCodeToDelete.getScore());
+
 
                     //QRDataList.deleteQRCode(QRCodeToDelete);
                     playerQRLibrary.deleteQRCode(QRCodeToDelete);
+                    QRDataList.remove(QRCodeToDelete);
                     //QRList.setAdapter(QRAdapter);
                     QRAdapter.notifyDataSetChanged();
+
+
                     delete_code = false;
                 }
 
                 else {
                     // Open DisplayQRCode activity to display details of clicked QRCode object, pass QRCode object to DisplayQRCodeActivity through intent
-                    QRCode codeToShow = QRDataList.get(position);
                     Intent intent = new Intent(QRLibraryActivity.this, DisplayQRCodeActivity.class);
-                    intent.putExtra("QRCode to display", (Serializable) codeToShow);
+                    intent.putExtra("QRCode to display", (Serializable) QRCodeToDelete);
                     startActivity(intent);
 
 

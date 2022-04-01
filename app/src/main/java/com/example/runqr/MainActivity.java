@@ -70,7 +70,8 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
     ArrayList<Marker> markerArrayList;
     ArrayList<MarkerOptions> markerOptionsArrayList;
     GoogleMap currentMap;
-    
+    //cite https://stackoverflow.com/questions/48699032/how-to-set-addsnapshotlistener-and-remove-in-populateviewholder-in-recyclerview
+    EventListener<QuerySnapshot> eventListener;
     ListenerRegistration listenerReg;
 
 
@@ -400,14 +401,23 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
         playerStats.setNumOfScanned(currentCodes+ 1);
         int currentScore = playerStats.getSumOfScores();
         playerStats.setSumOfScores(currentScore + qrCodeData.getScore());
-        if (playerStats.getLowQr() == 0) {
-            playerStats.setLowQr(qrCodeData.getScore());
+        if (playerStats.getLowQr() == null) {
+            playerStats.setLowQr(qrCodeData);
         }
-        if (qrCodeData.getScore() < playerStats.getLowQr()){
-            playerStats.setLowQr(qrCodeData.getScore());
+        else {
+            if (qrCodeData.getScore() < playerStats.getLowQr().getScore()) {
+                playerStats.setLowQr(qrCodeData);
+            }
+
         }
-        if (qrCodeData.getScore() > playerStats.getHighQr()){
-            playerStats.setHighQr(qrCodeData.getScore());
+
+        if (playerStats.getHighQr() == null) {
+            playerStats.setHighQr(qrCodeData);
+        }
+        else {
+            if (qrCodeData.getScore() > playerStats.getHighQr().getScore()){
+                playerStats.setHighQr(qrCodeData);
+            }
         }
 
 
@@ -503,7 +513,17 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
                 break;
                 //return true;
 
-            // TO OPEN LEADERBOARD ACTIVITY add code below
+
+            case R.id.leaderboard_item:
+                //Open new activity to show leaderboards
+                Intent intent2 = new Intent(this, LeaderboardActivity.class);
+                intent2.putExtra("Player", (Serializable) currentPlayer);
+                startActivity(intent2);
+                break;
+            //return true;
+
+
+
 
 
 
@@ -532,8 +552,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
             this.currentMap.addMarker(new MarkerOptions()
                     .position(new LatLng(53.5232, -113.5263))
                     .title("UofA"));
-            //https://stackoverflow.com/questions/57096105/google-map-not-centered-in-desired-location
-            //User: https://stackoverflow.com/users/11797134/alex
+            //cite https://stackoverflow.com/questions/57096105/google-map-not-centered-in-desired-location
             CameraPosition cameraPosition = new CameraPosition.Builder()
                     .target(new LatLng(53.631611, -113.323975)).zoom(9).build();
             this.currentMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));

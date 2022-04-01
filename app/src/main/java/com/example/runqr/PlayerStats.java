@@ -30,8 +30,10 @@ public class PlayerStats implements Serializable {
     public String username;
 
     /*stats*/
-    private int highQr;
-    private int lowQr;
+    //private int highQr;
+    //private int lowQr;
+    private QRCode highQr;
+    private QRCode lowQr;
     private int sumOfScores;
     private int numOfScanned;
 
@@ -46,9 +48,9 @@ public class PlayerStats implements Serializable {
      * @param username
      *      given to identify which player this is for
      * @param highQr
-     *      initialized to 0
+     *      initialized to null
      * @param lowQr
-     *      initialized to 0
+     *      initialized to null
      * @param sumScores
      *      initialized to 0
      * @param numScanned
@@ -61,7 +63,7 @@ public class PlayerStats implements Serializable {
      *      initialized to 0
      *
      */
-    public PlayerStats(String username, int highQr, int lowQr, int sumScores, int numScanned, int rankHighQr, int rankNumScanned, int rankSumScores) {
+    public PlayerStats(String username, QRCode highQr, QRCode lowQr, int sumScores, int numScanned, int rankHighQr, int rankNumScanned, int rankSumScores) {
         highQr = highQr;
         lowQr = lowQr;
         sumOfScores = sumScores;
@@ -131,22 +133,29 @@ public class PlayerStats implements Serializable {
     }
 
 
-    public int getHighQr() {
+    public QRCode getHighQr() {
         return highQr;
     }
 
-    public void setHighQr(int highQr) {
+    public void setHighQr(QRCode highQr) {
         this.highQr = highQr;
-        updatePlayerStats("playerInfo.playerStats.highQr", String.valueOf(highQr));
+        updatePlayerStats("playerInfo.playerStats.highQr.hash", String.valueOf(highQr.getHash()));
+        updatePlayerStats("playerInfo.playerStats.highQr.location", String.valueOf(highQr.getLocation()));
+        updatePlayerStats("playerInfo.playerStats.highQr.photo", String.valueOf(highQr.getPhoto()));
+        updatePlayerStats("playerInfo.playerStats.highQr.score", String.valueOf(highQr.getScore()));
+
     }
 
-    public int getLowQr() {
+    public QRCode getLowQr() {
         return lowQr;
     }
 
-    public void setLowQr(int lowQr) {
+    public void setLowQr(QRCode lowQr) {
         this.lowQr = lowQr;
-        updatePlayerStats("playerInfo.playerStats.lowQr", String.valueOf(lowQr));
+        updatePlayerStats("playerInfo.playerStats.lowQr.hash", String.valueOf(lowQr.getHash()));
+        updatePlayerStats("playerInfo.playerStats.lowQr.location", String.valueOf(lowQr.getLocation()));
+        updatePlayerStats("playerInfo.playerStats.lowQr.photo", String.valueOf(lowQr.getPhoto()));
+        updatePlayerStats("playerInfo.playerStats.lowQr.score", String.valueOf(lowQr.getScore()));
     }
 
     public int getSumOfScores() {
@@ -194,3 +203,8 @@ public class PlayerStats implements Serializable {
         updatePlayerStats("playerInfo.playerStats.rankSumOfScores", String.valueOf(rankSumOfScores));
     }
 }
+
+
+
+
+
