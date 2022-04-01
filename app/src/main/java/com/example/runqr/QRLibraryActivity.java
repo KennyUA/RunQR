@@ -70,9 +70,10 @@ public class QRLibraryActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
 
-                QRCode QRCodeToDelete = QRDataList.get(position);
+
                 if (delete_code) {
                     //QRCode QRCodeToDelete = QRDataList.getQRCode(position);
+                    QRCode QRCodeToDelete = QRDataList.get(position);
                         if (QRCodeToDelete.getScore() == currentPlayer.getPlayerStats().getHighQr().getScore()) {
                             //find next highest
                             int currentHighestScore = 0;
@@ -130,8 +131,9 @@ public class QRLibraryActivity extends AppCompatActivity {
 
                 else {
                     // Open DisplayQRCode activity to display details of clicked QRCode object, pass QRCode object to DisplayQRCodeActivity through intent
+                    QRCode codeToShow = QRDataList.get(position);
                     Intent intent = new Intent(QRLibraryActivity.this, DisplayQRCodeActivity.class);
-                    intent.putExtra("QRCode to display", (Serializable) QRCodeToDelete);
+                    intent.putExtra("QRCode to display", (Serializable) codeToShow);
                     startActivity(intent);
 
 

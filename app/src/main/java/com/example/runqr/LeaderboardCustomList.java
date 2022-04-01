@@ -34,7 +34,6 @@ public class LeaderboardCustomList extends ArrayAdapter<LeaderboardItem> {
 
         LeaderboardItem leaderboardItem = leaderboard_items.get(position);
 
-        /*uncomment following four lines when resource file made*/
         TextView playerName = view.findViewById(R.id.player_text);
         TextView playerScore = view.findViewById(R.id.score_text);
         playerName.setText(leaderboardItem.getPlayer());

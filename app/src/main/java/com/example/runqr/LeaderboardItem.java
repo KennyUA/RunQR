@@ -22,6 +22,8 @@ public class LeaderboardItem {
     }
 
     public void setScore(String score) {
+
         this.score = score;
     }
+
 }
