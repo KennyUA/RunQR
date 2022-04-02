@@ -62,7 +62,7 @@ public class QRList extends ArrayAdapter<QRCode> implements Serializable {
         TextView QRCodeHash = view.findViewById(R.id.qrcode_hash_text);
 
         QRCodeScore.setText("Score: "+ QRcode.getScore());
-        QRCodeHash.setText(QRcode.getHash());
+        QRCodeHash.setText("Hash: " + QRcode.getHash());
 
         return view;
 

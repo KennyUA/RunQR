@@ -25,6 +25,9 @@ public class QRLibraryActivity extends AppCompatActivity {
     //QRLibrary QRDataList;
     ArrayList<QRCode> QRDataList;
     Boolean delete_code = false;
+    QRCode QRCodeToShow;
+    QRCode QRCodeToDelete;
+    Integer clickedPos;
 
 
 
@@ -73,6 +76,7 @@ public class QRLibraryActivity extends AppCompatActivity {
 
 
                 if (delete_code) {
+                  
                     //QRCode QRCodeToDelete = QRDataList.getQRCode(position);
                     QRCode QRCodeToDelete = QRDataList.get(position);
                     if (currentPlayer.getPlayerStats().getNumOfScanned() <= 1) {
@@ -80,6 +84,7 @@ public class QRLibraryActivity extends AppCompatActivity {
                         currentPlayer.getPlayerStats().setLowQr(null);
                         Log.d("if statement", "reached size 1");
                     } else {
+
                         if (QRCodeToDelete.getScore() == currentPlayer.getPlayerStats().getHighQr().getScore()) {
                             //find next highest
                             int currentHighestScore = 0;
@@ -127,7 +132,7 @@ public class QRLibraryActivity extends AppCompatActivity {
 
                     //QRDataList.deleteQRCode(QRCodeToDelete);
                     playerQRLibrary.deleteQRCode(QRCodeToDelete);
-                    QRDataList.remove(QRCodeToDelete);
+                    //QRDataList.remove(QRCodeToDelete);
                     //QRList.setAdapter(QRAdapter);
                     QRAdapter.notifyDataSetChanged();
 
@@ -137,10 +142,12 @@ public class QRLibraryActivity extends AppCompatActivity {
 
                 else {
                     // Open DisplayQRCode activity to display details of clicked QRCode object, pass QRCode object to DisplayQRCodeActivity through intent
-                    QRCode codeToShow = QRDataList.get(position);
+
+                    QRCodeToShow = QRDataList.get(position);
                     Intent intent = new Intent(QRLibraryActivity.this, DisplayQRCodeActivity.class);
-                    intent.putExtra("QRCode to display", (Serializable) codeToShow);
-                    startActivity(intent);
+                    intent.putExtra("QRCode to display", (Serializable) QRCodeToShow);
+                    intent.putExtra("Position of QRCodeClicked", position);
+                    startActivityForResult(intent, 2);
 
 
                     /*
@@ -182,6 +189,21 @@ public class QRLibraryActivity extends AppCompatActivity {
 
     }
 
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 2) {
+            if(resultCode == RESULT_OK) {
+                //QRLibrary updatedQRLibrary = (QRLibrary) data.getSerializableExtra("Player QRLibrary");
+                //Player updatedCurrentPlayer = (Player) data.getSerializableExtra("Player QRLibrary Updated");
+                QRCode updatedQRCode = (QRCode) data.getSerializableExtra("QRCode updated with comments");
+                clickedPos = (Integer) data.getSerializableExtra("Clicked Pos");
+                //currentPlayer.setPlayerQRLibrary(updatedQRLibrary);
+                //currentPlayer = updatedCurrentPlayer;
+                QRDataList.set(clickedPos, updatedQRCode);
+                QRAdapter.notifyDataSetChanged();
+            }
+        }
+    }
 
 
 
