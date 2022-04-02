@@ -2,6 +2,7 @@ package com.example.runqr;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -74,31 +75,35 @@ public class QRLibraryActivity extends AppCompatActivity {
                 if (delete_code) {
                     //QRCode QRCodeToDelete = QRDataList.getQRCode(position);
                     QRCode QRCodeToDelete = QRDataList.get(position);
+                    if (currentPlayer.getPlayerStats().getNumOfScanned() <= 1) {
+                        currentPlayer.getPlayerStats().setHighQr(null);
+                        currentPlayer.getPlayerStats().setLowQr(null);
+                        Log.d("if statement", "reached size 1");
+                    } else {
                         if (QRCodeToDelete.getScore() == currentPlayer.getPlayerStats().getHighQr().getScore()) {
                             //find next highest
                             int currentHighestScore = 0;
                             int i;
                             QRCode currentHighestQR = null;
-                            for (i = 0; i < playerQRLibrary.getQRCodeList().size();i++){
-                                    QRCode currentQR = playerQRLibrary.getQRCodeList().get(i);
-                                    if (QRCodeToDelete != currentQR) {
-                                        if (currentQR.getScore() > currentHighestScore) {
-                                            currentHighestQR = currentQR;
-                                            currentHighestScore = currentHighestQR.getScore();
+                            for (i = 0; i < playerQRLibrary.getQRCodeList().size(); i++) {
+                                QRCode currentQR = playerQRLibrary.getQRCodeList().get(i);
+                                if (QRCodeToDelete != currentQR) {
+                                    if (currentQR.getScore() > currentHighestScore) {
+                                        currentHighestQR = currentQR;
+                                        currentHighestScore = currentHighestQR.getScore();
 
-                                        }
                                     }
+                                }
                             }
 
                             currentPlayer.getPlayerStats().setHighQr(currentHighestQR);
 
-                        }
-                        else if (QRCodeToDelete.getScore() == currentPlayer.getPlayerStats().getLowQr().getScore()) {
+                        } else if (QRCodeToDelete.getScore() == currentPlayer.getPlayerStats().getLowQr().getScore()) {
                             //find next lowest
                             int currentLowestScore = 99999;
                             int i;
                             QRCode currentLowestQR = null;
-                            for (i = 0; i < playerQRLibrary.getQRCodeList().size();i++){
+                            for (i = 0; i < playerQRLibrary.getQRCodeList().size(); i++) {
                                 QRCode currentQR = playerQRLibrary.getQRCodeList().get(i);
                                 if (QRCodeToDelete != currentQR) {
                                     if (currentQR.getScore() < currentLowestScore) {
@@ -111,7 +116,8 @@ public class QRLibraryActivity extends AppCompatActivity {
                             currentPlayer.getPlayerStats().setLowQr(currentLowestQR);
 
                         }
-
+                        Log.d("else statement", "reached larger size "+ currentPlayer.getPlayerStats().getNumOfScanned());
+                    }
                     /*change general playerstats*/
                     int currentNumberScanned = currentPlayer.getPlayerStats().getNumOfScanned();
                     currentPlayer.getPlayerStats().setNumOfScanned(currentNumberScanned-1);
