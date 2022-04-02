@@ -24,7 +24,8 @@ public class QRLibraryActivity extends AppCompatActivity {
     ArrayAdapter<QRCode> QRAdapter;
     //QRLibrary QRDataList;
     ArrayList<QRCode> QRDataList;
-    Boolean delete_code = false;
+    Boolean deleteCode = false;
+    Boolean allowDeletion;
     QRCode QRCodeToShow;
     QRCode QRCodeToDelete;
     Integer clickedPos;
@@ -43,6 +44,7 @@ public class QRLibraryActivity extends AppCompatActivity {
          */
 
         Player currentPlayer = (Player) getIntent().getSerializableExtra("Player QRLibraryActivity");
+        allowDeletion = (Boolean) getIntent().getSerializableExtra("Allow Deletion?");
         QRList = findViewById(R.id.qrlibrary_list);
 
         //QRDataList = new ArrayList<QRCode>(); //convert string list to arraylist
@@ -61,10 +63,16 @@ public class QRLibraryActivity extends AppCompatActivity {
         QRList.setAdapter(QRAdapter);
 
         FloatingActionButton deleteButton = (FloatingActionButton) findViewById(R.id.delete_qr_button);
+
+        if (!allowDeletion){
+            deleteButton.setVisibility(View.GONE);
+        }
+
+
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                delete_code = true;
+                deleteCode = true;
 
             }});
 
@@ -75,10 +83,9 @@ public class QRLibraryActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
 
 
-                if (delete_code) {
-                  
-                    //QRCode QRCodeToDelete = QRDataList.getQRCode(position);
-                    QRCode QRCodeToDelete = QRDataList.get(position);
+                if (deleteCode) {
+
+                    QRCodeToDelete = QRDataList.get(position);
                     if (currentPlayer.getPlayerStats().getNumOfScanned() <= 1) {
                         currentPlayer.getPlayerStats().setHighQr(null);
                         currentPlayer.getPlayerStats().setLowQr(null);
@@ -137,7 +144,7 @@ public class QRLibraryActivity extends AppCompatActivity {
                     QRAdapter.notifyDataSetChanged();
 
 
-                    delete_code = false;
+                    deleteCode = false;
                 }
 
                 else {

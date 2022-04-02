@@ -1,5 +1,6 @@
 package com.example.runqr;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -7,6 +8,8 @@ import android.widget.Button;
 import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 
 import java.util.ArrayList;
 
@@ -19,6 +22,7 @@ import java.util.ArrayList;
 public class ProfileActivity extends AppCompatActivity {
 
     ListView profileList;
+    ExtendedFloatingActionButton viewQRCodesButton;
     ArrayAdapter<ProfileItem> profileAdapter;
     ArrayList<ProfileItem> profileDataList;
     String[] items;
@@ -38,6 +42,7 @@ public class ProfileActivity extends AppCompatActivity {
 
 
         profileList = findViewById(R.id.profile_list);
+        viewQRCodesButton = findViewById(R.id.view_qrcodes_button);
 
         String highQrString = "N/A";
         String lowQrString = "N/A";
@@ -62,6 +67,16 @@ public class ProfileActivity extends AppCompatActivity {
         profileList.setAdapter(profileAdapter);
 
 
+        viewQRCodesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //open the player's qr library
+                Intent intent = new Intent(ProfileActivity.this, QRLibraryActivity.class);
+                intent.putExtra("Player QRLibraryActivity", player);
+                intent.putExtra("Allow Deletion?", false);
+                startActivityForResult(intent, 3);
+            }
+        });
 
         Button backButton = (Button) findViewById(R.id.back_button);
         backButton.setOnClickListener(new View.OnClickListener(){
