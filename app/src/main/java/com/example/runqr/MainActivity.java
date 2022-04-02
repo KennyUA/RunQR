@@ -630,4 +630,3 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
         }
     }
     }
-
