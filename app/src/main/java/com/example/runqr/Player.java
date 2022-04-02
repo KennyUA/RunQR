@@ -1,6 +1,9 @@
 package com.example.runqr;
 
+import android.util.Log;
+
 import java.io.Serializable;
+import java.util.HashMap;
 
 /**
  * This class represents a Player object in the RunQR game.
@@ -13,10 +16,6 @@ public class Player implements Serializable {
     private Account playerAccount;
     private PlayerStats playerStats;
     private QRLibrary playerQRLibrary;
-<<<<<<< HEAD
-=======
-    //private ArrayList<QRCode> playerQRLibrary;
->>>>>>> ceedd5f6b56cb4f3360a61c496759026fb77a3a7
 
     public Player(Account playerAccount, PlayerStats playerStats, QRLibrary playerQRLibrary) {
         this.playerAccount = playerAccount;
@@ -27,9 +26,6 @@ public class Player implements Serializable {
 
     public Player(){
 
-        this.playerAccount = new Account();
-        this.playerStats = new PlayerStats();
-        this.playerQRLibrary = new QRLibrary();
     }
 
     public Player(Account playerAccount) {
@@ -42,6 +38,8 @@ public class Player implements Serializable {
         this.playerAccount = playerAccount;
         this.playerQRLibrary = playerQRLibrary;
     }
+
+
 
     /**
      * This method adds a QRCode scanned by the player to their QRLibrary by calling QRLibrary's addQRCode() method.
@@ -101,7 +99,16 @@ public class Player implements Serializable {
         this.playerQRLibrary = updatedQRLibrary;
     }
 
+    public void setPlayerAccount(Account playerAccount) {
+        this.playerAccount = playerAccount;
+    }
 
+    public void setPlayerStats(PlayerStats playerStats) {
+        this.playerStats = playerStats;
+    }
 
-
+    //public Player(HashMap map) {
+        //this.playerAccount = map.get("playerAccount");
+        //this.color = map.get("color");
+    //}
 }

@@ -10,6 +10,13 @@ import java.io.Serializable;
  *
  */
 public class Account  implements Serializable {
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setContactEmail(String contactEmail) {
+        this.contactEmail = contactEmail;
+    }
 
     private String username;
     private String contactEmail;
@@ -23,12 +30,6 @@ public class Account  implements Serializable {
         this.contactEmail = contactEmail;
     }
 
-<<<<<<< HEAD
-=======
-    //public ArrayList<>
-
-
->>>>>>> ceedd5f6b56cb4f3360a61c496759026fb77a3a7
 
     /**
      * This method gets the username associated with a given player's account.
@@ -44,8 +45,6 @@ public class Account  implements Serializable {
      * @return
      *      String representing the account's email.
      */
-
-
     public String getContactEmail() { return this.contactEmail; }
 
 
