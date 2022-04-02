@@ -1,5 +1,6 @@
 package com.example.runqr;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -34,6 +35,7 @@ public class DisplayQRCodeActivity extends AppCompatActivity implements AddComme
         setContentView(R.layout.activity_display_qrcode);
 
         QRCode codeToDisplay = (QRCode) getIntent().getSerializableExtra("QRCode to display");
+        clickPos = (Integer) getIntent().getSerializableExtra("Position of QRCodeClicked");
 
         ImageView QRCodePhoto = findViewById(R.id.photoInfo);
         TextView QRCodeStats = findViewById(R.id.statInfo);
@@ -97,15 +99,30 @@ public class DisplayQRCodeActivity extends AppCompatActivity implements AddComme
         });
 
          */
+
+        final FloatingActionButton backButton = (FloatingActionButton)  findViewById(R.id.back_button);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent();
+                //intent.putExtra("Player QRLibrary", playerQRLibrary);
+                intent.putExtra("QRCode updated with comments", codeToDisplay);
+                intent.putExtra("Clicked Pos", clickPos);
+                setResult(RESULT_OK, intent);
+
+                finish();
+            }
+        });
     }
 
     @Override
     public void onOkPressed(Comment newComment) {
         if (edit) {
-            //cDataList.remove(clickPos);
+            //DataList.remove(clickPos);
             //cityList.setAdapter(cityAdapter);
-            commentDataList.remove(clickedComment);
-            commentDataList.add(newComment);
+            //commentDataList.remove(clickedComment);
+            //commentDataList.add(newComment);
+            clickedComment.setBody(newComment.getBody());
             commentAdapter.notifyDataSetChanged();
             //cityList.setAdapter(cityAdapter);
         }
@@ -117,6 +134,10 @@ public class DisplayQRCodeActivity extends AppCompatActivity implements AddComme
         QRCodeComments.scrollToPosition(commentDataList.size()-1);
         edit = false;
 
+
+
     }
+
+
 
 }
