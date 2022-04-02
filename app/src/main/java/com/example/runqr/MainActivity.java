@@ -1,5 +1,8 @@
 package com.example.runqr;
 
+import android.app.SearchManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -8,6 +11,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -63,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
     // Create HashMaps to store QRCode and account data in Firestore.
     static HashMap<String, String> qrData = new HashMap<>();
     static HashMap<String, String> accountData = new HashMap<>();
+    SearchView searchView;
 
     SupportMapFragment mapFragment;
     FloatingActionButton loadBtn;
@@ -70,9 +77,12 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
     ArrayList<Marker> markerArrayList;
     ArrayList<MarkerOptions> markerOptionsArrayList;
     GoogleMap currentMap;
+    String searchQuery;
+    EventListener<QuerySnapshot> AccountsQuery;
     //cite https://stackoverflow.com/questions/48699032/how-to-set-addsnapshotlistener-and-remove-in-populateviewholder-in-recyclerview
     EventListener<QuerySnapshot> eventListener;
     ListenerRegistration listenerReg;
+
 
 
 
@@ -89,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 
         // Creating collection for global QRCodes
         QRCodesReference = db.collection("QR Codes");
+
         //HashMap<String, String> qrData = new HashMap<>();
 
         /*
@@ -265,7 +276,12 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
         */
 
 
+
+
+
     }
+
+
 
     @Override
     public void onStart(){
@@ -281,7 +297,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
     @Override
     public void onPause(){
         savePlayer();
-        savePlayerToDatabase();
+        //TEMP COMMENT. REMOVE THIS QUICK savePlayerToDatabase();
         super.onPause();
 
     }
@@ -470,6 +486,13 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.main_menu, menu);
+        //cite https://developer.android.com/training/search/setup
+        SearchManager searchManager =
+                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView =
+                (SearchView) menu.findItem(R.id.search_bar).getActionView();
+        searchView.setSearchableInfo(
+                searchManager.getSearchableInfo(new ComponentName(this, UsernameListActivity.class)));
         return true;
 
     }
@@ -522,6 +545,31 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
                 break;
             //return true;
 
+            //case R.id.search_bar:
+                // cite https://www.youtube.com/watch?time_continue=216&v=8q-4AJFlraI&feature=emb_title
+               /* MenuItem searchIcon = item;
+                SearchView searchView = (SearchView) searchIcon.getActionView();
+                searchView.setQueryHint("Search Username");
+
+                searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                    @Override
+                    public boolean onQueryTextSubmit(String s) {
+                        Intent intent3 = new Intent(getApplicationContext(), UsernameListActivity.class);
+                        intent3.putExtra("Query", searchQuery);
+                        startActivity(intent3);
+
+
+                        return true;
+
+                    }
+
+                    @Override
+                    public boolean onQueryTextChange(String s) {
+                        searchQuery = s;
+                        return true;
+                    }
+                });
+                break;*/
 
 
 
@@ -531,6 +579,11 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
         return super.onOptionsItemSelected(item);
     }
 
+    public void onBackPressed(){
+
+
+        super.onBackPressed();
+    }
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
