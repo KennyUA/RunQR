@@ -1,6 +1,6 @@
 package com.example.runqr;
 
-public class LeaderboardItem {
+public class LeaderboardItem implements Comparable<LeaderboardItem>{
     private String player;
     private String score;
 
@@ -21,9 +21,12 @@ public class LeaderboardItem {
         return score;
     }
 
-    public void setScore(String score) {
+    public int getScoreInt() { return Integer.parseInt(score); }
 
-        this.score = score;
+    public void setScore(String score) { this.score = score; }
+
+    @Override
+    public int compareTo(LeaderboardItem otherLeaderboardItem) {
+        return -(Integer.compare(getScoreInt(), otherLeaderboardItem.getScoreInt()));
     }
-
 }

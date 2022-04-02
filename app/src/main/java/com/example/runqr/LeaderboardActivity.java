@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
+import com.example.runqr.placeholder.LeaderboardItemComparator;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -19,6 +20,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class LeaderboardActivity extends AppCompatActivity {
 
@@ -113,6 +115,9 @@ public class LeaderboardActivity extends AppCompatActivity {
                     scoreDataList.add((new LeaderboardItem(players.get(i), scores.get(i))));
                     scoreAdapter.notifyDataSetChanged();
                 }
+                LeaderboardItemComparator leaderboardItemComparator = new LeaderboardItemComparator();
+                Collections.sort(scoreDataList, leaderboardItemComparator);
+                scoreAdapter.notifyDataSetChanged();
             }
         });
     }
