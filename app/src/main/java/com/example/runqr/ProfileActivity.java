@@ -1,21 +1,20 @@
 package com.example.runqr;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
-import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.FirebaseFirestore;
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+
+/**
+ * This class represents a ProfileActivity object in the RunQR game.
+ * This class displays all Player Stats such as high score QR, number of scanned codes, etc
+ *
+ */
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -24,6 +23,7 @@ public class ProfileActivity extends AppCompatActivity {
     ArrayList<ProfileItem> profileDataList;
     String[] items;
     String[] values;
+
 
 
     @Override
@@ -35,10 +35,12 @@ public class ProfileActivity extends AppCompatActivity {
         Player player = (Player) getIntent().getSerializableExtra("Player");
         PlayerStats playerStats = player.getPlayerStats();
 
+
+
         profileList = findViewById(R.id.profile_list);
 
         String[] items = {"Scanned QR Codes: ", "Total Score: ", "Rank (number of codes): ", "Rank (player): ", "Rank (highest scoring code): ", "Highest Scoring: ", "Lowest Scoring: "};
-        String[] values = {String.valueOf(playerStats.getNum_of_scanned()), String.valueOf(playerStats.getSum_of_scores()), String.valueOf(playerStats.getRank_num_of_scanned()), String.valueOf(playerStats.getRank_sum_of_scores()), String.valueOf(playerStats.getRank_high_qr()), String.valueOf(playerStats.getHigh_qr()), String.valueOf(playerStats.getLow_qr())};
+        String[] values = {String.valueOf(playerStats.getNumOfScanned()), String.valueOf(playerStats.getSumOfScores()), String.valueOf(playerStats.getRankNumOfScanned()), String.valueOf(playerStats.getRankSumOfScores()), String.valueOf(playerStats.getRankHighQr()), String.valueOf(playerStats.getHighQr().getScore()), String.valueOf(playerStats.getLowQr().getScore())};
 
         profileDataList = new ArrayList<>();
         for (int i = 0; i < items.length; i++) {
@@ -48,6 +50,23 @@ public class ProfileActivity extends AppCompatActivity {
         profileAdapter = new ProfileCustomList(this, profileDataList);
         profileList.setAdapter(profileAdapter);
 
+
+
+        Button backButton = (Button) findViewById(R.id.back_button);
+        backButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                ProfileActivity.super.onBackPressed();
+                //finish();
+            }
+
+        });
+
+
+
+
     }
+
+
 
 }

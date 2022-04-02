@@ -32,12 +32,18 @@ public class QRLibraryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qrlibrary);
 
+        /*
         // Get intent that started this activity to retrieve player's QRLibrary object which contains QRCodes to display in this activity
         QRLibrary playerQRLibrary = (QRLibrary) getIntent().getSerializableExtra("Player QRLibrary");
+
+         */
+
+        Player currentPlayer = (Player) getIntent().getSerializableExtra("Player QRLibraryActivity");
         QRList = findViewById(R.id.qrlibrary_list);
 
         //QRDataList = new ArrayList<QRCode>(); //convert string list to arraylist
         //QRDataList = playerQRLibrary;
+        QRLibrary playerQRLibrary = currentPlayer.getPlayerQRLibrary();
         QRDataList = playerQRLibrary.getQRCodeList();
 
         /*
@@ -64,36 +70,73 @@ public class QRLibraryActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
 
+                QRCode QRCodeToDelete = QRDataList.get(position);
                 if (delete_code) {
                     //QRCode QRCodeToDelete = QRDataList.getQRCode(position);
-                    QRCode QRCodeToDelete = QRDataList.get(position);
-
-                    /*updating playerstats*/
-                    /*get highest and lowest*/
-                        /*
-
-                        int number_scanned = currentPlayer.playerStats.getNum_of_scanned();
-                        currentPlayer.playerStats.setNum_of_scanned(number_scanned-1);
-
-                        if QRCodeToDelete.score = currentPlayer.getHigh_qr {
+                        if (QRCodeToDelete.getScore() == currentPlayer.getPlayerStats().getHighQr().getScore()) {
+                            currentPlayer.getPlayerStats().setRankNumOfScanned(10);
                             //find next highest
-                              }
-                        if QRCodeToDelete.score = currentPlayer.getLow_qr {
+                            int currentHighestScore = 0;
+                            int i;
+                            QRCode currentHighestQR = null;
+                            for (i = 0; i < playerQRLibrary.getQRCodeList().size();i++){
+                                    QRCode currentQR = playerQRLibrary.getQRCodeList().get(i);
+                                    if (QRCodeToDelete != currentQR) {
+                                        if (currentQR.getScore() > currentHighestScore) {
+                                            currentHighestQR = currentQR;
+                                            currentHighestScore = currentHighestQR.getScore();
+
+                                        }
+                                    }
+                            }
+
+                            currentPlayer.getPlayerStats().setHighQr(currentHighestQR);
+
+                        }
+                        else if (QRCodeToDelete.getScore() == currentPlayer.getPlayerStats().getLowQr().getScore()) {
                             //find next lowest
-                              }
-                        */
+                            int currentLowestScore = 99999;
+                            int i;
+                            QRCode currentLowestQR = null;
+                            for (i = 0; i < playerQRLibrary.getQRCodeList().size();i++){
+                                QRCode currentQR = playerQRLibrary.getQRCodeList().get(i);
+                                if (QRCodeToDelete != currentQR) {
+                                    if (currentQR.getScore() < currentLowestScore) {
+                                        currentLowestQR = currentQR;
+                                        currentLowestScore = currentLowestQR.getScore();
+
+                                    }
+                                }
+                            }
+                            currentPlayer.getPlayerStats().setLowQr(currentLowestQR);
+
+                        }
+
+
+
+                    //for testing
+                    currentPlayer.getPlayerStats().setRankHighQr(3);
+                    /*change general playerstats*/
+                    int currentNumberScanned = currentPlayer.getPlayerStats().getNumOfScanned();
+                    currentPlayer.getPlayerStats().setNumOfScanned(currentNumberScanned-1);
+                    int currentSum = currentPlayer.getPlayerStats().getSumOfScores();
+                    currentPlayer.getPlayerStats().setSumOfScores(currentSum - QRCodeToDelete.getScore());
+
+
                     //QRDataList.deleteQRCode(QRCodeToDelete);
                     playerQRLibrary.deleteQRCode(QRCodeToDelete);
+                    QRDataList.remove(QRCodeToDelete);
                     //QRList.setAdapter(QRAdapter);
                     QRAdapter.notifyDataSetChanged();
+
+
                     delete_code = false;
                 }
 
                 else {
                     // Open DisplayQRCode activity to display details of clicked QRCode object, pass QRCode object to DisplayQRCodeActivity through intent
-                    QRCode codeToShow = QRDataList.get(position);
                     Intent intent = new Intent(QRLibraryActivity.this, DisplayQRCodeActivity.class);
-                    intent.putExtra("QRCode to display", (Serializable) codeToShow);
+                    intent.putExtra("QRCode to display", (Serializable) QRCodeToDelete);
                     startActivity(intent);
 
 
@@ -125,9 +168,11 @@ public class QRLibraryActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent();
-                intent.putExtra("Player QRLibrary", playerQRLibrary);
+                //intent.putExtra("Player QRLibrary", playerQRLibrary);
+                intent.putExtra("Player QRLibrary Updated", currentPlayer);
                 setResult(RESULT_OK, intent);
-                QRLibraryActivity.super.onBackPressed();
+                //QRLibraryActivity.super.onBackPressed();
+                finish();
             }
         });
 

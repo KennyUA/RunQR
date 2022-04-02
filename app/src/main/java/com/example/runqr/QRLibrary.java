@@ -16,9 +16,6 @@ public class QRLibrary implements Serializable {
     private int QRLibraryScore;
 
     public QRLibrary(){
-
-        this.QRCodeList = new ArrayList<QRCode>();
-        this.QRLibraryScore = 0;
     }
 
     public QRLibrary(ArrayList<QRCode> QRCodeList, int score){
@@ -67,13 +64,25 @@ public class QRLibrary implements Serializable {
         return this.QRLibraryScore;
     }
 
+
+    /**
+     * This method sets the ArrayList of QRCode objects contained in QRLibrary to QRCodeList.
+     * @param QRCodeList
+     *      ArrayList of QRCode objects to set QRCodeList to.
+     */
     public void setQRCodeList(ArrayList<QRCode> QRCodeList) {
         this.QRCodeList = QRCodeList;
     }
 
+    /**
+     * This method sets the score of the QRLibrary.
+     * @param QRLibraryScore
+     *      The int to set the QRLibraryScore to.
+     */
     public void setQRLibraryScore(int QRLibraryScore) {
         this.QRLibraryScore = QRLibraryScore;
     }
+
 
     /**
      * This method gets the QRCode at a given position in the QRLibrary's ArrayList.

@@ -20,6 +20,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.common.hash.Hashing;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -42,7 +43,10 @@ import java.util.regex.Pattern;
  * This activity sends the newest player information from database to the main activity if user has an existing account on the device.
  */
 
-public class LoginActivity extends AppCompatActivity {
+// COMMENT: Initializing with PlayerStats object is giving errors with opening app, need to make getter/setter for private attributes
+// For now: run without adding PlayerStats to currentPLayer
+
+public class LoginActivity extends AppCompatActivity implements LoginWithQRFragment.OnFragmentInteractionListener {
 
     String hashUsername;
     Boolean emailExists;
@@ -84,10 +88,6 @@ public class LoginActivity extends AppCompatActivity {
                                         DocumentSnapshot document = task.getResult();
                                         if (document.exists()) {
                                             currentPlayer = document.toObject(Player.class);
-                                            savePlayer();
-                                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                            startActivity(intent);
-                                            kill_activity();
                                         } else {
                                             Log.d(TAG, "No such document");
                                         }
@@ -105,7 +105,10 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 }
             });
-
+            savePlayer();
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(intent);
+            kill_activity();
         }
         else {
             usernameExists = Boolean.FALSE;
@@ -184,23 +187,29 @@ public class LoginActivity extends AppCompatActivity {
                     final String usernameData = username.getText().toString();
                     final String emailData = email.getText().toString();
                     Log.d(TAG, "Here!");
-                    HashMap<String, Player> data = new HashMap<>();
+                    HashMap<String, PlayerStats> data = new HashMap<>();
                     if (usernameExists && emailExists) {
                         //PlayerStats newStats = new PlayerStats(null, null, 0, 0, null, null, null);
                         //PlayerStats newStats = new PlayerStats(0, 0);
                         //    public PlayerStats(QRCode highQR, QRCode lowQR, Integer sumScores, Integer numScanned, Integer rankHighQR,
                         //                       Integer rankNumScanned, Integer rankSumScores) {
 
-                        //PlayerStats newStats = new PlayerStats();
+
+                        PlayerStats newStats = new PlayerStats(usernameData, null,null,0,0,0,0,0);
+
+                        //PlayerStats newStats = new PlayerStats(usernameData);
+
                         Account newAccount = new Account(usernameData, emailData);
                         QRLibrary newLibrary = new QRLibrary(new ArrayList<QRCode>(),0 );
-                        //currentPlayer = new Player(newAccount, newStats, newLibrary);
-                        currentPlayer = new Player(newAccount, newLibrary);
+                        currentPlayer = new Player(newAccount, newStats, newLibrary);
+                        //currentPlayer = new Player(newAccount, newLibrary);
                         //currentPlayer = new Player(newAccount);
-                        data.put("playerInfo", currentPlayer);
+                        data.put("playerStats", newStats);
+                        //data.put("playerAccount", newAccount);
+                        //data.put("playerQRLibrary", newLibrary);
                         collectionReference
                                 .document(usernameData)
-                                .set(data)
+                                .set(currentPlayer)
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
@@ -226,6 +235,7 @@ public class LoginActivity extends AppCompatActivity {
                                                         Log.d(TAG, "Data could not be added!" + e.toString());
                                                     }
                                                 });
+
                                         saveData();
                                         savePlayer();
                                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
@@ -248,7 +258,7 @@ public class LoginActivity extends AppCompatActivity {
             loginQR.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    openAddQRFragment(loginQR);
+                    openLoginWithQRFragment();
                 }
             });
         }
@@ -256,21 +266,27 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    public void openAddQRFragment(Button addQR){
+    public void openLoginWithQRFragment(){
         // open addQRFragment to scan QRcode and add it to player's account
-        addQR.setVisibility(View.GONE);
+        //addQR.setVisibility(View.GONE);
+
+        final FloatingActionButton searchLocationsMap = findViewById(R.id.searchLocationsBtn);
+
+
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        AddQRFragment addQRFragment = new AddQRFragment();
+        LoginWithQRFragment loginQRFragment = new LoginWithQRFragment();
         //fragmentTransaction.add(R.id.addQRFragment_container,addQRFragment);\
-        fragmentTransaction.add(R.id.addQRFragment_container, addQRFragment, "Add QR Code");
-        fragmentTransaction.commit();
+        fragmentManager.beginTransaction()
+                .replace(R.id.frameLayout, loginQRFragment).commit();
         //addQR.setVisibility(View.VISIBLE);
 
         //getSupportFragmentManager().beginTransaction().add(R.id.container, new AddQRFragment()).commit();
 
         //final View addQR = findViewById(R.id.fragment_container_view);
         //addQR.setVisibility(View.VISIBLE);
+
+
 
 
 
@@ -281,6 +297,49 @@ public class LoginActivity extends AppCompatActivity {
         //transaction.replace(R.id.container,);
         //transaction.addToBackStack(null);
         //transaction.commit();
+
+    }
+
+    public void onConfirmPressed(QRCode qrCodeData) {
+        //String test = qrCodeData.getHash();
+
+        currentPlayer.getPlayerQRLibrary().addQRCode(qrCodeData);
+
+        /*update PlayerStats*/
+        PlayerStats playerStats = currentPlayer.getPlayerStats();
+        int currentCodes = playerStats.getNumOfScanned();
+        playerStats.setNumOfScanned(currentCodes+ 1);
+        int currentScore = playerStats.getSumOfScores();
+        playerStats.setSumOfScores(currentScore + qrCodeData.getScore());
+        if (playerStats.getLowQr() == null) {
+            playerStats.setLowQr(qrCodeData);
+        }
+        else {
+            if (qrCodeData.getScore() < playerStats.getLowQr().getScore()) {
+                playerStats.setLowQr(qrCodeData);
+            }
+
+        }
+
+        if (playerStats.getHighQr() == null) {
+            playerStats.setHighQr(qrCodeData);
+        }
+        else {
+            if (qrCodeData.getScore() > playerStats.getHighQr().getScore()){
+                playerStats.setHighQr(qrCodeData);
+            }
+        }
+
+
+
+        // THIS NEEDS TO BE UPDATED BY KENNY
+        // Below: open activity/fragment which prompts user to access their device's location and take photo of the object containing scannedQRCode
+
+
+
+
+
+
 
     }
 

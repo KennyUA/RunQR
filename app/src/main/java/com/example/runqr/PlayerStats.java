@@ -1,68 +1,104 @@
 package com.example.runqr;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.Serializable;
+import java.util.HashMap;
+
+/**
+ * This class represents a PlayerStats object in the RunQR game.
+ * Each Player object has an associated PlayerStats object
+ * This class handles PlayerStats attributes such has high score QR code, number of scanned codes, etc
+ * These attributes are displayed in ProfileActivity and can be modified in other activities
+ * This class will also be used later for the Leaderboard Activity
+ *
+ */
 
 public class PlayerStats implements Serializable {
 
+    public String username;
+
     /*stats*/
-    private int high_qr;
-    private int low_qr;
-    private int sum_of_scores;
-    private int num_of_scanned;
+    //private int highQr;
+    //private int lowQr;
+    private QRCode highQr;
+    private QRCode lowQr;
+    private Integer sumOfScores;
+    private Integer numOfScanned;
 
     /* in activity, string of rank will be displayed according to int stored in PlayerStats object*/
     /*according to range, will be Platinum, Gold, etc*/
-    private int rank_num_of_scanned;
-    private int rank_high_qr;
-    private int rank_sum_of_scores;
+    private Integer rankNumOfScanned;
+    private Integer rankHighQr;
+    private Integer rankSumOfScores;
+
+    /**
+     * This method creates a new PlayerStats object within the app and populates it with 0's
+     * @param username
+     *      given to identify which player this is for
+     * @param highQr
+     *      initialized to null
+     * @param lowQr
+     *      initialized to null
+     * @param sumScores
+     *      initialized to 0
+     * @param numScanned
+     *      initialized to 0
+     * @param rankHighQr
+     *      initialized to 0
+     * @param rankNumScanned
+     *      initialized to 0
+     * @param rankSumScores
+     *      initialized to 0
+     *
+     */
+    public PlayerStats(String username, QRCode highQr, QRCode lowQr, int sumScores, int numScanned, int rankHighQr, int rankNumScanned, int rankSumScores) {
+        this.highQr = highQr;
+        this.lowQr = lowQr;
+        sumOfScores = sumScores;
+        numOfScanned = numScanned;
+        this.rankHighQr = rankHighQr;
+        rankNumOfScanned = rankNumScanned;
+        rankSumOfScores = rankSumScores;
+        this.username = username;
+    }
 
     public PlayerStats() {
-        high_qr = 0;
-        low_qr = 0;
-        sum_of_scores = 0;
-        num_of_scanned = 0;
-        rank_high_qr = 0;
-        rank_num_of_scanned = 0;
-        rank_sum_of_scores = 0;
     }
 
-    //public PlayerStats(QRCode highQR, QRCode lowQR, Integer sumScores, Integer numScanned, Integer rankHighQR,
-                       //Integer rankNumScanned, Integer rankSumScores) {
-    public PlayerStats(int sumScores, int numScanned) {
-        //high_qr = highQR;
-        //low_qr = lowQR;
-        sum_of_scores = sumScores;
-        num_of_scanned = numScanned;
-        //rank_high_qr = rankHighQR;
-        //rank_num_of_scanned = rankNumScanned;
-        //rank_sum_of_scores = rankSumScores;
-    }
-
+    /**
+     * This method creates a new PlayerStats activity and connects it with the firebase object based on username
+     * @param username
+     *      given to identify which player this is for
+     */
     public PlayerStats(String username) {
+        this.username = username;
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference userRef = db.collection("Accounts").document(username);
-
         userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
-                        rank_high_qr = Integer.parseInt((String) document.get("high_score_ranking"));
-                        rank_num_of_scanned = Integer.parseInt((String) document.get("number_of_scanned_ranking"));
-                        rank_sum_of_scores = Integer.parseInt((String) document.get("total_score_ranking"));
-                        num_of_scanned = Integer.parseInt((String) document.get("number_of_scanned"));
-                        sum_of_scores = Integer.parseInt((String) document.get("total_score"));
-                        String high_qr_string = (String) document.get("high_score");
-                        String low_qr_string = (String) document.get("low_score");
+                        rankHighQr = Integer.parseInt((String) document.get("highScoreRanking"));
+                        rankNumOfScanned = Integer.parseInt((String) document.get("numberOfScannedRanking"));
+                        rankSumOfScores = Integer.parseInt((String) document.get("totalScoreRanking"));
+                        numOfScanned = Integer.parseInt((String) document.get("numberOfScanned"));
+                        sumOfScores = Integer.parseInt((String) document.get("totalScore"));
+                        String highQrString = (String) document.get("highScore");
+                        String lowQrString = (String) document.get("lowScore");
 
                     }
                 }
@@ -70,61 +106,103 @@ public class PlayerStats implements Serializable {
         });
     }
 
-
-
-    public int getHigh_qr() {
-        return high_qr;
+    /**
+     * This method is called each time an attribute of PlayerStats is changed using one of the class's setters
+     * @param field
+     *      given to identify which attribute is being altered
+     * @param value
+     *      new value of this field
+     */
+    public void updatePlayerStats(String field, String value) {
+        final String TAG = "Error Message: ";
+        HashMap<String, String> data = new HashMap<>();
+        data.put(field, value);
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference docRef = db.collection("Accounts").document(this.username);
+        docRef.update(field, value)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "DocumentSnapshot successfully written!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error writing document", e);
+                    }
+                });;
     }
 
-    public void setHigh_qr(int high_qr) {
-        this.high_qr = high_qr;
+
+    public QRCode getHighQr() {
+        return highQr;
     }
 
-    public int getLow_qr() {
-        return low_qr;
+    public void setHighQr(QRCode highQr) {
+        this.highQr = highQr;
+        //updatePlayerStats("playerInfo.playerStats.highQr", String.valueOf(highQr.getScore()));
     }
 
-    public void setLow_qr(int low_qr) {
-        this.low_qr = low_qr;
+    public QRCode getLowQr() {
+        return lowQr;
     }
 
-    public int getSum_of_scores() {
-        return sum_of_scores;
+    public void setLowQr(QRCode lowQr) {
+        this.lowQr = lowQr;
+        //updatePlayerStats("playerInfo.playerStats.lowQr", String.valueOf(lowQr.getScore()));
     }
 
-    public void setSum_of_scores(int sum_of_scores) {
-        this.sum_of_scores = sum_of_scores;
+    public int getSumOfScores() {
+        return sumOfScores;
     }
 
-    public int getNum_of_scanned() {
-        return num_of_scanned;
+    public void setSumOfScores(int sumOfScores) {
+        this.sumOfScores = sumOfScores;
+        //updatePlayerStats("playerInfo.playerStats.sumOfScores", String.valueOf(sumOfScores));
     }
 
-    public void setNum_of_scanned(int num_of_scanned) {
-        this.num_of_scanned = num_of_scanned;
+    public int getNumOfScanned() {
+        return numOfScanned;
     }
 
-    public int getRank_num_of_scanned() {
-        return rank_num_of_scanned;
+    public void setNumOfScanned(int numOfScanned) {
+        this.numOfScanned = numOfScanned;
+        //updatePlayerStats("playerInfo.playerStats.numOfScanned", String.valueOf(numOfScanned));
     }
 
-    public void setRank_num_of_scanned(int rank_num_of_scanned) {
-        this.rank_num_of_scanned = rank_num_of_scanned;
+    public int getRankNumOfScanned() {
+        return rankNumOfScanned;
     }
 
-    public int getRank_high_qr() {
-        return rank_high_qr;
+    public void setRankNumOfScanned(int rankNumOfScanned) {
+        this.rankNumOfScanned = rankNumOfScanned;
+        //updatePlayerStats("playerInfo.playerStats.rankNumOfScanned", String.valueOf(numOfScanned));
     }
 
-    public void setRank_high_qr(int rank_high_qr) {
-        this.rank_high_qr = rank_high_qr;
+    public int getRankHighQr() {
+        return rankHighQr;
     }
 
-    public int getRank_sum_of_scores() {
-        return rank_sum_of_scores;
+    public void setRankHighQr(int rankHighQr) {
+        this.rankHighQr = rankHighQr;
+        //updatePlayerStats("playerInfo.playerStats.rankHighQr", String.valueOf(rankHighQr));
     }
 
-    public void setRank_sum_of_scores(int rank_sum_of_scores) {
-        this.rank_sum_of_scores = rank_sum_of_scores;
+    public int getRankSumOfScores() {
+        return rankSumOfScores;
+    }
+
+    public void setRankSumOfScores(int rankSumOfScores) {
+        this.rankSumOfScores = rankSumOfScores;
+        //updatePlayerStats("playerInfo.playerStats.rankSumOfScores", String.valueOf(rankSumOfScores));
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getUsername() {
+        return username;
     }
 }

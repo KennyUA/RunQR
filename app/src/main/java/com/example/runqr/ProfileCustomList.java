@@ -12,7 +12,11 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 
-
+/**
+ * This class represents a ProfileCustomList object in the RunQR game.
+ * This class is used to organize player statistics in a listview to be displayed in ProfileActivity
+ *
+ */
 public class ProfileCustomList extends ArrayAdapter<ProfileItem> {
 
     private ArrayList<ProfileItem> profile_items;

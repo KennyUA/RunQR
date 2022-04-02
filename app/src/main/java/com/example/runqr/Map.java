@@ -2,10 +2,6 @@ package com.example.runqr;
 
 import java.util.ArrayList;
 
-/** Represents Map of a player.
- * Work in progress.
- */
-
 public class Map {
     private ArrayList<QRCode> qrCodes = new ArrayList<QRCode>();
     private Location playerLocation;
