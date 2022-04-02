@@ -30,10 +30,60 @@
     -->
 
     <FrameLayout
+
+        android:id="@+id/addQRFragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/addQRFragment_container"
-        android:layout_margin="5dp">
+        android:layout_margin="5dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:map="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            map:uiRotateGestures="true"
+            map:uiZoomControls="true" />
+
+
+
+
+        <!--
+        <Button
+            android:id="@+id/add_qr_button"
+            android:layout_width="143dp"
+            android:layout_height="53dp"
+            android:layout_gravity="right"
+            android:layout_marginTop="16dp"
+            android:text="Add QR Code" />
+        -->
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_margin="10px">
+
+
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/searchLocationsBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10px"
+                android:src="@drawable/ic_locations"
+                android:tint="@android:color/white" />
+
+
+        </RelativeLayout>
 
     </FrameLayout>
 
@@ -56,15 +106,5 @@
     </androidx.appcompat.widget.LinearLayoutCompat>
     -->
 
-    <Button
-        android:id="@+id/add_qr_button"
-        android:layout_width="143dp"
-        android:layout_height="53dp"
-        android:layout_marginTop="16dp"
-        android:text="Add QR Code"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.914"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
