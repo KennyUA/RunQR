@@ -74,7 +74,7 @@ public class ProfileActivity extends AppCompatActivity {
                 Intent intent = new Intent(ProfileActivity.this, QRLibraryActivity.class);
                 intent.putExtra("Player QRLibraryActivity", player);
                 intent.putExtra("Allow Deletion?", false);
-                startActivityForResult(intent, 3);
+                startActivity(intent);
             }
         });
 
