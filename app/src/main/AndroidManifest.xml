@@ -20,8 +20,10 @@
         <!--
         activity
             android:name=".CustomListAdapter"
-            android:exported="false"
-        -->
+            android:exported="false"-->
+        <activity
+            android:name=".AddDeviceActivity"
+            android:exported="false" />
         <activity
             android:name=".ProfileActivity"
             android:exported="false" />

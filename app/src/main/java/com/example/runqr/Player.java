@@ -26,6 +26,9 @@ public class Player implements Serializable {
 
     public Player(){
 
+        //this.playerAccount = new Account();
+        //this.playerStats = new PlayerStats("a",null,null,0,0,0,0,0);
+        //this.playerQRLibrary = new QRLibrary();
     }
 
     public Player(Account playerAccount) {
@@ -106,9 +109,4 @@ public class Player implements Serializable {
     public void setPlayerStats(PlayerStats playerStats) {
         this.playerStats = playerStats;
     }
-
-    //public Player(HashMap map) {
-        //this.playerAccount = map.get("playerAccount");
-        //this.color = map.get("color");
-    //}
 }

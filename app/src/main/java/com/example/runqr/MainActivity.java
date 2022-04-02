@@ -77,6 +77,15 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
     ArrayList<Marker> markerArrayList;
     ArrayList<MarkerOptions> markerOptionsArrayList;
     GoogleMap currentMap;
+    //cite https://stackoverflow.com/questions/48699032/how-to-set-addsnapshotlistener-and-remove-in-populateviewholder-in-recyclerview
+    EventListener<QuerySnapshot> eventListener;
+    ListenerRegistration listenerReg;
+    String hashUsername = "";
+    Boolean successFirst = false;
+    Boolean successSecond = false;
+    String user = "";
+
+
 
     ListenerRegistration listenerReg;
     String hashUsername = "";
@@ -91,17 +100,28 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
         Log.v(TAG, hashUsername);
         db = FirebaseFirestore.getInstance();
         loadUsername();
-        //if(successFirst == true) {
-            Log.v(TAG, "AHHHH");
-            Log.v("YSERRRRRRRRR", user);
-            //if (successSecond == true) {
-                // Get a top level reference to the collection
-                collectionReference = db.collection("Accounts");
-                //HashMap<String, String> accountData = new HashMap<>();
+        // Get a top level reference to the collection
+        collectionReference = db.collection("Accounts");
+        //HashMap<String, String> accountData = new HashMap<>();
 
-                // Creating collection for global QRCodes
-                QRCodesReference = db.collection("QR Codes");
-                //HashMap<String, String> qrData = new HashMap<>();
+        // Creating collection for global QRCodes
+        QRCodesReference = db.collection("QR Codes");
+        //HashMap<String, String> qrData = new HashMap<>();
+
+        /*
+        HashMap<String, Account> accountData = new HashMap<>();
+        //HashMap<String, String> accountData = new HashMap<>();
+        //accountData.put("Account", currentPlayer.getPlayerAccount().getUsername());
+
+
+        // The set method sets a unique id for the document
+        collectionReference
+                .document("test_username")
+                .set(accountData)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+// These are a method which gets executed when the task is succeeded
 
                 /*
                 HashMap<String, Account> accountData = new HashMap<>();
@@ -270,6 +290,18 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 
     }
 
+    void loadData(){
+        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = sharedPreferences.getString("hash username", null);
+        Type type = new TypeToken<String>(){}.getType();
+        hashUsername = gson.fromJson(json, type);
+        if(hashUsername == null){
+            hashUsername = "";
+        }
+    }
+
+
     @Override
     public void onStart(){
         super.onStart();
@@ -283,8 +315,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
     // Trying to fix null objects on second time opening the app
     @Override
     public void onPause(){
-        savePlayer();
-        //savePlayerToDatabase();
+        savePlayerToDatabase();
         super.onPause();
 
     }
@@ -305,7 +336,6 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 
     @Override
     public void onDestroy(){
-        savePlayer();
         super.onDestroy();
 
     }
@@ -378,38 +408,6 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
                 }
             }
         });
-    }
-    void loadData(){
-        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
-        Gson gson = new Gson();
-        String json = sharedPreferences.getString("hash username", null);
-        Type type = new TypeToken<String>(){}.getType();
-        hashUsername = gson.fromJson(json, type);
-        if(hashUsername == null){
-            hashUsername = "";
-        }
-    }
-
-    public interface MyCallback {
-        void onCallback(List<Event> eventList);
-    }
-
-
-    void savePlayer(){
-        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        Gson gson = new Gson();
-        String json =gson.toJson(currentPlayer);
-        editor.putString("player", json);
-        editor.apply();
-    }
-
-    void loadPlayer(){
-        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
-        Gson gson = new Gson();
-        String json = sharedPreferences.getString("player", null);
-        Type type = new TypeToken<Player>(){}.getType();
-        currentPlayer = gson.fromJson(json, type);
     }
 
 
@@ -488,6 +486,76 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 
         // THIS NEEDS TO BE UPDATED BY KENNY
         // Below: open activity/fragment which prompts user to access their device's location and take photo of the object containing scannedQRCode
+        dialogBuilder = new AlertDialog.Builder(this);
+        final View conformationPopup = getLayoutInflater().inflate(R.layout.scanner_popup,null);
+
+        take_photo = (Button) conformationPopup.findViewById(R.id.takePhotoButton);
+        add_geolocation = (Button) conformationPopup.findViewById(R.id.addGeolocationButton);
+        yes = (Button) conformationPopup.findViewById(R.id.yesButton);
+        no = (Button) conformationPopup.findViewById(R.id.noButton);
+
+
+        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            ActivityCompat.requestPermissions(MainActivity.this,new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION
+            }, 100);
+
+            return;
+        }
+        android.location.Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+
+
+        dialogBuilder.setView(conformationPopup);
+        dialog = dialogBuilder.create();
+        dialog.show();
+
+        take_photo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //define Take Photo here
+                openCamera(view);
+            }
+        });
+
+        add_geolocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //define Geo-Location here
+                double longitude = location.getLongitude();
+                double latitude = location.getLatitude();
+                view.setX(Math.round(longitude));
+                view.setY(Math.round(latitude));
+
+            }
+        });
+
+
+
+        yes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //define Got it here
+                dialog.dismiss();
+            }
+        });
+
+        no.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //define Cancel here
+                dialog.dismiss();
+            }
+        });
 
 
 
@@ -584,7 +652,12 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
                 intent2.putExtra("Player", (Serializable) currentPlayer);
                 startActivity(intent2);
                 break;
+
             //return true;
+            case R.id.add_device_item:
+                Intent intent3 = new Intent(this, AddDeviceActivity.class);
+                startActivity(intent3);
+                break;
 
             case R.id.add_device_item:
                 Intent intent3 = new Intent(this, AddDeviceActivity.class);

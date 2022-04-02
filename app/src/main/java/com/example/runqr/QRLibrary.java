@@ -103,4 +103,6 @@ public class QRLibrary implements Serializable {
     public int getSize(){
         return this.QRCodeList.size();
     }
+
+
 }
