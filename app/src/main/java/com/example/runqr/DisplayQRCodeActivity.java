@@ -2,13 +2,14 @@ package com.example.runqr;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
@@ -23,7 +24,9 @@ public class DisplayQRCodeActivity extends AppCompatActivity implements AddComme
     Boolean edit = false;
     Integer clickPos;
     Comment clickedComment = null;
-
+    ArrayList<Comment> commentDataList;
+    RecyclerView QRCodeComments;
+    CommentList commentAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,8 +38,9 @@ public class DisplayQRCodeActivity extends AppCompatActivity implements AddComme
         ImageView QRCodePhoto = findViewById(R.id.photoInfo);
         TextView QRCodeStats = findViewById(R.id.statInfo);
         TextView QRCodeLocation = findViewById(R.id.locationInfo);
-        RecyclerView QRCodeComments = findViewById(R.id.recyclerView);
-        ArrayList<Comment> commentDataList = codeToDisplay.getCommentLibrary().getCommentList();
+        FloatingActionButton addCommentButton = findViewById(R.id.add_comment_button);
+        QRCodeComments = findViewById(R.id.recyclerView);
+        commentDataList = codeToDisplay.getCommentLibrary().getCommentList();
 
         // Setting the layout as linear
         // layout for vertical orientation
@@ -44,7 +48,15 @@ public class DisplayQRCodeActivity extends AppCompatActivity implements AddComme
         QRCodeComments.setLayoutManager(linearLayoutManager);
 
         // Sending reference and data to Adapter
-        CommentList commentAdapter = new CommentList(DisplayQRCodeActivity.this, codeToDisplay.getCommentLibrary().getCommentList());
+        commentAdapter = new CommentList(DisplayQRCodeActivity.this, codeToDisplay.getCommentLibrary().getCommentList(),
+                new CommentList.ItemClickListener() {
+            @Override
+            public void onItemClick(Comment commentClicked) {
+                edit = true;
+                clickedComment = commentClicked;
+                new AddCommentFragment().show(getSupportFragmentManager(), "EDIT_CITY");
+            }
+        });
         QRCodeComments.setAdapter(commentAdapter);
 
         QRCodeLocation.setText("Location: \n");
@@ -57,6 +69,16 @@ public class DisplayQRCodeActivity extends AppCompatActivity implements AddComme
 
         }
         QRCodeStats.setText("Score: "+codeToDisplay.getScore());
+
+        addCommentButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new AddCommentFragment().show(getSupportFragmentManager(), "ADD_CITY");
+            }
+        });
+
+
+
 
         /*
         //add on item click listener for recycler view
@@ -82,14 +104,19 @@ public class DisplayQRCodeActivity extends AppCompatActivity implements AddComme
         if (edit) {
             //cDataList.remove(clickPos);
             //cityList.setAdapter(cityAdapter);
-            //commentAdapter.remove(clickedComment);
-            cityAdapter.add(newCity);
+            commentDataList.remove(clickedComment);
+            commentDataList.add(newComment);
+            commentAdapter.notifyDataSetChanged();
             //cityList.setAdapter(cityAdapter);
         }
         else {
-            cityAdapter.add(newCity);
+
+            commentDataList.add(newComment);
+            commentAdapter.notifyDataSetChanged();
         }
+        QRCodeComments.scrollToPosition(commentDataList.size()-1);
         edit = false;
 
     }
+
 }

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -51,7 +52,7 @@ public class AddCommentFragment extends DialogFragment {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.add_comment_fragment_layout, null);
 
         commentBody= view.findViewById(R.id.comment_body_editText);
-        commentTitle = view.findViewById(R.id.comment_title_editText);
+        //commentTitle = view.findViewById(R.id.comment_title_editText);
 
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -64,8 +65,17 @@ public class AddCommentFragment extends DialogFragment {
                     public void onClick(DialogInterface dialogInterface, int i) {
 
                         String body = commentBody.getText().toString();
-                        String title = commentTitle.getText().toString();
-                        listener.onOkPressed(new Comment(title, body));
+
+                        //String title = commentTitle.getText().toString();
+                        //listener.onOkPressed(new Comment(title, body));
+                        if (!commentBody.getText().toString().equals("")) {
+                            // add comment to commentlibrary
+                            listener.onOkPressed(new Comment(body));
+                        }
+                        else {
+                            Toast.makeText(getActivity(), "Please enter a comment", Toast.LENGTH_SHORT).show();
+                        }
+
                     }
                 }).create();
     }

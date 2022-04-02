@@ -17,14 +17,19 @@ public class CommentList extends RecyclerView.Adapter<CommentList.ViewHolder> im
     //private QRLibrary QRCodes;
     private ArrayList<Comment> comments;
     private Context context;
+    private ItemClickListener mItemListener;
+
 
     //public QRList(Context context, QRLibrary QRCodes){
-    public CommentList(Context context, ArrayList<Comment> comments){
+    public CommentList(Context context, ArrayList<Comment> comments, ItemClickListener itemClickListener){
         //super(context,0, (List<String>) comments);
         this.context = context;
         this.comments = comments;
         this.context = context;
+        this.mItemListener = itemClickListener;
     }
+
+
 
     @NonNull
     @Override
@@ -43,7 +48,24 @@ public class CommentList extends RecyclerView.Adapter<CommentList.ViewHolder> im
     public void onBindViewHolder(@NonNull CommentList.ViewHolder holder, int position) {
         //set's body and title of comment
         holder.bodyText.setText((String) comments.get(position).getBody());
-        holder.titleText.setText((String) comments.get(position).getTitle());
+        //holder.titleText.setText((String) comments.get(position).getTitle());
+
+        // Set on-click listener
+        holder.bodyText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Comment commentClicked = comments.get(position);
+                //onCommentClick(commentClicked);
+
+                //new AddCommentFragment().show(getSupportFragmentManager(), "EDIT_CITY");
+
+            }
+        });
+
+        holder.itemView.setOnClickListener(view -> {
+            mItemListener.onItemClick(comments.get(position));
+            // above will get the item clicked in recyclerview
+        });
     }
 
     @Override
@@ -56,15 +78,22 @@ public class CommentList extends RecyclerView.Adapter<CommentList.ViewHolder> im
     // Initializing the Views
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView bodyText;
-        TextView titleText;
+        //TextView titleText;
 
         public ViewHolder(View view) {
             super(view);
             bodyText = (TextView) view.findViewById(R.id.qrcode_comment_body_text);
-            titleText = (TextView) view.findViewById(R.id.qrcode_comment_body_text);
+            //titleText = (TextView) view.findViewById(R.id.qrcode_comment_body_text);
         }
     }
 
+    public void onCommentClick(Comment commentClicked){
+        //edit comment
 
+    }
+
+    public interface ItemClickListener{
+        void onItemClick(Comment commentClicked);
+    }
 
 }
