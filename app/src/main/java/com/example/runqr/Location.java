@@ -1,22 +1,29 @@
 package com.example.runqr;
 
-import android.location.LocationListener;
+public class Location{
+    private double x;
+    private double y;
 
-import androidx.annotation.NonNull;
-
-public class Location extends android.location.Location  {
-    private int x;
-    private int y;
-
+    /*
     public Location(String provider) {
         super(provider);
     }
+    */
 
+    /*
     public Location(android.location.Location l) {
         super(l);
     }
+     */
 
-    public int getX() {
+    public Location (double x, double y) {
+        this.x = x;
+        this.y =y;
+    }
+
+
+
+    public double getX() {
         return x;
     }
 
@@ -24,7 +31,7 @@ public class Location extends android.location.Location  {
         this.x = x;
     }
 
-    public int getY() {
+    public double getY() {
 
         return y;
     }

@@ -1,9 +1,11 @@
 package com.example.runqr;
 
+
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,6 +15,8 @@ import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import com.budiyev.android.codescanner.CodeScanner;
@@ -32,12 +36,27 @@ public class AddQRFragment extends Fragment {
     private boolean mPermissionGranted;
     private String QRString = null;
     private OnFragmentInteractionListener listener;
+    // build fragment/popup
+    static AlertDialog.Builder dialogBuilder;
+    static AlertDialog dialog;
+    private Button take_photo, add_geolocation, yes, no;
+
+    static Boolean locationAdded = false;
+    static Boolean photoAdded = false;
+
+    Location QRCodeLocation;
+    QRCode QRCodeToAdd;
+
+    Context mContext;
+    int LOCATION_PERMISSION_REQUEST_CODE = 100;
+
+
 
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-
+        mContext = context;
         if (context instanceof OnFragmentInteractionListener) {
             listener = (OnFragmentInteractionListener) context;
         }
@@ -50,8 +69,11 @@ public class AddQRFragment extends Fragment {
 
     public interface OnFragmentInteractionListener {
         void onConfirmPressed(QRCode QRCodeToAdd);
+        void openCamera();
 
     }
+
+
 
     @Nullable
     @Override
@@ -106,14 +128,146 @@ public class AddQRFragment extends Fragment {
                 //add QRCode
                 if (QRString != null){
                     String hashedString = QRCodeHasher.hashQRCode(QRString);
+                    /*
                     QRCode QRCodeToAdd = new QRCode(hashedString);
                     // send QRCodeToAdd to MainActivity to add it to the player's QRLibrary
                     listener.onConfirmPressed(QRCodeToAdd);
-
+                    */
 
                     // prompt user to enter geolocation and/or photo of object hosting the QRCode
                     //ignore for now
 
+
+                    // THIS NEEDS TO BE UPDATED BY KENNY
+                    // Below: open activity/fragment which prompts user to access their device's location and take photo of the object containing scannedQRCode
+                    dialogBuilder = new AlertDialog.Builder(getActivity());
+                    final View conformationPopup = getLayoutInflater().inflate(R.layout.scanner_popup,null);
+
+                    take_photo = (Button) conformationPopup.findViewById(R.id.takePhotoButton);
+                    add_geolocation = (Button) conformationPopup.findViewById(R.id.addGeolocationButton);
+                    yes = (Button) conformationPopup.findViewById(R.id.yesButton);
+                    no = (Button) conformationPopup.findViewById(R.id.noButton);
+
+
+                    LocationManager lm = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+
+
+                    if (ActivityCompat.checkSelfPermission(getActivity(),
+                            Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
+                            != PackageManager.PERMISSION_GRANTED) {
+                        // TODO: Consider calling
+                        //    ActivityCompat#requestPermissions
+                        // here to request the missing permissions, and then overriding
+                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                        //                                          int[] grantResults)
+                        // to handle the case where the user grants the permission. See the documentation
+                        // for ActivityCompat#requestPermissions for more details.
+                        ActivityCompat.requestPermissions(getActivity(),new String[]{
+                                Manifest.permission.ACCESS_FINE_LOCATION
+                        }, 100);
+
+                        return;
+                    }
+
+
+                    android.location.Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                   //define Geo-Location here
+                    double longitude = location.getLongitude();
+                    double latitude = location.getLatitude();
+                    QRCodeLocation = new Location(longitude, latitude);
+
+
+                    dialogBuilder.setView(conformationPopup);
+                    dialog = dialogBuilder.create();
+                    dialog.show();
+
+                    take_photo.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            photoAdded = true;
+                            //FIX BELOW
+
+                            //define Take Photo here
+                            listener.openCamera();
+                        }
+                    });
+
+                    add_geolocation.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                            /*
+                            // Get location permission:
+                            LocationManager lm = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
+
+                            if (ContextCompat.checkSelfPermission(mContext,
+                                    Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION)
+                                    != PackageManager.PERMISSION_GRANTED) {
+                                // TODO: Consider calling
+                                //    ActivityCompat#requestPermissions
+                                // here to request the missing permissions, and then overriding
+                                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                //                                          int[] grantResults)
+                                // to handle the case where the user grants the permission. See the documentation
+                                // for ActivityCompat#requestPermissions for more details.
+                                requestPermissions(new String[]{
+                                        Manifest.permission.ACCESS_FINE_LOCATION
+                                }, 100);
+
+                                return;
+                            }
+                            android.location.Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+                            //define Geo-Location here
+                            double longitude = location.getLongitude();
+                            double latitude = location.getLatitude();
+                            QRCodeLocation = new Location(longitude, latitude);
+                            //view.setX(Math.round(longitude));
+                            //view.setY(Math.round(latitude));
+                            */
+                        }
+                    });
+
+
+
+                    yes.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            //define Got it here
+                            dialog.dismiss();
+                        }
+                    });
+
+                    no.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            //define Cancel here
+                            dialog.dismiss();
+                        }
+                    });
+
+
+                    // Instantiate new QRCode to add to the QRLibrary
+                    if (locationAdded && photoAdded) {
+                        // NOTE: photo is temporarily null here
+                        QRCodeToAdd = new QRCode(hashedString, QRCodeLocation, (Photo) null );
+                    }
+                    else if (locationAdded && !photoAdded) {
+                        QRCodeToAdd = new QRCode(hashedString, QRCodeLocation);
+                    }
+                    else if(!locationAdded && photoAdded) {
+                        // NOTE: photo is temporarily null here
+                        QRCodeToAdd = new QRCode(hashedString, (Photo) null);
+                    }
+                    else {
+                        QRCodeToAdd = new QRCode(hashedString);
+                    }
+
+
+
+
+                    // send QRCodeToAdd to MainActivity to add it to the player's QRLibrary
+                    listener.onConfirmPressed(QRCodeToAdd);
 
                     getFragmentManager().beginTransaction().remove(AddQRFragment.this).commit();
                     /*
@@ -168,7 +322,6 @@ public class AddQRFragment extends Fragment {
     */
 
 
-
     @Override
     public void onResume() {
         super.onResume();
@@ -195,7 +348,21 @@ public class AddQRFragment extends Fragment {
                 mPermissionGranted = false;
             }
         }
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                locationAdded = true;
+
+            } else { // if permission is not granted
+
+                // decide what you want to do if you don't get permissions
+            }
+        }
     }
+
+
+
 
 
 

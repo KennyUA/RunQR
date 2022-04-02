@@ -38,6 +38,13 @@ public class QRCode implements Serializable {
         this.commentLibrary = new CommentLibrary();
     }
 
+    // If location is denied and photo is allowed
+    public QRCode(String hash, Photo photo) {
+        this.score = scoreQRCode(hash);
+        this.hash = hash;
+        this.photo = photo;
+        this.commentLibrary = new CommentLibrary();
+    }
 
     // If both location and photo are allowed
     public QRCode(String hash, Location location, Photo photo) {

@@ -1,25 +1,17 @@
 package com.example.runqr;
 
-import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -56,11 +48,12 @@ import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity implements AddQRFragment.OnFragmentInteractionListener, OnMapReadyCallback {
 
+    /*
     // build fragment/popup
     static AlertDialog.Builder dialogBuilder;
     static AlertDialog dialog;
     static Button take_photo, add_geolocation, yes, no;
-
+*/
     /// fix below to do automatic log in and save player info
 
     /*next two lines are needed*/
@@ -87,7 +80,12 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
     EventListener<QuerySnapshot> eventListener;
     ListenerRegistration listenerReg;
 
+    /*
+    Boolean locationAdded = false;
+    Boolean photoAdded = false;
 
+
+     */
 
 
     @Override
@@ -434,7 +432,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
         }
 
 
-
+/*
         // THIS NEEDS TO BE UPDATED BY KENNY
         // Below: open activity/fragment which prompts user to access their device's location and take photo of the object containing scannedQRCode
         dialogBuilder = new AlertDialog.Builder(this);
@@ -473,6 +471,8 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
         take_photo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                photoAdded = true;
+                //FIX BELOW
                 //define Take Photo here
                 openCamera(view);
             }
@@ -481,11 +481,13 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
         add_geolocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                locationAdded = true;
                 //define Geo-Location here
                 double longitude = location.getLongitude();
                 double latitude = location.getLatitude();
-                view.setX(Math.round(longitude));
-                view.setY(Math.round(latitude));
+                Location QRCodeLocation = new Location(longitude, latitude);
+                //view.setX(Math.round(longitude));
+                //view.setY(Math.round(latitude));
 
             }
         });
@@ -506,6 +508,8 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
             }
         });
 
+
+ */
 
 
         // call method to add location data to qrCodeCollection for nearbyQRCodeSearch algorithm
@@ -642,11 +646,16 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
     }
 
 
-    public void openCamera(View view){
-        Intent intent = new Intent(this, Camera.class);
+
+    public void openCamera(){
+        Intent intent = new Intent(this, CameraActivity.class);
         startActivity(intent);
     }
-  
+
+
+
+
+
     public void openSearchedPlayerProfile(String username) {
         // get player object from database and open ProfileActivity with the searchedPlayer object
         String testUsername;
