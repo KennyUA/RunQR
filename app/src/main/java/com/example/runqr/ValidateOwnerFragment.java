@@ -62,7 +62,7 @@ public class ValidateOwnerFragment extends DialogFragment {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         String potentialPassword;
                         potentialPassword = enterPassword.getText().toString();
-                        if(potentialPassword == password){
+                        if(potentialPassword.equals(password)){
                             listener.onOkPressed();
 
                         }
