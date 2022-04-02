@@ -123,7 +123,7 @@ public class QRLibraryActivity extends AppCompatActivity {
 
                     //QRDataList.deleteQRCode(QRCodeToDelete);
                     playerQRLibrary.deleteQRCode(QRCodeToDelete);
-                    QRDataList.remove(QRCodeToDelete);
+                    //QRDataList.remove(QRCodeToDelete);
                     //QRList.setAdapter(QRAdapter);
                     QRAdapter.notifyDataSetChanged();
 
