@@ -565,6 +565,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
                 Intent intent = new Intent(this, QRLibraryActivity.class);
                 //intent.putExtra("Player QRLibrary", (Serializable) currentPlayer.getPlayerQRLibrary());
                 intent.putExtra("Player QRLibraryActivity", (Serializable) currentPlayer);
+                intent.putExtra("Allow Deletion?", true);
                 startActivityForResult(intent, 1);
 
                 /*
@@ -640,9 +641,23 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
         }
     }
 
+
     public void openCamera(View view){
         Intent intent = new Intent(this, Camera.class);
         startActivity(intent);
     }
+  
+    public void openSearchedPlayerProfile(String username) {
+        // get player object from database and open ProfileActivity with the searchedPlayer object
+        String testUsername;
+        Player searchedPlayer = null; // get from database
+
+        Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+        intent.putExtra("Display Player Profile", searchedPlayer);
+        startActivity(intent);
+
     }
+
+
+}
 

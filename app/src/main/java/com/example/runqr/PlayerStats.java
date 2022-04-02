@@ -139,11 +139,18 @@ public class PlayerStats implements Serializable {
 
     public void setHighQr(QRCode highQr) {
         this.highQr = highQr;
-        updatePlayerStats("playerInfo.playerStats.highQr.hash", String.valueOf(highQr.getHash()));
-        updatePlayerStats("playerInfo.playerStats.highQr.location", String.valueOf(highQr.getLocation()));
-        updatePlayerStats("playerInfo.playerStats.highQr.photo", String.valueOf(highQr.getPhoto()));
-        updatePlayerStats("playerInfo.playerStats.highQr.score", String.valueOf(highQr.getScore()));
 
+        if (highQr != null) {
+            updatePlayerStats("playerInfo.playerStats.highQr.hash", String.valueOf(highQr.getHash()));
+            updatePlayerStats("playerInfo.playerStats.highQr.location", String.valueOf(highQr.getLocation()));
+            updatePlayerStats("playerInfo.playerStats.highQr.photo", String.valueOf(highQr.getPhoto()));
+            updatePlayerStats("playerInfo.playerStats.highQr.score", String.valueOf(highQr.getScore()));
+        } else {
+            updatePlayerStats("playerInfo.playerStats.highQr.hash", "N/A");
+            updatePlayerStats("playerInfo.playerStats.highQr.location", "N/A");
+            updatePlayerStats("playerInfo.playerStats.highQr.photo", "N/A");
+            updatePlayerStats("playerInfo.playerStats.highQr.score", "N/A");
+        }
     }
 
     public QRCode getLowQr() {
@@ -152,10 +159,18 @@ public class PlayerStats implements Serializable {
 
     public void setLowQr(QRCode lowQr) {
         this.lowQr = lowQr;
-        updatePlayerStats("playerInfo.playerStats.lowQr.hash", String.valueOf(lowQr.getHash()));
-        updatePlayerStats("playerInfo.playerStats.lowQr.location", String.valueOf(lowQr.getLocation()));
-        updatePlayerStats("playerInfo.playerStats.lowQr.photo", String.valueOf(lowQr.getPhoto()));
-        updatePlayerStats("playerInfo.playerStats.lowQr.score", String.valueOf(lowQr.getScore()));
+        if (lowQr != null) {
+            updatePlayerStats("playerInfo.playerStats.lowQr.hash", String.valueOf(lowQr.getHash()));
+            updatePlayerStats("playerInfo.playerStats.lowQr.location", String.valueOf(lowQr.getLocation()));
+            updatePlayerStats("playerInfo.playerStats.lowQr.photo", String.valueOf(lowQr.getPhoto()));
+            updatePlayerStats("playerInfo.playerStats.lowQr.score", String.valueOf(lowQr.getScore()));
+        } else {
+            updatePlayerStats("playerInfo.playerStats.lowQr.hash", "N/A");
+            updatePlayerStats("playerInfo.playerStats.lowQr.location", "N/A");
+            updatePlayerStats("playerInfo.playerStats.lowQr.photo", "N/A");
+            updatePlayerStats("playerInfo.playerStats.lowQr.score", "N/A");
+        }
+
     }
 
     public int getSumOfScores() {
