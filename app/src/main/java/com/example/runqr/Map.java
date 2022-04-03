@@ -16,8 +16,8 @@ public class Map {
     public void displayOnMap(){
         for(int i=0;i< qrCodes.size();i++){
             QRCode qrCode = qrCodes.get(i);
-            int xCor = qrCode.getLocation().getX();
-            int yCor = qrCode.getLocation().getY();
+            int xCor = (int) qrCode.getLocation().getX();
+            int yCor = (int) qrCode.getLocation().getY();
             if(Math.sqrt(Math.pow(xCor - playerLocation.getX(),2) + Math.pow(yCor - playerLocation.getY(),2)) <= distanceDisplay){
 
             }
