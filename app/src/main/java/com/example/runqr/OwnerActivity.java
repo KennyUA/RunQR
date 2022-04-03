@@ -28,7 +28,7 @@ public class OwnerActivity extends AppCompatActivity {
     EditText stuff;
     final String TAG = "Sample";
     ArrayList<String> userList = new ArrayList<String> ();
-    ArrayList<Integer> codesList = new ArrayList<Integer> ();
+    ArrayList<String> codesList = new ArrayList<String> ();
 
 
     @Override
@@ -65,7 +65,7 @@ public class OwnerActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                codesList.add(Integer.valueOf(document.getId()));
+                                codesList.add((document.getId()));
                                 Log.d(TAG, document.getId() + " => " + document.getData());
                             }
                         } else {
@@ -86,7 +86,7 @@ public class OwnerActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(OwnerActivity.this, ManageQRCodesActivity.class);
-                intent.putIntegerArrayListExtra("list of QRCodes",codesList);
+                intent.putStringArrayListExtra("list of QRCodes",codesList);
                 startActivity(intent);
 
 

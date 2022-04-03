@@ -14,19 +14,23 @@ import android.widget.ListView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
 public class ManageQRCodesActivity extends AppCompatActivity {
 
     private ListView codeList;
-    private ArrayAdapter<Integer> codeAdapter;
-    private ArrayList<Integer> dataList;
-    private ArrayList<String> scannedByList;
+    private ArrayAdapter<String> codeAdapter;
+    private ArrayList<String> dataList;
+    private ArrayList<Player> scannedByList;
     private boolean confirmClicked = false;
     FirebaseFirestore db;
 
@@ -40,7 +44,7 @@ public class ManageQRCodesActivity extends AppCompatActivity {
         final CollectionReference ref = db.collection("Accounts");// asynchronously retrieve all documents
 
         Intent intent = getIntent();
-        dataList = intent.getIntegerArrayListExtra("list of QRCodes");
+        dataList = intent.getStringArrayListExtra("list of QRCodes");
 
 
         codeList = findViewById(R.id.codes_list);
@@ -60,6 +64,32 @@ public class ManageQRCodesActivity extends AppCompatActivity {
                     public void onClick(View view) {
                         if(confirmClicked){
                             db.collection("QR Codes").document(dataList.get(position).toString())
+                                    .collection("Players")
+                                    .get()
+                                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                for (QueryDocumentSnapshot document : task.getResult()) {
+
+                                                    scannedByList.add(document.toObject(Player.class));
+
+                                                    Log.d(TAG, document.getId() + " => " + document.getData());
+                                                }
+                                            } else {
+                                                Log.d(TAG, "Error getting documents: ", task.getException());
+                                            }
+                                        }
+                                    });
+                            for(int i =0; i< scannedByList.size();i++){
+                                Player player = scannedByList.get(i);
+                                player.getPlayerQRLibrary().deleteQRCodeWithHash(dataList.get(position));
+
+                                //CALL BAILEYS FUNCTION TO UPDATE PLAYER STATS
+
+                            }
+
+                            db.collection("QR Codes").document(dataList.get(position).toString())
                                     .delete()
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
@@ -73,7 +103,7 @@ public class ManageQRCodesActivity extends AppCompatActivity {
                                             Log.w(TAG, "Error deleting document", e);
                                         }
                                     });
-                           // scannedByList = (ArrayList<String>) db.collection("QR Codes").document(dataList.get(position)).get("Scanned by");
+
 
 
 
