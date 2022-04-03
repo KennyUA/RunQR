@@ -17,8 +17,8 @@ public class QRLibrary implements Serializable {
 
     public QRLibrary(){
 
-        this.QRCodeList = new ArrayList<QRCode>();
-        this.QRLibraryScore = 0;
+       // this.QRCodeList = new ArrayList<QRCode>();
+        //this.QRLibraryScore = 0;
     }
 
     public QRLibrary(ArrayList<QRCode> QRCodeList, int score){
@@ -103,16 +103,18 @@ public class QRLibrary implements Serializable {
      * @return
      *      An int representing number of QRCodes stored in QRLibrary.
      */
-    public int getSize(){
+    public int getLibrarySize(){
         return this.QRCodeList.size();
     }
 
 
+
     public void deleteQRCodeWithHash(String hashToDelete) {
-        for(int i=0; i < this.getSize();i++) {
+        for(int i=0; i < this.getLibrarySize();i++) {
             if (this.getQRCode(i).getHash() == hashToDelete) {
                 this.deleteQRCode(this.getQRCode(i));
             }
         }
     }
+
 }

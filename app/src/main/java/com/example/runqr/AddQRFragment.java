@@ -1,17 +1,24 @@
 package com.example.runqr;
 
 
+import static android.content.ContentValues.TAG;
+import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
+
+
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,7 +29,17 @@ import androidx.fragment.app.Fragment;
 import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
 import com.budiyev.android.codescanner.DecodeCallback;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.zxing.Result;
+
+import java.util.HashMap;
 
 // This class is the Fragment used to host a codeScanner which allows players to scan QRCodes and uses Hasher to hash code contents.
 // The newly created QRCode is passed back to MainActivity through method onConfirmPressed and added to player's QRLibrary there.
@@ -30,12 +47,13 @@ import com.google.zxing.Result;
 
 
 public class AddQRFragment extends Fragment {
-
+    FirebaseFirestore db;
     private static final int RC_PERMISSION = 10;
     private CodeScanner mCodeScanner;
     private boolean mPermissionGranted;
     private String QRString = null;
     private OnFragmentInteractionListener listener;
+
     // build fragment/popup
     static AlertDialog.Builder dialogBuilder;
     static AlertDialog dialog;
@@ -51,6 +69,7 @@ public class AddQRFragment extends Fragment {
     int LOCATION_PERMISSION_REQUEST_CODE = 100;
 
 
+    Boolean unique;
 
 
     @Override
@@ -80,6 +99,7 @@ public class AddQRFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         final Activity activity = getActivity();
+        db = FirebaseFirestore.getInstance();
         View root = inflater.inflate(R.layout.add_qr_fragment_layout, container, false);
         CodeScannerView scannerView = root.findViewById(R.id.scanner_view);
 
@@ -130,6 +150,7 @@ public class AddQRFragment extends Fragment {
                     String hashedString = QRCodeHasher.hashQRCode(QRString);
                     /*
                     QRCode QRCodeToAdd = new QRCode(hashedString);
+                    checkWhetherUnique(QRCodeToAdd);
                     // send QRCodeToAdd to MainActivity to add it to the player's QRLibrary
                     listener.onConfirmPressed(QRCodeToAdd);
                     */
@@ -312,6 +333,63 @@ public class AddQRFragment extends Fragment {
         void onConfirmPressed(QRCode qrCodeData);
 
     }
+    Boolean checkWhetherUnique(QRCode qrcode){
+        String hash = qrcode.getHash();
+        DocumentReference docRef = db.collection("QR Codes").document(hash);
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        unique = false;
+                    } else {
+                        unique = true;
+                        saveQRCodeToDB(qrcode);
+                        Context context = getApplicationContext();
+                        CharSequence text = "Congratulations! You are the first one who scanned this QRCode!!";
+                        int duration = Toast.LENGTH_SHORT;
+                        Toast toast = Toast.makeText(context, text, duration);
+                        toast.show();
+                    }
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                }
+            }
+        });
+        return unique;
+    }
+
+    public void saveQRCodeToDB(QRCode qrcode){
+        String hash = qrcode.getHash();
+        CollectionReference collectionIdentifier = db.collection("QR Codes");
+        collectionIdentifier
+                .document(hash)
+                .set(qrcode)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        // These are a method which gets executed when the task is succeeded
+                        Log.d(TAG, "Data has been added successfully!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // These are a method which gets executed if there’s any problem
+                        Log.d(TAG, "Data could not be added!" + e.toString());
+                    }
+                });
+    }
+    /*
+
+
+
+    public void savePlayerToQRCode(QRCode qrcode){
+
+    }
+
+
     /*
 
     public void passData(QRCode data) {
