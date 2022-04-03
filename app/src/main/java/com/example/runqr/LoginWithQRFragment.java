@@ -3,8 +3,6 @@ package com.example.runqr;
 import static android.content.ContentValues.TAG;
 import static android.content.Context.MODE_PRIVATE;
 
-import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
-
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
@@ -49,10 +47,12 @@ public class LoginWithQRFragment extends Fragment {
     private OnFragmentInteractionListener listener;
     FirebaseFirestore db;
     String hashUsername = "";
+    Context mContext;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        mContext = context;
 
         if (context instanceof OnFragmentInteractionListener) {
             listener = (OnFragmentInteractionListener) context;
@@ -122,6 +122,18 @@ public class LoginWithQRFragment extends Fragment {
             public void onClick(View view) {
                 //add QRCode
                 if (QRString != null){
+
+                    if(QRString.isEmpty()) {
+                        Context context = mContext;
+                        CharSequence text = "QRString is empty path error";
+                        int duration = Toast.LENGTH_SHORT;
+
+                        Toast toast = Toast.makeText(context, text, duration);
+                        toast.show();
+
+                        //Log.d(TAG, "QRSTRING in loginwithqr is empty");
+
+                    }
                     DocumentReference docRef = db.collection("Identifiers").document(QRString);
                     docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                         @Override
@@ -134,7 +146,8 @@ public class LoginWithQRFragment extends Fragment {
                                     startActivity(intent);
                                     kill_activity();
                                 } else {
-                                    Context context = getApplicationContext();
+                                    //Context context = getApplicationContext();
+                                    Context context = mContext;
                                     CharSequence text = "Cannot login with this QRCode. Please try another!";
                                     int duration = Toast.LENGTH_SHORT;
 

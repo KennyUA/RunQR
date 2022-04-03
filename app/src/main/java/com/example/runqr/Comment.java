@@ -13,6 +13,8 @@ public class Comment implements Serializable {
     }
      */
 
+    public Comment(){}
+
     public Comment(String body) {
         this.body = body;
     }

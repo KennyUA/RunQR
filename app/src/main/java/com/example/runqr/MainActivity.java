@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.Button;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
@@ -34,12 +33,8 @@ import com.google.firebase.events.Event;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -177,6 +172,12 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
                             }
                         });*/
 
+
+
+        /*
+
+
+
         //Any change in the QR Codes collection in the database is noticed here and the map is updated accordingly
         //markerOptionsArrayList used to store all marker options in order to be passed into fragment to display addresses of QR Codes
         //markerArrayList is used to store Marker objects displayed on map so that each of their states can be easily manipulated
@@ -216,6 +217,8 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
         });
 
 
+
+         */
 
 
         //Button to display fragment of addresses

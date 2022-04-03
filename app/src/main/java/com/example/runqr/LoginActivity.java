@@ -290,6 +290,7 @@ public class LoginActivity extends AppCompatActivity implements LoginWithQRFragm
 
 
 
+
     public void openLoginWithQRFragment(){
 
         // open addQRFragment to scan QRcode and add it to player's account
@@ -324,6 +325,8 @@ public class LoginActivity extends AppCompatActivity implements LoginWithQRFragm
         //transaction.commit();
 
     }
+
+
 
     public void onConfirmPressed(QRCode qrCodeData) {
         //String test = qrCodeData.getHash();

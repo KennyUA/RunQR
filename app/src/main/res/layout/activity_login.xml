@@ -9,14 +9,16 @@
     tools:context=".LoginActivity">
 
 
+ <FrameLayout
+     android:id="@+id/frameLayout"
+     android:layout_width="match_parent"
+     android:layout_height="wrap_content"
+     android:layout_marginBottom="2dp"
+     app:layout_constraintBottom_toTopOf="@+id/title_textview"
+     app:layout_constraintEnd_toEndOf="parent"
+     app:layout_constraintStart_toStartOf="parent"
+     app:layout_constraintTop_toTopOf="parent"></FrameLayout>
 
-
-   <!-- <FrameLayout
-        android:id="@+id/frameLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    </FrameLayout>
-    -->
 
     <TextView
         android:id="@+id/title_textview"

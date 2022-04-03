@@ -2,7 +2,6 @@ package com.example.runqr;
 
 
 import static android.content.ContentValues.TAG;
-import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 
 import android.Manifest;
 import android.app.Activity;
@@ -20,13 +19,9 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import androidx.fragment.app.DialogFragment;
-
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
-
 
 import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
@@ -364,7 +359,8 @@ public class AddQRFragment extends Fragment {
                     } else {
                         unique = true;
                         saveQRCodeToDB(qrcode);
-                        Context context = getApplicationContext();
+                        //Context context = getApplicationContext();
+                        Context context = mContext;
                         CharSequence text = "Congratulations! You are the first one who scanned this QRCode!!";
                         int duration = Toast.LENGTH_SHORT;
                         Toast toast = Toast.makeText(context, text, duration);
@@ -416,7 +412,8 @@ public class AddQRFragment extends Fragment {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
-                        Context context = getApplicationContext();
+                        //Context context = getApplicationContext();
+                        Context context = mContext;
                         CharSequence text = "This QR code was already scanned by you. Scan another one!";
                         // DON'T add to library!!
                         addCode = false;
