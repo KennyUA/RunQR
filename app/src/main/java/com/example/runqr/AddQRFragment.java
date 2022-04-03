@@ -4,11 +4,9 @@ package com.example.runqr;
 import static android.content.ContentValues.TAG;
 import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 
-
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.os.Build;
@@ -37,8 +35,11 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.zxing.Result;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 // This class is the Fragment used to host a codeScanner which allows players to scan QRCodes and uses Hasher to hash code contents.
@@ -61,15 +62,18 @@ public class AddQRFragment extends Fragment {
 
     static Boolean locationAdded = false;
     static Boolean photoAdded = false;
+    Boolean alreadyScanned;
 
     Location QRCodeLocation;
     QRCode QRCodeToAdd;
 
     Context mContext;
     int LOCATION_PERMISSION_REQUEST_CODE = 100;
-
+    Player currentPlayer;
 
     Boolean unique;
+    ScannedByLibrary scannedByLibrary;
+    ArrayList<Player> scannedByList;
 
 
     @Override
@@ -78,9 +82,8 @@ public class AddQRFragment extends Fragment {
         mContext = context;
         if (context instanceof OnFragmentInteractionListener) {
             listener = (OnFragmentInteractionListener) context;
-        }
-        else {
-            throw new RuntimeException(context.toString()+
+        } else {
+            throw new RuntimeException(context.toString() +
                     " must implement OnFragmentInteractionListener");
         }
 
@@ -88,17 +91,19 @@ public class AddQRFragment extends Fragment {
 
     public interface OnFragmentInteractionListener {
         void onConfirmPressed(QRCode QRCodeToAdd);
+
         void openCamera();
 
     }
-
 
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        final Activity activity = getActivity();
+        final Activity activity = (Activity) getActivity();
+        currentPlayer = MainActivity.getCurrentPlayer();
+
         db = FirebaseFirestore.getInstance();
         View root = inflater.inflate(R.layout.add_qr_fragment_layout, container, false);
         CodeScannerView scannerView = root.findViewById(R.id.scanner_view);
@@ -133,7 +138,7 @@ public class AddQRFragment extends Fragment {
             if (getActivity().checkSelfPermission(Manifest.permission.CAMERA) !=
                     PackageManager.PERMISSION_GRANTED) {
                 mPermissionGranted = false;
-                requestPermissions(new String[] {Manifest.permission.CAMERA}, RC_PERMISSION);
+                requestPermissions(new String[]{Manifest.permission.CAMERA}, RC_PERMISSION);
             } else {
                 mPermissionGranted = true;
             }
@@ -146,7 +151,7 @@ public class AddQRFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 //add QRCode
-                if (QRString != null){
+                if (QRString != null) {
                     String hashedString = QRCodeHasher.hashQRCode(QRString);
                     /*
                     QRCode QRCodeToAdd = new QRCode(hashedString);
@@ -162,7 +167,7 @@ public class AddQRFragment extends Fragment {
                     // THIS NEEDS TO BE UPDATED BY KENNY
                     // Below: open activity/fragment which prompts user to access their device's location and take photo of the object containing scannedQRCode
                     dialogBuilder = new AlertDialog.Builder(getActivity());
-                    final View conformationPopup = getLayoutInflater().inflate(R.layout.scanner_popup,null);
+                    final View conformationPopup = getLayoutInflater().inflate(R.layout.scanner_popup, null);
 
                     take_photo = (Button) conformationPopup.findViewById(R.id.takePhotoButton);
                     add_geolocation = (Button) conformationPopup.findViewById(R.id.addGeolocationButton);
@@ -183,7 +188,7 @@ public class AddQRFragment extends Fragment {
                         //                                          int[] grantResults)
                         // to handle the case where the user grants the permission. See the documentation
                         // for ActivityCompat#requestPermissions for more details.
-                        ActivityCompat.requestPermissions(getActivity(),new String[]{
+                        ActivityCompat.requestPermissions(getActivity(), new String[]{
                                 Manifest.permission.ACCESS_FINE_LOCATION
                         }, 100);
 
@@ -192,7 +197,7 @@ public class AddQRFragment extends Fragment {
 
 
                     android.location.Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                   //define Geo-Location here
+                    //define Geo-Location here
                     double longitude = location.getLongitude();
                     double latitude = location.getLatitude();
                     QRCodeLocation = new Location(longitude, latitude);
@@ -250,7 +255,6 @@ public class AddQRFragment extends Fragment {
                     });
 
 
-
                     yes.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -271,21 +275,19 @@ public class AddQRFragment extends Fragment {
                     // Instantiate new QRCode to add to the QRLibrary
                     if (locationAdded && photoAdded) {
                         // NOTE: photo is temporarily null here
-                        QRCodeToAdd = new QRCode(hashedString, QRCodeLocation, (Photo) null );
-                    }
-                    else if (locationAdded && !photoAdded) {
+                        QRCodeToAdd = new QRCode(hashedString, QRCodeLocation, (Photo) null);
+                    } else if (locationAdded && !photoAdded) {
                         QRCodeToAdd = new QRCode(hashedString, QRCodeLocation);
-                    }
-                    else if(!locationAdded && photoAdded) {
+                    } else if (!locationAdded && photoAdded) {
                         // NOTE: photo is temporarily null here
                         QRCodeToAdd = new QRCode(hashedString, (Photo) null);
-                    }
-                    else {
+                    } else {
                         QRCodeToAdd = new QRCode(hashedString);
                     }
 
 
-
+                    unique = checkWhetherUnique(QRCodeToAdd);
+                    savePlayerToQRCode(QRCodeToAdd, unique);
 
                     // send QRCodeToAdd to MainActivity to add it to the player's QRLibrary
                     listener.onConfirmPressed(QRCodeToAdd);
@@ -333,7 +335,8 @@ public class AddQRFragment extends Fragment {
         void onConfirmPressed(QRCode qrCodeData);
 
     }
-    Boolean checkWhetherUnique(QRCode qrcode){
+
+    Boolean checkWhetherUnique(QRCode qrcode) {
         String hash = qrcode.getHash();
         DocumentReference docRef = db.collection("QR Codes").document(hash);
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -342,7 +345,10 @@ public class AddQRFragment extends Fragment {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
-                        unique = false;
+                        unique = false; // document already exists on db
+                        // just add player to existing scannedbylist
+                        //alreadyScanned = true;
+                        //savePlayerToQRCode(qrcode, unique);
                     } else {
                         unique = true;
                         saveQRCodeToDB(qrcode);
@@ -351,6 +357,7 @@ public class AddQRFragment extends Fragment {
                         int duration = Toast.LENGTH_SHORT;
                         Toast toast = Toast.makeText(context, text, duration);
                         toast.show();
+                        //savePlayerToQRCode(qrcode, unique);
                     }
                 } else {
                     Log.d(TAG, "get failed with ", task.getException());
@@ -360,7 +367,7 @@ public class AddQRFragment extends Fragment {
         return unique;
     }
 
-    public void saveQRCodeToDB(QRCode qrcode){
+    public void saveQRCodeToDB(QRCode qrcode) {
         String hash = qrcode.getHash();
         CollectionReference collectionIdentifier = db.collection("QR Codes");
         collectionIdentifier
@@ -381,13 +388,78 @@ public class AddQRFragment extends Fragment {
                     }
                 });
     }
-    /*
 
 
+    public void savePlayerToQRCode(QRCode qrcode, Boolean unique) {
 
-    public void savePlayerToQRCode(QRCode qrcode){
 
+        if (unique) { //first time scanning this qrcode
+            //scannedByList = new ArrayList<Player>();
+            scannedByList = new ArrayList<Player>();
+            scannedByLibrary = new ScannedByLibrary(scannedByList);
+            scannedByLibrary.getScannedByList().add(currentPlayer);
+            HashMap<String, ScannedByLibrary> scannedByData = new HashMap<>();
+            scannedByData.put("Scanned By List", scannedByLibrary);
+            String hash = qrcode.getHash();
+            CollectionReference collectionIdentifier = db.collection("QR Codes");
+            collectionIdentifier.document(hash)
+                    .set(scannedByData)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            // These are a method which gets executed when the task is succeeded
+                            Log.d(TAG, "Data has been added successfully!");
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            // These are a method which gets executed if there’s any problem
+                            Log.d(TAG, "Data could not be added!" + e.toString());
+                        }
+                    });
+        }
+        else {//not first time scanning this qrcode
+
+
+            CollectionReference collectionIdentifier = db.collection("QR Codes");
+            String hash = qrcode.getHash();
+            collectionIdentifier
+                    //.document(hash)
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    if (document.getId() == hash) {
+                                        scannedByLibrary = (ScannedByLibrary) document.get("Scanned By List");
+                                    }
+
+                                    scannedByLibrary.getScannedByList().add(currentPlayer);
+
+                                    //userList.add(document.getId().toString());
+                                    Log.d(TAG, document.getId() + " => " + document.getData());
+                                }
+                            } else {
+                                Log.d(TAG, "Error getting documents: ", task.getException());
+                            }
+                        }
+                    });
+
+
+            db.collection("QR Codes")
+                    .document(hash)
+                    .update("Scanned By List", scannedByLibrary);
+
+
+        }
     }
+
+
+
+
+
 
 
     /*

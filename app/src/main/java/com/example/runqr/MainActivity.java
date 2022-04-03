@@ -10,7 +10,6 @@ import android.view.MenuItem;
 import android.view.View;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -32,21 +31,16 @@ import com.google.firebase.events.Event;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 
 // Main activity of the RunQR game has an app bar with 2 icons: dropdown menu and an add QR Button which opens scanner for player to scan QRCodes.
 // Main activity also contains a map with a refresh button and a nearbySearch button (AYUSH can elaborate on this).
@@ -66,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
     /// fix below to do automatic log in and save player info
 
     /*next two lines are needed*/
-    Player currentPlayer = new Player();
+    static Player currentPlayer = new Player();
     //PlayerStats playerStats;
 
     final String TAG = "Sample";
@@ -327,6 +321,8 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 
     }
 
+    static public Player getCurrentPlayer() {return currentPlayer;}
+
     void savePlayerToDatabase() {
         String usernameData = currentPlayer.getPlayerAccount().getUsername();
         HashMap<String, Player> data = new HashMap<>();
@@ -472,7 +468,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
     @Override
     public void onConfirmPressed(QRCode qrCodeData) {
         //String test = qrCodeData.getHash();
-
+        // Add QRCode to player's library
         currentPlayer.getPlayerQRLibrary().addQRCode(qrCodeData);
 
         /*update PlayerStats*/
@@ -591,8 +587,8 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
         }
 
 
-
     }
+
 
     public void addQRLocationGlobally(QRCode qrCodeData,HashMap<String, String> qrData, CollectionReference QRCodesReference ) {
         // Creating collection for global QRCodes

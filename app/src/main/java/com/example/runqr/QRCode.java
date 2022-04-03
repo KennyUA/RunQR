@@ -20,6 +20,7 @@ public class QRCode implements Serializable {
     private String hash;
     private Photo photo;
     private CommentLibrary commentLibrary;
+    private ArrayList<Player> scannedByList = new ArrayList<Player>();
 
 
     // If both location and photo are denied
