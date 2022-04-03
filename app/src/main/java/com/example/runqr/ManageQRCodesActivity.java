@@ -73,7 +73,7 @@ public class ManageQRCodesActivity extends AppCompatActivity {
                                             Log.w(TAG, "Error deleting document", e);
                                         }
                                     });
-                            scannedByList = (ArrayList<String>) db.collection("QR Codes").document(dataList.get(position)).get("Scanned by");
+                           // scannedByList = (ArrayList<String>) db.collection("QR Codes").document(dataList.get(position)).get("Scanned by");
 
 
 

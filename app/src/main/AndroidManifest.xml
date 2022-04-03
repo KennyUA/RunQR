@@ -57,7 +57,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-<<<<<<< HEAD
+
         <activity
             android:name=".OwnerActivity"
             android:exported="false" />
@@ -67,8 +67,7 @@
         <activity
             android:name=".ManagePlayersActivity"
             android:exported="true" />
-=======
->>>>>>> 84c331ca18302cb5298ab96717d6c6e75170ed5e
+
         <activity
             android:name=".QRLibraryActivity"
             android:exported="false" />
@@ -80,8 +79,6 @@
             android:exported="false" />
     </application>
 
-<<<<<<< HEAD
+
 </manifest>
-=======
-</manifest>
->>>>>>> 84c331ca18302cb5298ab96717d6c6e75170ed5e
+
