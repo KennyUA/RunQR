@@ -22,9 +22,6 @@
             android:name=".CustomListAdapter"
             android:exported="false"-->
         <activity
-            android:name=".AddDeviceActivity"
-            android:exported="false" />
-        <activity
             android:name=".ProfileActivity"
             android:exported="false" />
 
@@ -57,7 +54,9 @@
             android:exported="false" />
         <activity
             android:name=".MainActivity"
-            android:exported="false"></activity>
+            android:exported="false">
+
+        </activity>
     </application>
 
 </manifest>

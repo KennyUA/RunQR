@@ -1,5 +1,6 @@
 package com.example.runqr;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -7,6 +8,8 @@ import android.widget.Button;
 import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 
 import java.util.ArrayList;
 
@@ -19,6 +22,7 @@ import java.util.ArrayList;
 public class ProfileActivity extends AppCompatActivity {
 
     ListView profileList;
+    ExtendedFloatingActionButton viewQRCodesButton;
     ArrayAdapter<ProfileItem> profileAdapter;
     ArrayList<ProfileItem> profileDataList;
     String[] items;
@@ -38,9 +42,21 @@ public class ProfileActivity extends AppCompatActivity {
 
 
         profileList = findViewById(R.id.profile_list);
+        viewQRCodesButton = findViewById(R.id.view_qrcodes_button);
+
+        String highQrString = "N/A";
+        String lowQrString = "N/A";
+
+        if (playerStats.getHighQr() != null) {
+            highQrString = String.valueOf(playerStats.getHighQr().getScore());
+        }
+
+        if (playerStats.getLowQr() != null) {
+            lowQrString = String.valueOf(playerStats.getLowQr().getScore());
+        }
 
         String[] items = {"Scanned QR Codes: ", "Total Score: ", "Rank (number of codes): ", "Rank (player): ", "Rank (highest scoring code): ", "Highest Scoring: ", "Lowest Scoring: "};
-        String[] values = {String.valueOf(playerStats.getNumOfScanned()), String.valueOf(playerStats.getSumOfScores()), String.valueOf(playerStats.getRankNumOfScanned()), String.valueOf(playerStats.getRankSumOfScores()), String.valueOf(playerStats.getRankHighQr()), String.valueOf(playerStats.getHighQr().getScore()), String.valueOf(playerStats.getLowQr().getScore())};
+        String[] values = {String.valueOf(playerStats.getNumOfScanned()), String.valueOf(playerStats.getSumOfScores()), String.valueOf(playerStats.getRankNumOfScanned()), String.valueOf(playerStats.getRankSumOfScores()), String.valueOf(playerStats.getRankHighQr()), highQrString, lowQrString};
 
         profileDataList = new ArrayList<>();
         for (int i = 0; i < items.length; i++) {
@@ -51,6 +67,16 @@ public class ProfileActivity extends AppCompatActivity {
         profileList.setAdapter(profileAdapter);
 
 
+        viewQRCodesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //open the player's qr library
+                Intent intent = new Intent(ProfileActivity.this, QRLibraryActivity.class);
+                intent.putExtra("Player QRLibraryActivity", player);
+                intent.putExtra("Allow Deletion?", false);
+                startActivity(intent);
+            }
+        });
 
         Button backButton = (Button) findViewById(R.id.back_button);
         backButton.setOnClickListener(new View.OnClickListener(){

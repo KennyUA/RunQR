@@ -11,11 +11,9 @@
         android:id="@+id/locationInfo"
         android:layout_width="126dp"
         android:layout_height="64dp"
-        android:layout_marginEnd="16dp"
         android:text="TextView"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/listContainer"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/photoInfo"
         app:layout_constraintTop_toBottomOf="@+id/statInfo" />
 
@@ -23,10 +21,8 @@
         android:id="@+id/photoInfo"
         android:layout_width="210dp"
         android:layout_height="185dp"
-        android:layout_marginStart="28dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/locationInfo"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintBottom_toTopOf="@+id/listContainer"
+        app:layout_constraintEnd_toStartOf="@+id/statInfo"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@tools:sample/backgrounds/scenic" />
@@ -35,12 +31,61 @@
         android:id="@+id/statInfo"
         android:layout_width="126dp"
         android:layout_height="64dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginTop="52dp"
+        android:layout_marginEnd="28dp"
         android:text="TextView"
-        app:layout_constraintBottom_toTopOf="@+id/locationInfo"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/photoInfo"
         app:layout_constraintTop_toTopOf="parent" />
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="473dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/photoInfo"
+        android:id = "@+id/listContainer">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="409dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:layout_editor_absoluteX="1dp" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/add_comment_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:layout_margin="10px"
+            android:src="@android:drawable/stat_notify_chat"
+            tools:layout_editor_absoluteX="355dp"
+            tools:layout_editor_absoluteY="675dp" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/back_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|left"
+                android:layout_margin="10px"
+                android:clickable="true"
+                android:text="BACK"
+                app:srcCompat="?attr/homeAsUpIndicator"
+                tools:layout_editor_absoluteX="355dp"
+                tools:layout_editor_absoluteY="675dp" />
+
+
+        </FrameLayout>
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

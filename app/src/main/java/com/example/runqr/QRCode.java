@@ -19,13 +19,14 @@ public class QRCode implements Serializable {
     private Location location;
     private String hash;
     private Photo photo;
+    private CommentLibrary commentLibrary;
 
 
     // If both location and photo are denied
     public QRCode(String hash){
-
         this.hash = hash;
         this.score = scoreQRCode(hash);
+        this.commentLibrary = new CommentLibrary();
 
     }
 
@@ -34,18 +35,8 @@ public class QRCode implements Serializable {
         this.score = scoreQRCode(hash);
         this.hash = hash;
         this.location = location;
-    }
-
-
-    // If both location and photo are allowed
-    public QRCode(String hash, Location location, Photo photo) {
-        this.score = scoreQRCode(hash);
-        this.hash = hash;
-        this.location = location;
-        this.photo = photo;
-    }
-
-    public QRCode() {
+        this.commentLibrary = new CommentLibrary();
+    }public QRCode() {
     }
 
     public void setScore(int score) {
@@ -67,6 +58,17 @@ public class QRCode implements Serializable {
     public void setCommentLibrary(CommentLibrary commentLibrary) {
         this.commentLibrary = commentLibrary;
     }
+
+
+    // If both location and photo are allowed
+    public QRCode(String hash, Location location, Photo photo) {
+        this.score = scoreQRCode(hash);
+        this.hash = hash;
+        this.location = location;
+        this.photo = photo;
+        this.commentLibrary = new CommentLibrary();
+    }
+
 
     /**
      * This method gets the QRCode's score.
@@ -106,6 +108,14 @@ public class QRCode implements Serializable {
     public Location getLocation(){
         return this.location;
     }
+
+    /**
+     * This method gets the commentLibrary associated with the QRCode which contains all of its comments.
+     * @return
+     *      The CommentLibrary object associated with the given QRCode.
+     */
+    public CommentLibrary getCommentLibrary(){ return this.commentLibrary; }
+
 
     /**
      * This method calculates the score of the QRCode from the hash using the following scoring algorithm:
@@ -162,6 +172,8 @@ public class QRCode implements Serializable {
 
         return (int) Math.floor(Math.log(QRScore));
     }
+
+
 
     /**
      * This is a method borrowed from GeeksForGeeks which counts the number of occurrences for each character in a given string.

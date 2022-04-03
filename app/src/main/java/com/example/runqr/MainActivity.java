@@ -77,15 +77,6 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
     ArrayList<Marker> markerArrayList;
     ArrayList<MarkerOptions> markerOptionsArrayList;
     GoogleMap currentMap;
-    //cite https://stackoverflow.com/questions/48699032/how-to-set-addsnapshotlistener-and-remove-in-populateviewholder-in-recyclerview
-    EventListener<QuerySnapshot> eventListener;
-    ListenerRegistration listenerReg;
-    String hashUsername = "";
-    Boolean successFirst = false;
-    Boolean successSecond = false;
-    String user = "";
-
-
 
     ListenerRegistration listenerReg;
     String hashUsername = "";
@@ -100,6 +91,10 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
         Log.v(TAG, hashUsername);
         db = FirebaseFirestore.getInstance();
         loadUsername();
+        //if(successFirst == true) {
+        Log.v(TAG, "AHHHH");
+        Log.v("YSERRRRRRRRR", user);
+        //if (successSecond == true) {
         // Get a top level reference to the collection
         collectionReference = db.collection("Accounts");
         //HashMap<String, String> accountData = new HashMap<>();
@@ -107,21 +102,6 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
         // Creating collection for global QRCodes
         QRCodesReference = db.collection("QR Codes");
         //HashMap<String, String> qrData = new HashMap<>();
-
-        /*
-        HashMap<String, Account> accountData = new HashMap<>();
-        //HashMap<String, String> accountData = new HashMap<>();
-        //accountData.put("Account", currentPlayer.getPlayerAccount().getUsername());
-
-
-        // The set method sets a unique id for the document
-        collectionReference
-                .document("test_username")
-                .set(accountData)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-// These are a method which gets executed when the task is succeeded
 
                 /*
                 HashMap<String, Account> accountData = new HashMap<>();
@@ -176,97 +156,97 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
                             }
                         });*/
 
-                //Any change in the QR Codes collection in the database is noticed here and the map is updated accordingly
-                //markerOptionsArrayList used to store all marker options in order to be passed into fragment to display addresses of QR Codes
-                //markerArrayList is used to store Marker objects displayed on map so that each of their states can be easily manipulated
-                markerOptionsArrayList = new ArrayList<MarkerOptions>();
-                markerArrayList = new ArrayList<Marker>();
-                QRCodesReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+        //Any change in the QR Codes collection in the database is noticed here and the map is updated accordingly
+        //markerOptionsArrayList used to store all marker options in order to be passed into fragment to display addresses of QR Codes
+        //markerArrayList is used to store Marker objects displayed on map so that each of their states can be easily manipulated
+        markerOptionsArrayList = new ArrayList<MarkerOptions>();
+        markerArrayList = new ArrayList<Marker>();
+        QRCodesReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                if (!markerArrayList.isEmpty()) {
+                    for (Marker marker : markerArrayList) {
+                        marker.remove();
+                    }
+                }
+
+
+                markerArrayList.clear();
+                markerOptionsArrayList.clear();
+
+                for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                    if ((String) doc.getId() != "unique hash") {
+                        Log.v("id", (String) doc.getId());
+                        Log.v("x", String.valueOf(doc.getData().get("Location X")));
+                        Log.v("y", String.valueOf(doc.getData().get("Location Y")));
+                        Float x = Float.parseFloat((String) doc.getData().get("Location X"));
+                        Float y = Float.parseFloat((String) doc.getData().get("Location Y"));
+                        MarkerOptions newMarkerOptions = new MarkerOptions()
+                                .position(new LatLng(x, y))
+                                .title("new Marker");
+                        Marker newMarker = currentMap.addMarker(newMarkerOptions);
+
+                        markerOptionsArrayList.add(newMarkerOptions);
+                        markerArrayList.add(newMarker);
+                    }
+
+                }
+            }
+        });
+
+
+        //Button to display fragment of addresses
+        listBtn = findViewById(R.id.searchLocationsBtn);
+
+        listBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MarkerFragment locationFragment = MarkerFragment.newInstance(markerOptionsArrayList);
+                locationFragment.show(getSupportFragmentManager(), "LOCATIONS");
+
+            }
+        });
+
+
+        // The set method sets a unique id for the document
+        //HashMap<String, String> accountData = new HashMap<>();
+        //accountData.put("Account Username", currentPlayer.getPlayerAccount().getUsername());
+        accountData.put("Account Username", "test_username");
+        Log.v("Hello", "test_message");
+        collectionReference
+                .document("Usernames")
+                .set(accountData)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
-                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                        if (!markerArrayList.isEmpty()) {
-                            for (Marker marker : markerArrayList) {
-                                marker.remove();
-                            }
-                        }
+                    public void onSuccess(Void aVoid) {
+                        // These are a method which gets executed when the task is succeeded
 
-
-                        markerArrayList.clear();
-                        markerOptionsArrayList.clear();
-
-                        for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                            if ((String) doc.getId() != "unique hash") {
-                                Log.v("id", (String) doc.getId());
-                                Log.v("x", String.valueOf(doc.getData().get("Location X")));
-                                Log.v("y", String.valueOf(doc.getData().get("Location Y")));
-                                Float x = Float.parseFloat((String) doc.getData().get("Location X"));
-                                Float y = Float.parseFloat((String) doc.getData().get("Location Y"));
-                                MarkerOptions newMarkerOptions = new MarkerOptions()
-                                        .position(new LatLng(x, y))
-                                        .title("new Marker");
-                                Marker newMarker = currentMap.addMarker(newMarkerOptions);
-
-                                markerOptionsArrayList.add(newMarkerOptions);
-                                markerArrayList.add(newMarker);
-                            }
-
-                        }
+                        Log.v(TAG, "Data has been added successfully!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // These are a method which gets executed if there’s any problem
+                        Log.v(TAG, "Data could not be added!" + e.toString());
                     }
                 });
+        Log.v("Hello", "test_message");
 
 
-                //Button to display fragment of addresses
-                listBtn = findViewById(R.id.searchLocationsBtn);
+        db = FirebaseFirestore.getInstance();
+        // Get a top level reference to the collection
+        collectionReference = db.collection("Accounts");
+        //HashMap<String, String> accountData = new HashMap<>();
 
-                listBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        MarkerFragment locationFragment = MarkerFragment.newInstance(markerOptionsArrayList);
-                        locationFragment.show(getSupportFragmentManager(), "LOCATIONS");
+        // Creating collection for global QRCodes
 
-                    }
-                });
+        //HashMap<String, String> qrData = new HashMap<>();
 
-
-                // The set method sets a unique id for the document
-                //HashMap<String, String> accountData = new HashMap<>();
-                //accountData.put("Account Username", currentPlayer.getPlayerAccount().getUsername());
-                accountData.put("Account Username", "test_username");
-                Log.v("Hello", "test_message");
-                collectionReference
-                        .document("Usernames")
-                        .set(accountData)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                // These are a method which gets executed when the task is succeeded
-
-                                Log.v(TAG, "Data has been added successfully!");
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                // These are a method which gets executed if there’s any problem
-                                Log.v(TAG, "Data could not be added!" + e.toString());
-                            }
-                        });
-                Log.v("Hello", "test_message");
-
-
-                db = FirebaseFirestore.getInstance();
-                // Get a top level reference to the collection
-                collectionReference = db.collection("Accounts");
-                //HashMap<String, String> accountData = new HashMap<>();
-
-                // Creating collection for global QRCodes
-
-                //HashMap<String, String> qrData = new HashMap<>();
-
-                //https://developers.google.com/maps/documentation/android-sdk/map
-                SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                        .findFragmentById(R.id.map);
-                mapFragment.getMapAsync(this);
+        //https://developers.google.com/maps/documentation/android-sdk/map
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
 
 
 
@@ -285,22 +265,10 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 
 
                 */
-            //}
+        //}
         //}
 
     }
-
-    void loadData(){
-        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
-        Gson gson = new Gson();
-        String json = sharedPreferences.getString("hash username", null);
-        Type type = new TypeToken<String>(){}.getType();
-        hashUsername = gson.fromJson(json, type);
-        if(hashUsername == null){
-            hashUsername = "";
-        }
-    }
-
 
     @Override
     public void onStart(){
@@ -315,7 +283,8 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
     // Trying to fix null objects on second time opening the app
     @Override
     public void onPause(){
-        savePlayerToDatabase();
+        savePlayer();
+        //savePlayerToDatabase();
         super.onPause();
 
     }
@@ -336,6 +305,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 
     @Override
     public void onDestroy(){
+        savePlayer();
         super.onDestroy();
 
     }
@@ -409,24 +379,56 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
             }
         });
     }
+    void loadData(){
+        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = sharedPreferences.getString("hash username", null);
+        Type type = new TypeToken<String>(){}.getType();
+        hashUsername = gson.fromJson(json, type);
+        if(hashUsername == null){
+            hashUsername = "";
+        }
+    }
+
+    public interface MyCallback {
+        void onCallback(List<Event> eventList);
+    }
+
+
+    void savePlayer(){
+        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        String json =gson.toJson(currentPlayer);
+        editor.putString("player", json);
+        editor.apply();
+    }
+
+    void loadPlayer(){
+        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = sharedPreferences.getString("player", null);
+        Type type = new TypeToken<Player>(){}.getType();
+        currentPlayer = gson.fromJson(json, type);
+    }
 
 
 
-//    public void openAddQRFragment(Button addQR){
-     public void openAddQRFragment(){
+    //    public void openAddQRFragment(Button addQR){
+    public void openAddQRFragment(){
         // open addQRFragment to scan QRcode and add it to player's account
         //addQR.setVisibility(View.GONE);
 
-         final FloatingActionButton searchLocationsMap = findViewById(R.id.searchLocationsBtn);
+        final FloatingActionButton searchLocationsMap = findViewById(R.id.searchLocationsBtn);
 
-         searchLocationsMap.setVisibility(View.GONE);
+        searchLocationsMap.setVisibility(View.GONE);
 
-         FragmentManager fragmentManager = getSupportFragmentManager();
-         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-         AddQRFragment addQRFragment = new AddQRFragment();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        AddQRFragment addQRFragment = new AddQRFragment();
         //fragmentTransaction.add(R.id.addQRFragment_container,addQRFragment);\
-         fragmentTransaction.add(R.id.addQRFragment_container, addQRFragment, "Add QR Code");
-         fragmentTransaction.commit();
+        fragmentTransaction.add(R.id.addQRFragment_container, addQRFragment, "Add QR Code");
+        fragmentTransaction.commit();
         //addQR.setVisibility(View.VISIBLE);
 
         //getSupportFragmentManager().beginTransaction().add(R.id.container, new AddQRFragment()).commit();
@@ -434,12 +436,12 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
         //final View addQR = findViewById(R.id.fragment_container_view);
         //addQR.setVisibility(View.VISIBLE);
 
-         searchLocationsMap.setVisibility(View.VISIBLE);
+        searchLocationsMap.setVisibility(View.VISIBLE);
 
 
 
 
-         //AddQRFragment addQRFragment = new AddQRFragment();
+        //AddQRFragment addQRFragment = new AddQRFragment();
         //FragmentManager manager = getFragmentManager();
         //FragmentTransaction transaction = manager.beginTransaction();
         //transaction.add(R.id.fragment_container_view,AddQRFragment.class,"OPEN_SCANNER");
@@ -486,76 +488,6 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 
         // THIS NEEDS TO BE UPDATED BY KENNY
         // Below: open activity/fragment which prompts user to access their device's location and take photo of the object containing scannedQRCode
-        dialogBuilder = new AlertDialog.Builder(this);
-        final View conformationPopup = getLayoutInflater().inflate(R.layout.scanner_popup,null);
-
-        take_photo = (Button) conformationPopup.findViewById(R.id.takePhotoButton);
-        add_geolocation = (Button) conformationPopup.findViewById(R.id.addGeolocationButton);
-        yes = (Button) conformationPopup.findViewById(R.id.yesButton);
-        no = (Button) conformationPopup.findViewById(R.id.noButton);
-
-
-        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            ActivityCompat.requestPermissions(MainActivity.this,new String[]{
-                    Manifest.permission.ACCESS_FINE_LOCATION
-            }, 100);
-
-            return;
-        }
-        android.location.Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
-
-
-        dialogBuilder.setView(conformationPopup);
-        dialog = dialogBuilder.create();
-        dialog.show();
-
-        take_photo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //define Take Photo here
-                openCamera(view);
-            }
-        });
-
-        add_geolocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //define Geo-Location here
-                double longitude = location.getLongitude();
-                double latitude = location.getLatitude();
-                view.setX(Math.round(longitude));
-                view.setY(Math.round(latitude));
-
-            }
-        });
-
-
-
-        yes.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //define Got it here
-                dialog.dismiss();
-            }
-        });
-
-        no.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //define Cancel here
-                dialog.dismiss();
-            }
-        });
 
 
 
@@ -628,7 +560,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
                 playerStats.setNumOfScanned(currentCodes);
                 */
                 break;
-                //return true;
+            //return true;
 
             case R.id.profile_item:
                 //open player profile activity
@@ -636,14 +568,14 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
                 intent1.putExtra("Player", (Serializable) currentPlayer);
                 startActivity(intent1);
                 break;
-                //return true;
+            //return true;
 
 
             case R.id.add_qr_item:
                 //Open fragment to scan QR code
                 openAddQRFragment();
                 break;
-                //return true;
+            //return true;
 
 
             case R.id.leaderboard_item:
@@ -652,12 +584,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
                 intent2.putExtra("Player", (Serializable) currentPlayer);
                 startActivity(intent2);
                 break;
-
             //return true;
-            case R.id.add_device_item:
-                Intent intent3 = new Intent(this, AddDeviceActivity.class);
-                startActivity(intent3);
-                break;
 
             case R.id.add_device_item:
                 Intent intent3 = new Intent(this, AddDeviceActivity.class);
@@ -702,4 +629,5 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
             this.currentMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         }
     }
-    }
+}
+

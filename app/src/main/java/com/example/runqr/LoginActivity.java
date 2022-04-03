@@ -303,41 +303,11 @@ public class LoginActivity extends AppCompatActivity implements LoginWithQRFragm
     public void onConfirmPressed(QRCode qrCodeData) {
         //String test = qrCodeData.getHash();
 
-        currentPlayer.getPlayerQRLibrary().addQRCode(qrCodeData);
-
-        /*update PlayerStats*/
-        PlayerStats playerStats = currentPlayer.getPlayerStats();
-        int currentCodes = playerStats.getNumOfScanned();
-        playerStats.setNumOfScanned(currentCodes+ 1);
-        int currentScore = playerStats.getSumOfScores();
-        playerStats.setSumOfScores(currentScore + qrCodeData.getScore());
-        if (playerStats.getLowQr() == null) {
-            playerStats.setLowQr(qrCodeData);
-        }
-        else {
-            if (qrCodeData.getScore() < playerStats.getLowQr().getScore()) {
-                playerStats.setLowQr(qrCodeData);
-            }
-
-        }
-
-        if (playerStats.getHighQr() == null) {
-            playerStats.setHighQr(qrCodeData);
-        }
-        else {
-            if (qrCodeData.getScore() > playerStats.getHighQr().getScore()){
-                playerStats.setHighQr(qrCodeData);
-            }
-        }
 
 
 
         // THIS NEEDS TO BE UPDATED BY KENNY
         // Below: open activity/fragment which prompts user to access their device's location and take photo of the object containing scannedQRCode
-
-
-
-
 
 
 
