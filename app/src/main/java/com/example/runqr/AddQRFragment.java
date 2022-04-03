@@ -35,12 +35,9 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.zxing.Result;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 // This class is the Fragment used to host a codeScanner which allows players to scan QRCodes and uses Hasher to hash code contents.
 // The newly created QRCode is passed back to MainActivity through method onConfirmPressed and added to player's QRLibrary there.
@@ -74,6 +71,7 @@ public class AddQRFragment extends Fragment {
     Boolean unique;
     ScannedByLibrary scannedByLibrary;
     ArrayList<Player> scannedByList;
+    Boolean addCode = true;
 
 
     @Override
@@ -285,12 +283,13 @@ public class AddQRFragment extends Fragment {
                         QRCodeToAdd = new QRCode(hashedString);
                     }
 
-
                     unique = checkWhetherUnique(QRCodeToAdd);
-                    savePlayerToQRCode(QRCodeToAdd, unique);
 
                     // send QRCodeToAdd to MainActivity to add it to the player's QRLibrary
-                    listener.onConfirmPressed(QRCodeToAdd);
+
+                    if (addCode){
+                        listener.onConfirmPressed(QRCodeToAdd);
+                    }
 
                     getFragmentManager().beginTransaction().remove(AddQRFragment.this).commit();
                     /*
@@ -345,10 +344,17 @@ public class AddQRFragment extends Fragment {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
-                        unique = false; // document already exists on db
+
+                        unique = false;
+
+                        //unique = false;
+                        // document already exists on db
                         // just add player to existing scannedbylist
                         //alreadyScanned = true;
                         //savePlayerToQRCode(qrcode, unique);
+
+                        savePlayerToQRCode(qrcode);
+
                     } else {
                         unique = true;
                         saveQRCodeToDB(qrcode);
@@ -357,7 +363,10 @@ public class AddQRFragment extends Fragment {
                         int duration = Toast.LENGTH_SHORT;
                         Toast toast = Toast.makeText(context, text, duration);
                         toast.show();
-                        //savePlayerToQRCode(qrcode, unique);
+
+
+                        //YUMNA:
+                        savePlayerToQRCode(qrcode);
                     }
                 } else {
                     Log.d(TAG, "get failed with ", task.getException());
@@ -368,6 +377,7 @@ public class AddQRFragment extends Fragment {
     }
 
     public void saveQRCodeToDB(QRCode qrcode) {
+        // needs to save player to the player collection
         String hash = qrcode.getHash();
         CollectionReference collectionIdentifier = db.collection("QR Codes");
         collectionIdentifier
@@ -378,6 +388,7 @@ public class AddQRFragment extends Fragment {
                     public void onSuccess(Void aVoid) {
                         // These are a method which gets executed when the task is succeeded
                         Log.d(TAG, "Data has been added successfully!");
+                        saveQRCodeToDB(qrcode);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -390,70 +401,52 @@ public class AddQRFragment extends Fragment {
     }
 
 
-    public void savePlayerToQRCode(QRCode qrcode, Boolean unique) {
 
-
-        if (unique) { //first time scanning this qrcode
-            //scannedByList = new ArrayList<Player>();
-            scannedByList = new ArrayList<Player>();
-            scannedByLibrary = new ScannedByLibrary(scannedByList);
-            scannedByLibrary.getScannedByList().add(currentPlayer);
-            HashMap<String, ScannedByLibrary> scannedByData = new HashMap<>();
-            scannedByData.put("Scanned By List", scannedByLibrary);
-            String hash = qrcode.getHash();
-            CollectionReference collectionIdentifier = db.collection("QR Codes");
-            collectionIdentifier.document(hash)
-                    .set(scannedByData)
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            // These are a method which gets executed when the task is succeeded
-                            Log.d(TAG, "Data has been added successfully!");
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            // These are a method which gets executed if there’s any problem
-                            Log.d(TAG, "Data could not be added!" + e.toString());
-                        }
-                    });
-        }
-        else {//not first time scanning this qrcode
-
-
-            CollectionReference collectionIdentifier = db.collection("QR Codes");
-            String hash = qrcode.getHash();
-            collectionIdentifier
-                    //.document(hash)
-                    .get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if (task.isSuccessful()) {
-                                for (QueryDocumentSnapshot document : task.getResult()) {
-                                    if (document.getId() == hash) {
-                                        scannedByLibrary = (ScannedByLibrary) document.get("Scanned By List");
+    public void savePlayerToQRCode(QRCode qrcode) {
+        String hash = qrcode.getHash();
+        String playerUsername =  currentPlayer.getPlayerAccount().getUsername();
+        DocumentReference docref = db.collection("QR Codes").document(hash).collection("Players").document(playerUsername);
+        docref.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Context context = getApplicationContext();
+                        CharSequence text = "This QR code was already scanned by you. Scan another one!";
+                        // DON'T add to library!!
+                        addCode = false;
+                        int duration = Toast.LENGTH_SHORT;
+                        Toast toast = Toast.makeText(context, text, duration);
+                        toast.show();
+                    }
+                    else{
+                        CollectionReference collectionIdentifier = db.collection("QR Codes").document(hash).collection("Players");
+                        collectionIdentifier
+                                .document(playerUsername)
+                                .set(currentPlayer)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        // These are a method which gets executed when the task is succeeded
+                                        Log.d(TAG, "Data has been added successfully!");
                                     }
-
-                                    scannedByLibrary.getScannedByList().add(currentPlayer);
-
-                                    //userList.add(document.getId().toString());
-                                    Log.d(TAG, document.getId() + " => " + document.getData());
-                                }
-                            } else {
-                                Log.d(TAG, "Error getting documents: ", task.getException());
-                            }
-                        }
-                    });
-
-
-            db.collection("QR Codes")
-                    .document(hash)
-                    .update("Scanned By List", scannedByLibrary);
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        // These are a method which gets executed if there’s any problem
+                                        Log.d(TAG, "Data could not be added!" + e.toString());
+                                    }
+                                });
+                    }
+                }
+            }
+        });
 
 
-        }
+
+
     }
 
 
