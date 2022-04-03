@@ -569,7 +569,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
                 Intent intent = new Intent(this, QRLibraryActivity.class);
                 //intent.putExtra("Player QRLibrary", (Serializable) currentPlayer.getPlayerQRLibrary());
                 intent.putExtra("Player QRLibraryActivity", (Serializable) currentPlayer);
-                intent.putExtra("Allow Deletion?", true);
+                intent.putExtra("Allow Deletion?", (Serializable) true);
                 startActivityForResult(intent, 1);
 
                 /*

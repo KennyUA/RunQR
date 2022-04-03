@@ -56,4 +56,8 @@ public class CommentLibrary implements Serializable {
         this.numComments = numComments;
     }
 
+    public void addComment(Comment comment) {
+        commentList.add(comment);
+        numComments += 1;
+    }
 }

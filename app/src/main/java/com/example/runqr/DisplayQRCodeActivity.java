@@ -28,13 +28,15 @@ public class DisplayQRCodeActivity extends AppCompatActivity implements AddComme
     ArrayList<Comment> commentDataList;
     RecyclerView QRCodeComments;
     CommentList commentAdapter;
+    CommentLibrary commentLibrary;
+    QRCode codeToDisplay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_qrcode);
 
-        QRCode codeToDisplay = (QRCode) getIntent().getSerializableExtra("QRCode to display");
+        codeToDisplay = (QRCode) getIntent().getSerializableExtra("QRCode to display");
         clickPos = (Integer) getIntent().getSerializableExtra("Position of QRCodeClicked");
 
         ImageView QRCodePhoto = findViewById(R.id.photoInfo);
@@ -42,7 +44,8 @@ public class DisplayQRCodeActivity extends AppCompatActivity implements AddComme
         TextView QRCodeLocation = findViewById(R.id.locationInfo);
         FloatingActionButton addCommentButton = findViewById(R.id.add_comment_button);
         QRCodeComments = findViewById(R.id.recyclerView);
-        commentDataList = codeToDisplay.getCommentLibrary().getCommentList();
+        commentLibrary =  codeToDisplay.getCommentLibrary();
+        commentDataList = commentLibrary.getCommentList();
 
         // Setting the layout as linear
         // layout for vertical orientation
@@ -50,7 +53,7 @@ public class DisplayQRCodeActivity extends AppCompatActivity implements AddComme
         QRCodeComments.setLayoutManager(linearLayoutManager);
 
         // Sending reference and data to Adapter
-        commentAdapter = new CommentList(DisplayQRCodeActivity.this, codeToDisplay.getCommentLibrary().getCommentList(),
+        commentAdapter = new CommentList(DisplayQRCodeActivity.this, commentDataList,
                 new CommentList.ItemClickListener() {
             @Override
             public void onItemClick(Comment commentClicked) {
@@ -75,6 +78,7 @@ public class DisplayQRCodeActivity extends AppCompatActivity implements AddComme
         addCommentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                edit = false;
                 new AddCommentFragment().show(getSupportFragmentManager(), "ADD_CITY");
             }
         });
@@ -128,7 +132,8 @@ public class DisplayQRCodeActivity extends AppCompatActivity implements AddComme
         }
         else {
 
-            commentDataList.add(newComment);
+            //commentDataList.add(newComment);
+            commentLibrary.addComment(newComment);
             commentAdapter.notifyDataSetChanged();
         }
         QRCodeComments.scrollToPosition(commentDataList.size()-1);

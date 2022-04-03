@@ -54,6 +54,7 @@ public class CommentList extends RecyclerView.Adapter<CommentList.ViewHolder> im
         holder.bodyText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mItemListener.onItemClick(comments.get(holder.getAdapterPosition()));
                 //Comment commentClicked = comments.get(position);
                 //onCommentClick(commentClicked);
 

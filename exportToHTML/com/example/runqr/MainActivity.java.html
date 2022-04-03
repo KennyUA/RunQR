@@ -1,0 +1,693 @@
+<html>
+<head>
+<title>MainActivity.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #808080;}
+.s3 { color: #6a8759;}
+.s4 { color: #6897bb;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+MainActivity.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com.example.runqr</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">android.content.Intent</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.content.SharedPreferences</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.os.Bundle</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.util.Log</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.view.Menu</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.view.MenuInflater</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.view.MenuItem</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.view.View</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">androidx.annotation.NonNull</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">androidx.annotation.Nullable</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">androidx.appcompat.app.AppCompatActivity</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">androidx.fragment.app.FragmentManager</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">androidx.fragment.app.FragmentTransaction</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">com.google.android.gms.maps.CameraUpdateFactory</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.android.gms.maps.GoogleMap</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.android.gms.maps.OnMapReadyCallback</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.android.gms.maps.SupportMapFragment</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.android.gms.maps.model.CameraPosition</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.android.gms.maps.model.LatLng</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.android.gms.maps.model.Marker</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.android.gms.maps.model.MarkerOptions</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.android.gms.tasks.OnFailureListener</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.android.gms.tasks.OnSuccessListener</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.android.material.floatingactionbutton.FloatingActionButton</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.firestore.CollectionReference</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.firestore.EventListener</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.firestore.FirebaseFirestore</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.firestore.FirebaseFirestoreException</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.firestore.ListenerRegistration</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.firestore.QueryDocumentSnapshot</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.firestore.QuerySnapshot</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.gson.Gson</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.gson.reflect.TypeToken</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">java.io.Serializable</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">java.lang.reflect.Type</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">java.util.ArrayList</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">java.util.HashMap</span><span class="s0">;</span>
+
+<span class="s2">// Main activity of the RunQR game has an app bar with 2 icons: dropdown menu and an add QR Button which opens scanner for player to scan QRCodes.</span>
+<span class="s2">// Main activity also contains a map with a refresh button and a nearbySearch button (AYUSH can elaborate on this).</span>
+<span class="s2">// CURRENT ISSUES:</span>
+<span class="s2">// - after destroying app and opening again, player's QRLibrary is null and pressing QRLibrary in menu causes app to crash</span>
+
+<span class="s0">public class </span><span class="s1">MainActivity </span><span class="s0">extends </span><span class="s1">AppCompatActivity </span><span class="s0">implements </span><span class="s1">AddQRFragment.OnFragmentInteractionListener</span><span class="s0">, </span><span class="s1">OnMapReadyCallback {</span>
+
+    <span class="s2">/* 
+    // build fragment/popup 
+    static AlertDialog.Builder dialogBuilder; 
+    static AlertDialog dialog; 
+    static Button take_photo, add_geolocation, yes, no; 
+*/</span>
+    <span class="s2">/// fix below to do automatic log in and save player info</span>
+
+    <span class="s2">/*next two lines are needed*/</span>
+    <span class="s1">Player currentPlayer = </span><span class="s0">new </span><span class="s1">Player()</span><span class="s0">;</span>
+    <span class="s2">//PlayerStats playerStats;</span>
+
+    <span class="s0">final </span><span class="s1">String TAG = </span><span class="s3">&quot;Sample&quot;</span><span class="s0">;</span>
+
+    <span class="s2">// Access a Cloud Firestore instance from your Activity</span>
+    <span class="s1">FirebaseFirestore db</span><span class="s0">;</span>
+    <span class="s0">static </span><span class="s1">CollectionReference collectionReference</span><span class="s0">;</span>
+    <span class="s0">static </span><span class="s1">CollectionReference QRCodesReference</span><span class="s0">;</span>
+    <span class="s2">// Create HashMaps to store QRCode and account data in Firestore.</span>
+    <span class="s0">static </span><span class="s1">HashMap&lt;String</span><span class="s0">, </span><span class="s1">String&gt; qrData = </span><span class="s0">new </span><span class="s1">HashMap&lt;&gt;()</span><span class="s0">;</span>
+    <span class="s0">static </span><span class="s1">HashMap&lt;String</span><span class="s0">, </span><span class="s1">String&gt; accountData = </span><span class="s0">new </span><span class="s1">HashMap&lt;&gt;()</span><span class="s0">;</span>
+
+    <span class="s1">SupportMapFragment mapFragment</span><span class="s0">;</span>
+    <span class="s1">FloatingActionButton loadBtn</span><span class="s0">;</span>
+    <span class="s1">FloatingActionButton listBtn</span><span class="s0">;</span>
+    <span class="s1">ArrayList&lt;Marker&gt; markerArrayList</span><span class="s0">;</span>
+    <span class="s1">ArrayList&lt;MarkerOptions&gt; markerOptionsArrayList</span><span class="s0">;</span>
+    <span class="s1">GoogleMap currentMap</span><span class="s0">;</span>
+    <span class="s2">//cite https://stackoverflow.com/questions/48699032/how-to-set-addsnapshotlistener-and-remove-in-populateviewholder-in-recyclerview</span>
+    <span class="s1">EventListener&lt;QuerySnapshot&gt; eventListener</span><span class="s0">;</span>
+    <span class="s1">ListenerRegistration listenerReg</span><span class="s0">;</span>
+
+    <span class="s2">/* 
+    Boolean locationAdded = false; 
+    Boolean photoAdded = false; 
+ 
+ 
+     */</span>
+
+
+    <span class="s1">@Override</span>
+    <span class="s0">protected void </span><span class="s1">onCreate(Bundle savedInstanceState) {</span>
+        <span class="s0">super</span><span class="s1">.onCreate(savedInstanceState)</span><span class="s0">;</span>
+        <span class="s1">setContentView(R.layout.activity_main)</span><span class="s0">;</span>
+        <span class="s1">loadPlayer()</span><span class="s0">;</span>
+        <span class="s1">db = FirebaseFirestore.getInstance()</span><span class="s0">;</span>
+        <span class="s2">// Get a top level reference to the collection</span>
+        <span class="s1">collectionReference = db.collection(</span><span class="s3">&quot;Accounts&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s2">//HashMap&lt;String, String&gt; accountData = new HashMap&lt;&gt;();</span>
+
+        <span class="s2">// Creating collection for global QRCodes</span>
+        <span class="s1">QRCodesReference = db.collection(</span><span class="s3">&quot;QR Codes&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s2">//HashMap&lt;String, String&gt; qrData = new HashMap&lt;&gt;();</span>
+
+        <span class="s2">/* 
+        HashMap&lt;String, Account&gt; accountData = new HashMap&lt;&gt;(); 
+        //HashMap&lt;String, String&gt; accountData = new HashMap&lt;&gt;(); 
+        //accountData.put(&quot;Account&quot;, currentPlayer.getPlayerAccount().getUsername()); 
+ 
+ 
+        // The set method sets a unique id for the document 
+        collectionReference 
+                .document(&quot;test_username&quot;) 
+                .set(accountData) 
+                .addOnSuccessListener(new OnSuccessListener&lt;Void&gt;() { 
+                    @Override 
+                    public void onSuccess(Void aVoid) { 
+// These are a method which gets executed when the task is succeeded 
+ 
+                        Log.d(TAG, &quot;Data has been added successfully!&quot;); 
+                    } 
+                }) 
+                .addOnFailureListener(new OnFailureListener() { 
+                    @Override 
+                    public void onFailure(@NonNull Exception e) { 
+// These are a method which gets executed if there’s any problem 
+                        Log.d(TAG, &quot;Data could not be added!&quot; + e.toString()); 
+                    } 
+                }); 
+ 
+ 
+ 
+         */</span>
+        <span class="s2">/*QRCodesReference = db.collection(&quot;QR Codes&quot;); 
+        qrData.put(&quot;Location X&quot;, &quot;53.5198&quot;); 
+        qrData.put(&quot;Location Y&quot;, &quot;-113.4970&quot;); 
+        int random_int = (int)Math.floor(Math.random()*(100-0+1)+0); 
+ 
+        QRCodesReference 
+                .document(String.valueOf(random_int)) 
+                .set(qrData) 
+                .addOnSuccessListener(new OnSuccessListener&lt;Void&gt;() { 
+                    @Override 
+                    public void onSuccess(Void aVoid) { 
+                        // These are a method which gets executed when the task is succeeded 
+ 
+                        Log.v(TAG, &quot;Global QRData has been added successfully!&quot;); 
+                    } 
+                }) 
+                .addOnFailureListener(new OnFailureListener() { 
+                    @Override 
+                    public void onFailure(@NonNull Exception e) { 
+                        // These are a method which gets executed if there’s any problem 
+                        Log.v(TAG, &quot;Global QRData could not be added!&quot; + e.toString()); 
+                    } 
+                });*/</span>
+        
+        <span class="s2">//Any change in the QR Codes collection in the database is noticed here and the map is updated accordingly</span>
+        <span class="s2">//markerOptionsArrayList used to store all marker options in order to be passed into fragment to display addresses of QR Codes</span>
+        <span class="s2">//markerArrayList is used to store Marker objects displayed on map so that each of their states can be easily manipulated</span>
+        <span class="s1">markerOptionsArrayList = </span><span class="s0">new </span><span class="s1">ArrayList&lt;MarkerOptions&gt;()</span><span class="s0">;</span>
+        <span class="s1">markerArrayList = </span><span class="s0">new </span><span class="s1">ArrayList&lt;Marker&gt;()</span><span class="s0">;</span>
+        <span class="s1">QRCodesReference.addSnapshotListener(</span><span class="s0">new </span><span class="s1">EventListener&lt;QuerySnapshot&gt;() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onEvent(@Nullable QuerySnapshot queryDocumentSnapshots</span><span class="s0">, </span><span class="s1">@Nullable FirebaseFirestoreException e) {</span>
+               <span class="s0">if</span><span class="s1">(!markerArrayList.isEmpty()){</span>
+                    <span class="s0">for</span><span class="s1">(Marker marker: markerArrayList){</span>
+                       <span class="s1">marker.remove()</span><span class="s0">;</span>
+                   <span class="s1">}}</span>
+
+
+
+               <span class="s1">markerArrayList.clear()</span><span class="s0">;</span>
+               <span class="s1">markerOptionsArrayList.clear()</span><span class="s0">;</span>
+
+                <span class="s0">for</span><span class="s1">(QueryDocumentSnapshot doc: queryDocumentSnapshots){</span>
+                    <span class="s0">if</span><span class="s1">((String) doc.getId() != </span><span class="s3">&quot;unique hash&quot;</span><span class="s1">){</span>
+                        <span class="s1">Log.v(</span><span class="s3">&quot;id&quot;</span><span class="s0">, </span><span class="s1">(String)doc.getId())</span><span class="s0">;</span>
+                        <span class="s1">Log.v(</span><span class="s3">&quot;x&quot;</span><span class="s0">,</span><span class="s1">String.valueOf(doc.getData().get(</span><span class="s3">&quot;Location X&quot;</span><span class="s1">)) )</span><span class="s0">;</span>
+                        <span class="s1">Log.v(</span><span class="s3">&quot;y&quot;</span><span class="s0">, </span><span class="s1">String.valueOf(doc.getData().get(</span><span class="s3">&quot;Location Y&quot;</span><span class="s1">)))</span><span class="s0">;</span>
+                        <span class="s1">Float x = Float.parseFloat((String)doc.getData().get(</span><span class="s3">&quot;Location X&quot;</span><span class="s1">))</span><span class="s0">;</span>
+                        <span class="s1">Float y = Float.parseFloat((String)doc.getData().get(</span><span class="s3">&quot;Location Y&quot;</span><span class="s1">))</span><span class="s0">;</span>
+                        <span class="s1">MarkerOptions newMarkerOptions = </span><span class="s0">new </span><span class="s1">MarkerOptions()</span>
+                                <span class="s1">.position(</span><span class="s0">new </span><span class="s1">LatLng(x</span><span class="s0">, </span><span class="s1">y))</span>
+                                <span class="s1">.title(</span><span class="s3">&quot;new Marker&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                        <span class="s1">Marker newMarker = currentMap.addMarker(newMarkerOptions)</span><span class="s0">;</span>
+
+                        <span class="s1">markerOptionsArrayList.add(newMarkerOptions)</span><span class="s0">;</span>
+                        <span class="s1">markerArrayList.add(newMarker)</span><span class="s0">;</span>
+                    <span class="s1">}</span>
+
+                <span class="s1">}</span>
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+
+
+        
+
+        <span class="s2">//Button to display fragment of addresses</span>
+        <span class="s1">listBtn = findViewById(R.id.searchLocationsBtn)</span><span class="s0">;</span>
+
+        <span class="s1">listBtn.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onClick(View view) {</span>
+                <span class="s1">MarkerFragment locationFragment = MarkerFragment.newInstance(markerOptionsArrayList)</span><span class="s0">;</span>
+                <span class="s1">locationFragment.show(getSupportFragmentManager()</span><span class="s0">, </span><span class="s3">&quot;LOCATIONS&quot;</span><span class="s1">)</span><span class="s0">;</span>
+
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+
+
+
+
+
+
+
+        <span class="s2">// The set method sets a unique id for the document</span>
+        <span class="s2">//HashMap&lt;String, String&gt; accountData = new HashMap&lt;&gt;();</span>
+        <span class="s2">//accountData.put(&quot;Account Username&quot;, currentPlayer.getPlayerAccount().getUsername());</span>
+        <span class="s1">accountData.put(</span><span class="s3">&quot;Account Username&quot;</span><span class="s0">, </span><span class="s3">&quot;test_username&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">Log.v(</span><span class="s3">&quot;Hello&quot;</span><span class="s0">, </span><span class="s3">&quot;test_message&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">collectionReference</span>
+                <span class="s1">.document(</span><span class="s3">&quot;Usernames&quot;</span><span class="s1">)</span>
+                <span class="s1">.set(accountData)</span>
+                <span class="s1">.addOnSuccessListener(</span><span class="s0">new </span><span class="s1">OnSuccessListener&lt;Void&gt;() {</span>
+                    <span class="s1">@Override</span>
+                    <span class="s0">public void </span><span class="s1">onSuccess(Void aVoid) {</span>
+                        <span class="s2">// These are a method which gets executed when the task is succeeded</span>
+
+                        <span class="s1">Log.v(TAG</span><span class="s0">, </span><span class="s3">&quot;Data has been added successfully!&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                    <span class="s1">}</span>
+                <span class="s1">})</span>
+                <span class="s1">.addOnFailureListener(</span><span class="s0">new </span><span class="s1">OnFailureListener() {</span>
+                    <span class="s1">@Override</span>
+                    <span class="s0">public void </span><span class="s1">onFailure(@NonNull Exception e) {</span>
+                        <span class="s2">// These are a method which gets executed if there’s any problem</span>
+                        <span class="s1">Log.v(TAG</span><span class="s0">, </span><span class="s3">&quot;Data could not be added!&quot; </span><span class="s1">+ e.toString())</span><span class="s0">;</span>
+                    <span class="s1">}</span>
+                <span class="s1">})</span><span class="s0">;</span>
+        <span class="s1">Log.v(</span><span class="s3">&quot;Hello&quot;</span><span class="s0">, </span><span class="s3">&quot;test_message&quot;</span><span class="s1">)</span><span class="s0">;</span>
+
+
+
+
+
+        <span class="s1">db = FirebaseFirestore.getInstance()</span><span class="s0">;</span>
+        <span class="s2">// Get a top level reference to the collection</span>
+        <span class="s1">collectionReference = db.collection(</span><span class="s3">&quot;Accounts&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s2">//HashMap&lt;String, String&gt; accountData = new HashMap&lt;&gt;();</span>
+
+        <span class="s2">// Creating collection for global QRCodes</span>
+
+        <span class="s2">//HashMap&lt;String, String&gt; qrData = new HashMap&lt;&gt;();</span>
+
+        <span class="s2">//https://developers.google.com/maps/documentation/android-sdk/map</span>
+        <span class="s1">SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()</span>
+                <span class="s1">.findFragmentById(R.id.map)</span><span class="s0">;</span>
+        <span class="s1">mapFragment.getMapAsync(</span><span class="s0">this</span><span class="s1">)</span><span class="s0">;</span>
+
+
+
+
+        <span class="s2">/* 
+        final Button addQR = findViewById(R.id.add_qr_button); 
+        addQR.setOnClickListener(new View.OnClickListener() { 
+            @Override 
+            public void onClick(View view){ 
+                openAddQRFragment(addQR); 
+ 
+            } 
+ 
+ 
+        }); 
+ 
+ 
+        */</span>
+
+
+    <span class="s1">}</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">public void </span><span class="s1">onStart(){</span>
+        <span class="s0">super</span><span class="s1">.onStart()</span><span class="s0">;</span>
+
+    <span class="s1">}</span>
+    <span class="s1">@Override</span>
+    <span class="s0">public void </span><span class="s1">onStop(){</span>
+        <span class="s0">super</span><span class="s1">.onStop()</span><span class="s0">;</span>
+
+    <span class="s1">}</span>
+    <span class="s2">// Trying to fix null objects on second time opening the app</span>
+    <span class="s1">@Override</span>
+    <span class="s0">public void </span><span class="s1">onPause(){</span>
+        <span class="s1">savePlayer()</span><span class="s0">;</span>
+        <span class="s1">savePlayerToDatabase()</span><span class="s0">;</span>
+        <span class="s0">super</span><span class="s1">.onPause()</span><span class="s0">;</span>
+
+    <span class="s1">}</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">public void </span><span class="s1">onLowMemory(){</span>
+        <span class="s0">super</span><span class="s1">.onLowMemory()</span><span class="s0">;</span>
+
+    <span class="s1">}</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">public void </span><span class="s1">onResume(){</span>
+
+        <span class="s0">super</span><span class="s1">.onResume()</span><span class="s0">;</span>
+
+    <span class="s1">}</span>
+
+
+    <span class="s1">@Override</span>
+    <span class="s0">public void </span><span class="s1">onDestroy(){</span>
+        <span class="s1">savePlayer()</span><span class="s0">;</span>
+        <span class="s0">super</span><span class="s1">.onDestroy()</span><span class="s0">;</span>
+
+    <span class="s1">}</span>
+
+    <span class="s0">void </span><span class="s1">savePlayerToDatabase() {</span>
+        <span class="s1">String usernameData = currentPlayer.getPlayerAccount().getUsername()</span><span class="s0">;</span>
+        <span class="s1">HashMap&lt;String</span><span class="s0">, </span><span class="s1">Player&gt; data = </span><span class="s0">new </span><span class="s1">HashMap&lt;&gt;()</span><span class="s0">;</span>
+        <span class="s1">data.put(</span><span class="s3">&quot;playerInfo&quot;</span><span class="s0">, </span><span class="s1">currentPlayer)</span><span class="s0">;</span>
+        <span class="s1">collectionReference</span>
+                <span class="s1">.document(usernameData)</span>
+                <span class="s1">.set(data)</span>
+                <span class="s1">.addOnSuccessListener(</span><span class="s0">new </span><span class="s1">OnSuccessListener&lt;Void&gt;() {</span>
+                    <span class="s1">@Override</span>
+                    <span class="s0">public void </span><span class="s1">onSuccess(Void aVoid) {</span>
+                        <span class="s2">// These are a method which gets executed when the task is succeeded</span>
+                        <span class="s1">Log.d(TAG</span><span class="s0">, </span><span class="s3">&quot;Data has been added successfully!&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                    <span class="s1">}</span>
+
+                <span class="s1">})</span>
+                <span class="s1">.addOnFailureListener(</span><span class="s0">new </span><span class="s1">OnFailureListener() {</span>
+                    <span class="s1">@Override</span>
+                    <span class="s0">public void </span><span class="s1">onFailure(@NonNull Exception e) {</span>
+                        <span class="s2">// These are a method which gets executed if there’s any problem</span>
+                        <span class="s1">Log.d(TAG</span><span class="s0">, </span><span class="s3">&quot;Data could not be added!&quot; </span><span class="s1">+ e.toString())</span><span class="s0">;</span>
+                    <span class="s1">}</span>
+                <span class="s1">})</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">void </span><span class="s1">savePlayer(){</span>
+        <span class="s1">SharedPreferences sharedPreferences = getSharedPreferences(</span><span class="s3">&quot;shared preferences&quot;</span><span class="s0">, </span><span class="s1">MODE_PRIVATE)</span><span class="s0">;</span>
+        <span class="s1">SharedPreferences.Editor editor = sharedPreferences.edit()</span><span class="s0">;</span>
+        <span class="s1">Gson gson = </span><span class="s0">new </span><span class="s1">Gson()</span><span class="s0">;</span>
+        <span class="s1">String json =gson.toJson(currentPlayer)</span><span class="s0">;</span>
+        <span class="s1">editor.putString(</span><span class="s3">&quot;player&quot;</span><span class="s0">, </span><span class="s1">json)</span><span class="s0">;</span>
+        <span class="s1">editor.apply()</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">void </span><span class="s1">loadPlayer(){</span>
+        <span class="s1">SharedPreferences sharedPreferences = getSharedPreferences(</span><span class="s3">&quot;shared preferences&quot;</span><span class="s0">, </span><span class="s1">MODE_PRIVATE)</span><span class="s0">;</span>
+        <span class="s1">Gson gson = </span><span class="s0">new </span><span class="s1">Gson()</span><span class="s0">;</span>
+        <span class="s1">String json = sharedPreferences.getString(</span><span class="s3">&quot;player&quot;</span><span class="s0">, null</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">Type type = </span><span class="s0">new </span><span class="s1">TypeToken&lt;Player&gt;(){}.getType()</span><span class="s0">;</span>
+        <span class="s1">currentPlayer = gson.fromJson(json</span><span class="s0">, </span><span class="s1">type)</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+
+
+<span class="s2">//    public void openAddQRFragment(Button addQR){</span>
+     <span class="s0">public void </span><span class="s1">openAddQRFragment(){</span>
+        <span class="s2">// open addQRFragment to scan QRcode and add it to player's account</span>
+        <span class="s2">//addQR.setVisibility(View.GONE);</span>
+
+         <span class="s0">final </span><span class="s1">FloatingActionButton searchLocationsMap = findViewById(R.id.searchLocationsBtn)</span><span class="s0">;</span>
+
+         <span class="s1">searchLocationsMap.setVisibility(View.GONE)</span><span class="s0">;</span>
+
+         <span class="s1">FragmentManager fragmentManager = getSupportFragmentManager()</span><span class="s0">;</span>
+         <span class="s1">FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction()</span><span class="s0">;</span>
+         <span class="s1">AddQRFragment addQRFragment = </span><span class="s0">new </span><span class="s1">AddQRFragment()</span><span class="s0">;</span>
+        <span class="s2">//fragmentTransaction.add(R.id.addQRFragment_container,addQRFragment);\</span>
+         <span class="s1">fragmentTransaction.add(R.id.addQRFragment_container</span><span class="s0">, </span><span class="s1">addQRFragment</span><span class="s0">, </span><span class="s3">&quot;Add QR Code&quot;</span><span class="s1">)</span><span class="s0">;</span>
+         <span class="s1">fragmentTransaction.commit()</span><span class="s0">;</span>
+        <span class="s2">//addQR.setVisibility(View.VISIBLE);</span>
+
+        <span class="s2">//getSupportFragmentManager().beginTransaction().add(R.id.container, new AddQRFragment()).commit();</span>
+
+        <span class="s2">//final View addQR = findViewById(R.id.fragment_container_view);</span>
+        <span class="s2">//addQR.setVisibility(View.VISIBLE);</span>
+
+         <span class="s1">searchLocationsMap.setVisibility(View.VISIBLE)</span><span class="s0">;</span>
+
+
+
+
+         <span class="s2">//AddQRFragment addQRFragment = new AddQRFragment();</span>
+        <span class="s2">//FragmentManager manager = getFragmentManager();</span>
+        <span class="s2">//FragmentTransaction transaction = manager.beginTransaction();</span>
+        <span class="s2">//transaction.add(R.id.fragment_container_view,AddQRFragment.class,&quot;OPEN_SCANNER&quot;);</span>
+        <span class="s2">//transaction.replace(R.id.container,);</span>
+        <span class="s2">//transaction.addToBackStack(null);</span>
+        <span class="s2">//transaction.commit();</span>
+
+    <span class="s1">}</span>
+
+
+
+    <span class="s1">@Override</span>
+    <span class="s0">public void </span><span class="s1">onConfirmPressed(QRCode qrCodeData) {</span>
+        <span class="s2">//String test = qrCodeData.getHash();</span>
+
+        <span class="s1">currentPlayer.getPlayerQRLibrary().addQRCode(qrCodeData)</span><span class="s0">;</span>
+
+        <span class="s2">/*update PlayerStats*/</span>
+        <span class="s1">PlayerStats playerStats = currentPlayer.getPlayerStats()</span><span class="s0">;</span>
+        <span class="s0">int </span><span class="s1">currentCodes = playerStats.getNumOfScanned()</span><span class="s0">;</span>
+        <span class="s1">playerStats.setNumOfScanned(currentCodes+ </span><span class="s4">1</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s0">int </span><span class="s1">currentScore = playerStats.getSumOfScores()</span><span class="s0">;</span>
+        <span class="s1">playerStats.setSumOfScores(currentScore + qrCodeData.getScore())</span><span class="s0">;</span>
+        <span class="s0">if </span><span class="s1">(playerStats.getLowQr() == </span><span class="s0">null</span><span class="s1">) {</span>
+            <span class="s1">playerStats.setLowQr(qrCodeData)</span><span class="s0">;</span>
+        <span class="s1">}</span>
+        <span class="s0">else </span><span class="s1">{</span>
+            <span class="s0">if </span><span class="s1">(qrCodeData.getScore() &lt; playerStats.getLowQr().getScore()) {</span>
+                <span class="s1">playerStats.setLowQr(qrCodeData)</span><span class="s0">;</span>
+            <span class="s1">}</span>
+
+        <span class="s1">}</span>
+
+        <span class="s0">if </span><span class="s1">(playerStats.getHighQr() == </span><span class="s0">null</span><span class="s1">) {</span>
+            <span class="s1">playerStats.setHighQr(qrCodeData)</span><span class="s0">;</span>
+        <span class="s1">}</span>
+        <span class="s0">else </span><span class="s1">{</span>
+            <span class="s0">if </span><span class="s1">(qrCodeData.getScore() &gt; playerStats.getHighQr().getScore()){</span>
+                <span class="s1">playerStats.setHighQr(qrCodeData)</span><span class="s0">;</span>
+            <span class="s1">}</span>
+        <span class="s1">}</span>
+
+
+<span class="s2">/* 
+        // THIS NEEDS TO BE UPDATED BY KENNY 
+        // Below: open activity/fragment which prompts user to access their device's location and take photo of the object containing scannedQRCode 
+        dialogBuilder = new AlertDialog.Builder(this); 
+        final View conformationPopup = getLayoutInflater().inflate(R.layout.scanner_popup,null); 
+ 
+        take_photo = (Button) conformationPopup.findViewById(R.id.takePhotoButton); 
+        add_geolocation = (Button) conformationPopup.findViewById(R.id.addGeolocationButton); 
+        yes = (Button) conformationPopup.findViewById(R.id.yesButton); 
+        no = (Button) conformationPopup.findViewById(R.id.noButton); 
+ 
+ 
+        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE); 
+ 
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &amp;&amp; ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) { 
+            // TODO: Consider calling 
+            //    ActivityCompat#requestPermissions 
+            // here to request the missing permissions, and then overriding 
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions, 
+            //                                          int[] grantResults) 
+            // to handle the case where the user grants the permission. See the documentation 
+            // for ActivityCompat#requestPermissions for more details. 
+            ActivityCompat.requestPermissions(MainActivity.this,new String[]{ 
+                    Manifest.permission.ACCESS_FINE_LOCATION 
+            }, 100); 
+ 
+            return; 
+        } 
+        android.location.Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER); 
+ 
+ 
+ 
+        dialogBuilder.setView(conformationPopup); 
+        dialog = dialogBuilder.create(); 
+        dialog.show(); 
+ 
+        take_photo.setOnClickListener(new View.OnClickListener() { 
+            @Override 
+            public void onClick(View view) { 
+                photoAdded = true; 
+                //FIX BELOW 
+                //define Take Photo here 
+                openCamera(view); 
+            } 
+        }); 
+ 
+        add_geolocation.setOnClickListener(new View.OnClickListener() { 
+            @Override 
+            public void onClick(View view) { 
+                locationAdded = true; 
+                //define Geo-Location here 
+                double longitude = location.getLongitude(); 
+                double latitude = location.getLatitude(); 
+                Location QRCodeLocation = new Location(longitude, latitude); 
+                //view.setX(Math.round(longitude)); 
+                //view.setY(Math.round(latitude)); 
+ 
+            } 
+        }); 
+ 
+        yes.setOnClickListener(new View.OnClickListener() { 
+            @Override 
+            public void onClick(View view) { 
+                //define Got it here 
+                dialog.dismiss(); 
+            } 
+        }); 
+ 
+        no.setOnClickListener(new View.OnClickListener() { 
+            @Override 
+            public void onClick(View view) { 
+                //define Cancel here 
+                dialog.dismiss(); 
+            } 
+        }); 
+ 
+ 
+ */</span>
+
+
+        <span class="s2">// call method to add location data to qrCodeCollection for nearbyQRCodeSearch algorithm</span>
+        <span class="s0">if </span><span class="s1">(qrCodeData.getLocation() != </span><span class="s0">null</span><span class="s1">) { </span><span class="s2">// and if it's not in the database</span>
+            <span class="s1">addQRLocationGlobally(qrCodeData</span><span class="s0">, </span><span class="s1">qrData</span><span class="s0">, </span><span class="s1">QRCodesReference )</span><span class="s0">;</span>
+
+        <span class="s1">}</span>
+
+
+
+    <span class="s1">}</span>
+
+    <span class="s0">public void </span><span class="s1">addQRLocationGlobally(QRCode qrCodeData</span><span class="s0">,</span><span class="s1">HashMap&lt;String</span><span class="s0">, </span><span class="s1">String&gt; qrData</span><span class="s0">, </span><span class="s1">CollectionReference QRCodesReference ) {</span>
+        <span class="s2">// Creating collection for global QRCodes</span>
+        <span class="s2">//final CollectionReference QRCodesReference = db.collection(&quot;QR Codes&quot;);</span>
+        <span class="s2">//HashMap&lt;String, String&gt; qrData = new HashMap&lt;&gt;();</span>
+
+        <span class="s1">qrData.put(</span><span class="s3">&quot;Location X&quot;</span><span class="s0">, </span><span class="s1">String.valueOf(qrCodeData.getLocation().getX()))</span><span class="s0">;</span>
+        <span class="s1">qrData.put(</span><span class="s3">&quot;Location Y&quot;</span><span class="s0">, </span><span class="s1">String.valueOf(qrCodeData.getLocation().getY()))</span><span class="s0">;</span>
+
+        <span class="s1">QRCodesReference</span>
+                <span class="s1">.document(qrCodeData.getHash())</span>
+                <span class="s1">.set(qrData)</span>
+                <span class="s1">.addOnSuccessListener(</span><span class="s0">new </span><span class="s1">OnSuccessListener&lt;Void&gt;() {</span>
+                    <span class="s1">@Override</span>
+                    <span class="s0">public void </span><span class="s1">onSuccess(Void aVoid) {</span>
+                        <span class="s2">// These are a method which gets executed when the task is succeeded</span>
+
+                        <span class="s1">Log.v(TAG</span><span class="s0">, </span><span class="s3">&quot;Global QRData has been added successfully!&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                    <span class="s1">}</span>
+                <span class="s1">})</span>
+                <span class="s1">.addOnFailureListener(</span><span class="s0">new </span><span class="s1">OnFailureListener() {</span>
+                    <span class="s1">@Override</span>
+                    <span class="s0">public void </span><span class="s1">onFailure(@NonNull Exception e) {</span>
+                        <span class="s2">// These are a method which gets executed if there’s any problem</span>
+                        <span class="s1">Log.v(TAG</span><span class="s0">, </span><span class="s3">&quot;Global QRData could not be added!&quot; </span><span class="s1">+ e.toString())</span><span class="s0">;</span>
+                    <span class="s1">}</span>
+                <span class="s1">})</span><span class="s0">;</span>
+
+    <span class="s1">}</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">public boolean </span><span class="s1">onCreateOptionsMenu(Menu menu) {</span>
+        <span class="s1">MenuInflater menuInflater = getMenuInflater()</span><span class="s0">;</span>
+        <span class="s1">menuInflater.inflate(R.menu.main_menu</span><span class="s0">, </span><span class="s1">menu)</span><span class="s0">;</span>
+        <span class="s0">return true;</span>
+
+    <span class="s1">}</span>
+
+
+    <span class="s1">@Override</span>
+    <span class="s0">public boolean </span><span class="s1">onOptionsItemSelected(@NonNull MenuItem item) {</span>
+
+        <span class="s0">switch</span><span class="s1">(item.getItemId()) {</span>
+            <span class="s0">case </span><span class="s1">R.id.qr_library_item:</span>
+                <span class="s2">//Open activity to show QRLibrary</span>
+                <span class="s1">Intent intent = </span><span class="s0">new </span><span class="s1">Intent(</span><span class="s0">this, </span><span class="s1">QRLibraryActivity.</span><span class="s0">class</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s2">//intent.putExtra(&quot;Player QRLibrary&quot;, (Serializable) currentPlayer.getPlayerQRLibrary());</span>
+                <span class="s1">intent.putExtra(</span><span class="s3">&quot;Player QRLibraryActivity&quot;</span><span class="s0">, </span><span class="s1">(Serializable) currentPlayer)</span><span class="s0">;</span>
+                <span class="s1">intent.putExtra(</span><span class="s3">&quot;Allow Deletion?&quot;</span><span class="s0">, </span><span class="s1">(Serializable) </span><span class="s0">true</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">startActivityForResult(intent</span><span class="s0">, </span><span class="s4">1</span><span class="s1">)</span><span class="s0">;</span>
+
+                <span class="s2">/* 
+                //update PlayerStats to account for deletion of codes// 
+ 
+                // THIS NEEDS TO BE FIXED, PROFILE DOESN'T TRACK DELETION OF QRCODES // 
+                // Note; seems to be a delay in updating numScanned 
+                PlayerStats playerStats = currentPlayer.getPlayerStats(); 
+                int currentCodes = currentPlayer.getPlayerQRLibrary().getSize(); 
+                playerStats.setNumOfScanned(currentCodes); 
+                */</span>
+                <span class="s0">break;</span>
+                <span class="s2">//return true;</span>
+
+            <span class="s0">case </span><span class="s1">R.id.profile_item:</span>
+                <span class="s2">//open player profile activity</span>
+                <span class="s1">Intent intent1 = </span><span class="s0">new </span><span class="s1">Intent(</span><span class="s0">this, </span><span class="s1">ProfileActivity.</span><span class="s0">class</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">intent1.putExtra(</span><span class="s3">&quot;Player&quot;</span><span class="s0">, </span><span class="s1">(Serializable) currentPlayer)</span><span class="s0">;</span>
+                <span class="s1">startActivity(intent1)</span><span class="s0">;</span>
+                <span class="s0">break;</span>
+                <span class="s2">//return true;</span>
+
+
+            <span class="s0">case </span><span class="s1">R.id.add_qr_item:</span>
+                <span class="s2">//Open fragment to scan QR code</span>
+                <span class="s1">openAddQRFragment()</span><span class="s0">;</span>
+                <span class="s0">break;</span>
+                <span class="s2">//return true;</span>
+
+
+            <span class="s0">case </span><span class="s1">R.id.leaderboard_item:</span>
+                <span class="s2">//Open new activity to show leaderboards</span>
+                <span class="s1">Intent intent2 = </span><span class="s0">new </span><span class="s1">Intent(</span><span class="s0">this, </span><span class="s1">LeaderboardActivity.</span><span class="s0">class</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">intent2.putExtra(</span><span class="s3">&quot;Player&quot;</span><span class="s0">, </span><span class="s1">(Serializable) currentPlayer)</span><span class="s0">;</span>
+                <span class="s1">startActivity(intent2)</span><span class="s0">;</span>
+                <span class="s0">break;</span>
+            <span class="s2">//return true;</span>
+
+
+
+
+
+
+        <span class="s1">}</span>
+        <span class="s0">return super</span><span class="s1">.onOptionsItemSelected(item)</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">public void </span><span class="s1">onActivityResult(</span><span class="s0">int </span><span class="s1">requestCode</span><span class="s0">, int </span><span class="s1">resultCode</span><span class="s0">, </span><span class="s1">Intent data) {</span>
+        <span class="s0">super</span><span class="s1">.onActivityResult(requestCode</span><span class="s0">, </span><span class="s1">resultCode</span><span class="s0">, </span><span class="s1">data)</span><span class="s0">;</span>
+        <span class="s0">if </span><span class="s1">(requestCode == </span><span class="s4">1</span><span class="s1">) {</span>
+            <span class="s0">if</span><span class="s1">(resultCode == RESULT_OK) {</span>
+                <span class="s2">//QRLibrary updatedQRLibrary = (QRLibrary) data.getSerializableExtra(&quot;Player QRLibrary&quot;);</span>
+                <span class="s1">Player updatedCurrentPlayer = (Player) data.getSerializableExtra(</span><span class="s3">&quot;Player QRLibrary Updated&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s2">//currentPlayer.setPlayerQRLibrary(updatedQRLibrary);</span>
+                <span class="s1">currentPlayer = updatedCurrentPlayer</span><span class="s0">;</span>
+            <span class="s1">}</span>
+        <span class="s1">}</span>
+    <span class="s1">}</span>
+
+
+    <span class="s1">@Override</span>
+    <span class="s0">public void </span><span class="s1">onMapReady(@NonNull GoogleMap googleMap) {</span>
+        <span class="s0">this</span><span class="s1">.currentMap = googleMap</span><span class="s0">;</span>
+        <span class="s0">if</span><span class="s1">(</span><span class="s0">this</span><span class="s1">.currentMap != </span><span class="s0">null</span><span class="s1">) {</span>
+            <span class="s0">this</span><span class="s1">.currentMap.setMapType(GoogleMap.MAP_TYPE_HYBRID)</span><span class="s0">;</span>
+            <span class="s0">this</span><span class="s1">.currentMap.addMarker(</span><span class="s0">new </span><span class="s1">MarkerOptions()</span>
+                    <span class="s1">.position(</span><span class="s0">new </span><span class="s1">LatLng(</span><span class="s4">53.5232</span><span class="s0">, </span><span class="s1">-</span><span class="s4">113.5263</span><span class="s1">))</span>
+                    <span class="s1">.title(</span><span class="s3">&quot;UofA&quot;</span><span class="s1">))</span><span class="s0">;</span>
+            <span class="s2">//cite https://stackoverflow.com/questions/57096105/google-map-not-centered-in-desired-location</span>
+            <span class="s1">CameraPosition cameraPosition = </span><span class="s0">new </span><span class="s1">CameraPosition.Builder()</span>
+                    <span class="s1">.target(</span><span class="s0">new </span><span class="s1">LatLng(</span><span class="s4">53.631611</span><span class="s0">, </span><span class="s1">-</span><span class="s4">113.323975</span><span class="s1">)).zoom(</span><span class="s4">9</span><span class="s1">).build()</span><span class="s0">;</span>
+            <span class="s0">this</span><span class="s1">.currentMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))</span><span class="s0">;</span>
+        <span class="s1">}</span>
+    <span class="s1">}</span>
+
+
+
+    <span class="s0">public void </span><span class="s1">openCamera(){</span>
+        <span class="s1">Intent intent = </span><span class="s0">new </span><span class="s1">Intent(</span><span class="s0">this, </span><span class="s1">CameraActivity.</span><span class="s0">class</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">startActivity(intent)</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+
+
+
+
+    <span class="s0">public void </span><span class="s1">openSearchedPlayerProfile(String username) {</span>
+        <span class="s2">// get player object from database and open ProfileActivity with the searchedPlayer object</span>
+        <span class="s1">String testUsername</span><span class="s0">;</span>
+        <span class="s1">Player searchedPlayer = </span><span class="s0">null; </span><span class="s2">// get from database</span>
+
+        <span class="s1">Intent intent = </span><span class="s0">new </span><span class="s1">Intent(MainActivity.</span><span class="s0">this, </span><span class="s1">ProfileActivity.</span><span class="s0">class</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">intent.putExtra(</span><span class="s3">&quot;Display Player Profile&quot;</span><span class="s0">, </span><span class="s1">searchedPlayer)</span><span class="s0">;</span>
+        <span class="s1">startActivity(intent)</span><span class="s0">;</span>
+
+    <span class="s1">}</span>
+
+
+<span class="s1">}</span>
+
+</pre>
+</body>
+</html>

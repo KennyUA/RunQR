@@ -106,4 +106,13 @@ public class QRLibrary implements Serializable {
     public int getSize(){
         return this.QRCodeList.size();
     }
+
+
+    public void deleteQRCodeWithHash(String hashToDelete) {
+        for(int i=0; i < this.getSize();i++) {
+            if (this.getQRCode(i).getHash() == hashToDelete) {
+                this.deleteQRCode(this.getQRCode(i));
+            }
+        }
+    }
 }
