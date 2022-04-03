@@ -14,10 +14,14 @@ import android.widget.ListView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
@@ -74,6 +78,46 @@ public class ManagePlayersActivity extends AppCompatActivity {
                                             Log.w(TAG, "Error deleting document", e);
                                         }
                                     });
+                            db.collection("QR Codes")
+                                    .get()
+                                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                                    String hash = document.getId();
+                                                    CollectionReference ref = db.collection("QR Codes").document(hash).collection("Players");
+                                                    db.collection("QR Codes").document(hash)
+                                                            .collection("Players")
+                                                            .get()
+                                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                                @Override
+                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                                    if (task.isSuccessful()) {
+                                                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                                                            String userName = document.getId();
+
+                                                                            if(userName  ==  dataList.get(position)){
+                                                                                ref.document(userName).delete();
+
+                                                                            }
+
+                                                                            Log.d(TAG, document.getId() + " => " + document.getData());
+                                                                        }
+                                                                    } else {
+                                                                        Log.d(TAG, "Error getting documents: ", task.getException());
+                                                                    }
+                                                                }
+                                                            });
+
+                                                    Log.d(TAG, document.getId() + " => " + document.getData());
+                                                }
+                                            } else {
+                                                Log.d(TAG, "Error getting documents: ", task.getException());
+                                            }
+                                        }
+                                    });
+
                             dataList.remove(position);
 
                             playerList.setAdapter(playerAdapter);
