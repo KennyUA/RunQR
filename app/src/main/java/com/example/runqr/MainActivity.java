@@ -1,17 +1,24 @@
 package com.example.runqr;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -56,7 +63,9 @@ import java.util.concurrent.CountDownLatch;
 public class MainActivity extends AppCompatActivity implements AddQRFragment.OnFragmentInteractionListener, OnMapReadyCallback {
 
     /// fix below to do automatic log in and save player info
-
+    static AlertDialog.Builder dialogBuilder;
+    static AlertDialog dialog;
+    static Button take_photo, add_geolocation, yes, no;
     /*next two lines are needed*/
     Player currentPlayer = new Player();
     //PlayerStats playerStats;
@@ -161,26 +170,26 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
         //markerArrayList is used to store Marker objects displayed on map so that each of their states can be easily manipulated
         markerOptionsArrayList = new ArrayList<MarkerOptions>();
         markerArrayList = new ArrayList<Marker>();
-        /*QRCodesReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+        QRCodesReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                if (!markerArrayList.isEmpty()) {
-                    for (Marker marker : markerArrayList) {
+                if(!markerArrayList.isEmpty()){
+                    for(Marker marker: markerArrayList){
                         marker.remove();
-                    }
-                }
+                    }}
+
 
 
                 markerArrayList.clear();
                 markerOptionsArrayList.clear();
 
-                for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                    if ((String) doc.getId() != "unique hash") {
-                        Log.v("id", (String) doc.getId());
-                        Log.v("x", String.valueOf(doc.getData().get("Location X")));
+                for(QueryDocumentSnapshot doc: queryDocumentSnapshots){
+                    if((String) doc.getId() != "unique hash"){
+                        Log.v("id", (String)doc.getId());
+                        Log.v("x",String.valueOf(doc.getData().get("Location X")) );
                         Log.v("y", String.valueOf(doc.getData().get("Location Y")));
-                        Float x = Float.parseFloat((String) doc.getData().get("Location X"));
-                        Float y = Float.parseFloat((String) doc.getData().get("Location Y"));
+                        Float x = Float.parseFloat((String)doc.getData().get("Location X"));
+                        Float y = Float.parseFloat((String)doc.getData().get("Location Y"));
                         MarkerOptions newMarkerOptions = new MarkerOptions()
                                 .position(new LatLng(x, y))
                                 .title("new Marker");
@@ -195,6 +204,8 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
         });
 
 
+
+
         //Button to display fragment of addresses
         listBtn = findViewById(R.id.searchLocationsBtn);
 
@@ -205,12 +216,23 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
                 locationFragment.show(getSupportFragmentManager(), "LOCATIONS");
 
             }
-        });*/
+        });
 
 
-        // The set method sets a unique id for the document
-        //HashMap<String, String> accountData = new HashMap<>();
-        //accountData.put("Account Username", currentPlayer.getPlayerAccount().getUsername());
+        //Button to display fragment of addresses
+        listBtn = findViewById(R.id.searchLocationsBtn);
+
+        listBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MarkerFragment locationFragment = MarkerFragment.newInstance(markerOptionsArrayList);
+                locationFragment.show(getSupportFragmentManager(), "LOCATIONS");
+
+            }
+        });
+
+
+
         accountData.put("Account Username", "test_username");
         Log.v("Hello", "test_message");
         collectionReference
@@ -486,6 +508,74 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 
         // THIS NEEDS TO BE UPDATED BY KENNY
         // Below: open activity/fragment which prompts user to access their device's location and take photo of the object containing scannedQRCode
+        dialogBuilder = new AlertDialog.Builder(this);
+        final View conformationPopup = getLayoutInflater().inflate(R.layout.scanner_popup,null);
+
+        take_photo = (Button) conformationPopup.findViewById(R.id.takePhotoButton);
+        add_geolocation = (Button) conformationPopup.findViewById(R.id.addGeolocationButton);
+        yes = (Button) conformationPopup.findViewById(R.id.yesButton);
+        no = (Button) conformationPopup.findViewById(R.id.noButton);
+
+
+        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            ActivityCompat.requestPermissions(MainActivity.this,new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION
+            }, 100);
+
+            return;
+        }
+        android.location.Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+
+
+        dialogBuilder.setView(conformationPopup);
+        dialog = dialogBuilder.create();
+        dialog.show();
+
+        take_photo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //define Take Photo here
+                openCamera(view);
+            }
+        });
+
+        add_geolocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //define Geo-Location here
+                double longitude = location.getLongitude();
+                double latitude = location.getLatitude();
+                view.setX(Math.round(longitude));
+                view.setY(Math.round(latitude));
+
+            }
+        });
+
+        yes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //define Got it here
+                dialog.dismiss();
+            }
+        });
+
+        no.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //define Cancel here
+                dialog.dismiss();
+            }
+        });
 
 
 
@@ -628,6 +718,22 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
                     .target(new LatLng(53.631611, -113.323975)).zoom(9).build();
             this.currentMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         }
+    }
+
+    public void openCamera(View view){
+        Intent intent = new Intent(this, Camera.class);
+        startActivity(intent);
+    }
+
+    public void openSearchedPlayerProfile(String username) {
+        // get player object from database and open ProfileActivity with the searchedPlayer object
+        String testUsername;
+        Player searchedPlayer = null; // get from database
+
+        Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+        intent.putExtra("Display Player Profile", searchedPlayer);
+        startActivity(intent);
+
     }
 }
 
