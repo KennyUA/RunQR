@@ -2,16 +2,19 @@ package com.example.runqr;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.view.Display;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.zxing.BarcodeFormat;
@@ -35,6 +38,7 @@ public class AddDeviceActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_device);
         qrCode = findViewById(R.id.transferQrcode);
+        Player currentPlayer = (Player) getIntent().getSerializableExtra("Player AddDeviceActivity");
         WindowManager manager = (WindowManager) getSystemService(WINDOW_SERVICE);
         // initializing a variable for default display.
         Display display = manager.getDefaultDisplay();
@@ -51,6 +55,18 @@ public class AddDeviceActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        final FloatingActionButton backButton = (FloatingActionButton)  findViewById(R.id.back_button);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent();
+                //intent.putExtra("Player QRLibrary", playerQRLibrary);
+                intent.putExtra("Player QRLibrary Updated", currentPlayer);
+                setResult(RESULT_OK, intent);
+                //QRLibraryActivity.super.onBackPressed();
+                finish();
+            }
+        });
         // creating a variable for point which
         // is to
 

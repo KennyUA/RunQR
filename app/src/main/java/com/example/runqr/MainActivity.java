@@ -161,7 +161,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
         //markerArrayList is used to store Marker objects displayed on map so that each of their states can be easily manipulated
         markerOptionsArrayList = new ArrayList<MarkerOptions>();
         markerArrayList = new ArrayList<Marker>();
-        QRCodesReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+        /*QRCodesReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
                 if (!markerArrayList.isEmpty()) {
@@ -205,7 +205,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
                 locationFragment.show(getSupportFragmentManager(), "LOCATIONS");
 
             }
-        });
+        });*/
 
 
         // The set method sets a unique id for the document
@@ -283,8 +283,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
     // Trying to fix null objects on second time opening the app
     @Override
     public void onPause(){
-        savePlayer();
-        //savePlayerToDatabase();
+        savePlayerToDatabase();
         super.onPause();
 
     }
@@ -316,7 +315,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
         data.put("playerInfo", currentPlayer);
         collectionReference
                 .document(usernameData)
-                .set(data)
+                .set(currentPlayer)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -367,7 +366,6 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
                         Log.d(TAG, "DocumentSnapshot data: " + document.getData());
                         currentPlayer = document.toObject(Player.class);
                         //currentPlayer = objectMapper.convertValue(doc1, Player.class);
-                        Log.d(TAG, currentPlayer.getPlayerAccount().getUsername());
 
                         successSecond = true;
                     } else {
@@ -548,6 +546,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
                 Intent intent = new Intent(this, QRLibraryActivity.class);
                 //intent.putExtra("Player QRLibrary", (Serializable) currentPlayer.getPlayerQRLibrary());
                 intent.putExtra("Player QRLibraryActivity", (Serializable) currentPlayer);
+                intent.putExtra("Allow Deletion?", true);
                 startActivityForResult(intent, 1);
 
                 /*
@@ -588,6 +587,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 
             case R.id.add_device_item:
                 Intent intent3 = new Intent(this, AddDeviceActivity.class);
+                intent3.putExtra("Player AddDeviceActivity", (Serializable) currentPlayer);
                 startActivity(intent3);
                 break;
 
