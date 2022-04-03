@@ -509,6 +509,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 
             case R.id.add_qr_item:
                 //Open fragment to scan QR code
+                FloatingActionButton searchLocationsBtn;
                 openAddQRFragment();
                 break;
                 //return true;

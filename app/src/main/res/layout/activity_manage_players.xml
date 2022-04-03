@@ -9,13 +9,13 @@
 
     <ListView
         android:id="@+id/users_list"
-        android:layout_width="420dp"
-        android:layout_height="687dp"
+        android:layout_width="406dp"
+        android:layout_height="665dp"
         android:layout_marginStart="1dp"
-        android:layout_marginBottom="68dp"
+        android:layout_marginBottom="48dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
