@@ -21,12 +21,18 @@
         <entry key="..\:/Users/mdota/project/RunQR/app/src/main/res/drawable/ic_menu_icon.xml" value="0.265" />
         <entry key="..\:/Users/mdota/project/RunQR/app/src/main/res/drawable/qrlibrary_list_content.xml" value="0.253" />
         <entry key="..\:/Users/mdota/project/RunQR/app/src/main/res/layout/activity_display_qrcode.xml" value="0.268" />
+        <entry key="..\:/Users/mdota/project/RunQR/app/src/main/res/layout/activity_login.xml" value="0.2826086956521739" />
         <entry key="..\:/Users/mdota/project/RunQR/app/src/main/res/layout/activity_main.xml" value="0.2140625" />
+        <entry key="..\:/Users/mdota/project/RunQR/app/src/main/res/layout/activity_manage_players.xml" value="0.3" />
+        <entry key="..\:/Users/mdota/project/RunQR/app/src/main/res/layout/activity_manage_qrcodes.xml" value="0.20677083333333332" />
+        <entry key="..\:/Users/mdota/project/RunQR/app/src/main/res/layout/activity_owner.xml" value="0.268" />
         <entry key="..\:/Users/mdota/project/RunQR/app/src/main/res/layout/activity_qrlibrary.xml" value="0.24739583333333334" />
         <entry key="..\:/Users/mdota/project/RunQR/app/src/main/res/layout/add_qr_fragment_layout.xml" value="0.20572916666666666" />
+        <entry key="..\:/Users/mdota/project/RunQR/app/src/main/res/layout/content.xml" value="0.2826086956521739" />
         <entry key="..\:/Users/mdota/project/RunQR/app/src/main/res/layout/qrlibrary_content.xml" value="0.2066115702479339" />
         <entry key="..\:/Users/mdota/project/RunQR/app/src/main/res/layout/store_info_activity.xml" value="0.259375" />
         <entry key="..\:/Users/mdota/project/RunQR/app/src/main/res/layout/store_info_fragment.xml" value="0.259375" />
+        <entry key="..\:/Users/mdota/project/RunQR/app/src/main/res/layout/validate_owner_fragment.xml" value="0.3046875" />
         <entry key="..\:/Users/mdota/project/RunQR/app/src/main/res/menu/main_menu.xml" value="0.2890625" />
         <entry key="..\:/Users/press/RunQR-main/app/src/main/res/layout/activity_add_device.xml" value="0.1" />
         <entry key="..\:/Users/press/RunQR-main/app/src/main/res/layout/activity_display_qrcode.xml" value="0.1" />

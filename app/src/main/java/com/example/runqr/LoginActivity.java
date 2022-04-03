@@ -46,13 +46,16 @@ import java.util.regex.Pattern;
 // COMMENT: Initializing with PlayerStats object is giving errors with opening app, need to make getter/setter for private attributes
 // For now: run without adding PlayerStats to currentPLayer
 
-public class LoginActivity extends AppCompatActivity implements LoginWithQRFragment.OnFragmentInteractionListener {
+
+public class LoginActivity extends AppCompatActivity implements LoginWithQRFragment.OnFragmentInteractionListener, ValidateOwnerFragment.OnFragmentInteractionListener {
+
 
     String hashUsername;
     Boolean emailExists;
     Boolean usernameExists;
     FirebaseFirestore db;
     Button loginQR;
+    Button ownerLogin;
     Button signupButton;
     TextView usernameMessage;
     EditText email;
@@ -255,18 +258,40 @@ public class LoginActivity extends AppCompatActivity implements LoginWithQRFragm
             });
 
 
+
             loginQR.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     openLoginWithQRFragment();
                 }
             });
+
+
         }
+        ownerLogin = findViewById(R.id.login_owner_button);
+        ownerLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new ValidateOwnerFragment().show(getSupportFragmentManager(), "ENTER_PASSWORD");
+                //ownerLogin.setVisibility(View.INVISIBLE);
+
+            }
+        });
 
 
     }
 
+
+    @Override
+    public void onOkPressed() {
+        Intent intent = new Intent(LoginActivity.this, OwnerActivity.class);
+        startActivity(intent);
+    }
+
+
+
     public void openLoginWithQRFragment(){
+
         // open addQRFragment to scan QRcode and add it to player's account
         //addQR.setVisibility(View.GONE);
 
