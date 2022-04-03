@@ -364,9 +364,6 @@ public class AddQRFragment extends Fragment {
                         Toast toast = Toast.makeText(context, text, duration);
                         toast.show();
 
-
-                        //YUMNA:
-                        savePlayerToQRCode(qrcode);
                     }
                 } else {
                     Log.d(TAG, "get failed with ", task.getException());
@@ -377,7 +374,7 @@ public class AddQRFragment extends Fragment {
     }
 
     public void saveQRCodeToDB(QRCode qrcode) {
-        // needs to save player to the player collection
+
         String hash = qrcode.getHash();
         CollectionReference collectionIdentifier = db.collection("QR Codes");
         collectionIdentifier
@@ -387,6 +384,7 @@ public class AddQRFragment extends Fragment {
                     @Override
                     public void onSuccess(Void aVoid) {
                         // These are a method which gets executed when the task is succeeded
+                        savePlayerToQRCode(qrcode);
                         Log.d(TAG, "Data has been added successfully!");
                         saveQRCodeToDB(qrcode);
                     }
