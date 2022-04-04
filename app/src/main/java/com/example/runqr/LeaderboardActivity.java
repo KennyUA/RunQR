@@ -23,6 +23,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 
 public class LeaderboardActivity extends AppCompatActivity {
 
@@ -59,7 +60,7 @@ public class LeaderboardActivity extends AppCompatActivity {
         mostValuableButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                refreshListView("playerStats.highQr.score", playerStats);
+                refreshListView("playerStats.highQr.score", playerStats, player);
             }
         });
 
@@ -67,7 +68,7 @@ public class LeaderboardActivity extends AppCompatActivity {
         mostScannedButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                refreshListView("playerStats.numOfScanned", playerStats);
+                refreshListView("playerStats.numOfScanned", playerStats, player);
             }
         });
 
@@ -75,15 +76,15 @@ public class LeaderboardActivity extends AppCompatActivity {
         highestSumButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                refreshListView("playerStats.sumOfScores", playerStats);
+                refreshListView("playerStats.sumOfScores", playerStats, player);
             }
         });
 
         /* default view is most valuable*/
-        refreshListView("playerStats.highQr.score", playerStats);
+        refreshListView("playerStats.highQr.score", playerStats, player);
     }
 
-    public void refreshListView(String scoreString, PlayerStats playerStats) {
+    public void refreshListView(String scoreString, PlayerStats playerStats, Player player) {
 
         players = new ArrayList<String>();
         scores = new ArrayList<String>();
@@ -174,13 +175,18 @@ public class LeaderboardActivity extends AppCompatActivity {
                                             if (playerStats.username.equals(username)) {
                                                 if (finalRankString.equals("playerStats.rankHighQr")) {
                                                     playerStats.setRankHighQr(finalRank);
+                                                    //playerStats.updatePlayerStats("playerStats.rankHighQr", finalRank);
                                                 } else if (finalRankString.equals("playerStats.rankNumOfScanned")) {
                                                     playerStats.setRankNumOfScanned(finalRank);
+                                                    //playerStats.updatePlayerStats("playerStats.rankNumOfScanned", finalRank);
                                                 } else if (finalRankString.equals("playerStats.rankSumOfScores")) {
                                                     playerStats.setRankSumOfScores(finalRank);
+                                                    //playerStats.updatePlayerStats("playerStats.rankSumOfScores", finalRank);
                                                 }
                                             }
+
                                         }
+
                                     })
                                     .addOnFailureListener(new OnFailureListener() {
                                         @Override
@@ -190,6 +196,29 @@ public class LeaderboardActivity extends AppCompatActivity {
                                     });
 
                         }
+                        //////////////////////////////////////////////////////
+                        String usernameData = player.getPlayerAccount().getUsername();
+                        HashMap<String, Player> data = new HashMap<>();
+                        data.put("playerInfo", player);
+                        db.collection("Accounts")
+                                .document(usernameData)
+                                .set(player)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        // These are a method which gets executed when the task is succeeded
+                                        Log.d(TAG, "Data has been added successfully!");
+                                    }
+
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        // These are a method which gets executed if there’s any problem
+                                        Log.d(TAG, "Data could not be added!" + e.toString());
+                                    }
+                                });
+                        ///////////////////////////////////////////////////
                     }
                 }
 

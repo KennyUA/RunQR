@@ -49,7 +49,8 @@ public class ProfileActivity extends AppCompatActivity {
         Player player = (Player) getIntent().getSerializableExtra("Display Player Profile");
         PlayerStats playerStats = player.getPlayerStats();
 
-
+        Log.d("Player stats, rankingSumOfScores",playerStats.getRankSumOfScores());
+        Log.d("Player stats, sumOfScores", String.valueOf(playerStats.getSumOfScores()));
 
         profileList = findViewById(R.id.profile_list);
         viewQRCodesButton = findViewById(R.id.view_qrcodes_button);
