@@ -2,8 +2,10 @@ package com.example.runqr;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -37,7 +39,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
     private ImageCapture imageCapture;
     Bitmap bitmap;
     Photo photo;
-    Context mContext;
+    //Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,12 +98,16 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
             if(byteCount > 8000000){
                 bitmap = bitmap.createScaledBitmap(bitmap,100,100,false);
             }
-            photo.setImage(bitmap);
-            Context context = mContext;
+            //photo.setImage(bitmap);
+            /*Context context = mContext;
             CharSequence text = "This Picture Has Been Saved";
             int duration = Toast.LENGTH_SHORT;
             Toast toast = Toast.makeText(context, text, duration);
-            toast.show();
+            toast.show();*/
+            photo.setImage(bitmap);
+            //Intent intent = new Intent(this, AddQRFragment.class);
+            //intent.putExtra("PhotoImage", (Parcelable) photo);
+
             finish();
 
         }

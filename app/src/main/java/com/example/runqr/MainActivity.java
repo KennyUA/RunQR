@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 
 
     private int locationRequestCode = 1000;
-    private double currentLatitude = 0.0, currentLongitude = 0.0;
+    public double currentLatitude = 0.0, currentLongitude = 0.0;
     private boolean locationPermissionGranted = false;
     private Location lastKnownLocation;
     private static final String KEY_CAMERA_POSITION = "camera_position";
@@ -1006,6 +1006,8 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
                                                 lastKnownLocation.getLongitude()), 9));
                                 Log.v("Last known Latitude", String.valueOf(lastKnownLocation.getLatitude()));
                                 Log.v("Last known Longitude", String.valueOf(lastKnownLocation.getLongitude()));
+                                currentLatitude = lastKnownLocation.getLatitude();
+                                currentLongitude = lastKnownLocation.getLongitude();
                                 updateLocationLists();
 
 
@@ -1050,6 +1052,10 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
     public void openCamera(){
         Intent intent = new Intent(this, CameraActivity.class);
         startActivity(intent);
+        /*
+        startActivityFromFragment((Fragment) AddQRFragment,intent,1000);
+        Photo getPhoto = (Photo) intent.getParcelableExtra("PhotoImage");
+         */
     }
 
 
