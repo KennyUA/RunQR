@@ -53,7 +53,7 @@ public class OwnerActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                userList.add(document.getId().toString());
+                                userList.add("player: "+document.getId().toString());
                                 Log.d(TAG, document.getId() + " => " + document.getData());
                             }
                         } else {
@@ -68,7 +68,7 @@ public class OwnerActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                codesList.add((document.getId()));
+                                codesList.add("hash: "+(document.getId()));
                                 Log.d(TAG, document.getId() + " => " + document.getData());
                             }
                         } else {

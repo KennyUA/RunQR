@@ -363,7 +363,8 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 
     @Override
     public void onDestroy(){
-        savePlayer();
+        //savePlayer();
+        savePlayerToDatabase();
         super.onDestroy();
 
     }
