@@ -329,18 +329,24 @@ public class LoginActivity extends AppCompatActivity implements LoginWithQRFragm
 
 
 
-    public void onConfirmPressed(QRCode qrCodeData) {
+    public void onConfirmPressed(String hash) {
         //String test = qrCodeData.getHash();
+        hashUsername = hash;
+        saveData();
+        //Intent intent = new Intent(getActivity(), MainActivity.class);
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        kill_activity();
 
 
-
+    }
 
         // THIS NEEDS TO BE UPDATED BY KENNY
         // Below: open activity/fragment which prompts user to access their device's location and take photo of the object containing scannedQRCode
 
 
 
-    }
+
 
 
     private boolean isValidEmailId(String email){

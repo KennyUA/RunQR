@@ -2,15 +2,15 @@ package com.example.runqr;
 
 import static android.content.ContentValues.TAG;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.runqr.placeholder.LeaderboardItemComparator;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -57,7 +57,7 @@ public class LeaderboardActivity extends AppCompatActivity {
         mostValuableButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                refreshListView("playerInfo.playerStats.highQr.score");
+                refreshListView("playerStats.highQr.score");
             }
         });
 
@@ -65,7 +65,7 @@ public class LeaderboardActivity extends AppCompatActivity {
         mostScannedButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                refreshListView("playerInfo.playerStats.numOfScanned");
+                refreshListView("playerStats.numOfScanned");
             }
         });
 
@@ -73,12 +73,12 @@ public class LeaderboardActivity extends AppCompatActivity {
         highestSumButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                refreshListView("playerInfo.playerStats.sumOfScores");
+                refreshListView("playerStats.sumOfScores");
             }
         });
 
         /* default view is most valuable*/
-        refreshListView("playerInfo.playerStats.highQr.score");
+        refreshListView("playerStats.highQr.score");
     }
 
     public void refreshListView(String scoreString) {
@@ -98,7 +98,7 @@ public class LeaderboardActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
-                        String thisPlayer = (String) document.get("playerInfo.playerAccount.username");
+                        String thisPlayer = (String) document.get("playerAccount.username");
                         String thisScore = String.valueOf(document.get(finalScoreString));
                         if (thisScore != "null") {
                             //scoreDataList.add(new LeaderboardItem(thisPlayer, thisScore));

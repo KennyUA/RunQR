@@ -6,7 +6,6 @@ import static android.content.Context.MODE_PRIVATE;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -48,6 +47,7 @@ public class LoginWithQRFragment extends Fragment {
     FirebaseFirestore db;
     String hashUsername = "";
     Context mContext;
+    Activity activity;
 
     @Override
     public void onAttach(Context context) {
@@ -65,7 +65,7 @@ public class LoginWithQRFragment extends Fragment {
     }
 
     public interface OnFragmentInteractionListener {
-        void onConfirmPressed(QRCode QRCodeToAdd);
+        void onConfirmPressed(String hashUsername);
 
     }
 
@@ -73,7 +73,7 @@ public class LoginWithQRFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        final Activity activity = getActivity();
+        activity = getActivity();
         db = FirebaseFirestore.getInstance();
         View root = inflater.inflate(R.layout.add_qr_fragment_layout, container, false);
         CodeScannerView scannerView = root.findViewById(R.id.scanner_view);
@@ -141,10 +141,16 @@ public class LoginWithQRFragment extends Fragment {
                             if (task.isSuccessful()) {
                                 DocumentSnapshot document = task.getResult();
                                 if (document.exists()) {
+                                    hashUsername = QRString;
+                                    listener.onConfirmPressed(hashUsername);
+                                    /*
                                     saveData();
-                                    Intent intent = new Intent(getActivity(), MainActivity.class);
+                                    //Intent intent = new Intent(getActivity(), MainActivity.class);
+                                    Intent intent = new Intent(activity, MainActivity.class);
                                     startActivity(intent);
                                     kill_activity();
+
+                                     */
                                 } else {
                                     //Context context = getApplicationContext();
                                     Context context = mContext;
@@ -250,7 +256,8 @@ public class LoginWithQRFragment extends Fragment {
     }
 
     void saveData(){
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("shared preferences", MODE_PRIVATE);
+        //SharedPreferences sharedPreferences = getActivity().getSharedPreferences("shared preferences", MODE_PRIVATE);
+        SharedPreferences sharedPreferences = activity.getSharedPreferences("shared preferences", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         Gson gson = new Gson();
         String json =gson.toJson(hashUsername);

@@ -387,7 +387,7 @@ public class AddQRFragment extends Fragment {
                         // These are a method which gets executed when the task is succeeded
                         savePlayerToQRCode(qrcode);
                         Log.d(TAG, "Data has been added successfully!");
-                        saveQRCodeToDB(qrcode);
+
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

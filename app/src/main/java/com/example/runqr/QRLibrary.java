@@ -103,7 +103,7 @@ public class QRLibrary implements Serializable {
      * @return
      *      An int representing number of QRCodes stored in QRLibrary.
      */
-    public int getLibrarySize(){
+    public int returnLibrarySize(){
         return this.QRCodeList.size();
     }
 
@@ -114,7 +114,7 @@ public class QRLibrary implements Serializable {
      *      The hash of the code to search for in the library and delete.
      */
     public void deleteQRCodeWithHash(String hashToDelete) {
-        for(int i=0; i < this.getLibrarySize();i++) {
+        for(int i = 0; i < this.returnLibrarySize(); i++) {
             if (this.getQRCode(i).getHash() == hashToDelete) {
                 this.deleteQRCode(this.getQRCode(i));
             }

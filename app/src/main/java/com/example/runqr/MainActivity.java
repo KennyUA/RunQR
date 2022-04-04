@@ -704,7 +704,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
             case R.id.profile_item:
                 //open player profile activity
                 Intent intent1 = new Intent(this, ProfileActivity.class);
-                intent1.putExtra("Player", (Serializable) currentPlayer);
+                intent1.putExtra("Display Player Profile", (Serializable) currentPlayer);
                 startActivity(intent1);
                 break;
             //return true;
