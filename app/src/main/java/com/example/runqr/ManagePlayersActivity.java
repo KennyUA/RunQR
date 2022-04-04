@@ -60,11 +60,12 @@ public class ManagePlayersActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 confirmClicked = true;
+                String playerUsername = dataList.get(position);
                 final Button button = (Button) findViewById(R.id.confirm_button);
                 button.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View view) {
                         if(confirmClicked){
-                            db.collection("Accounts").document(dataList.get(position))
+                            db.collection("Accounts").document(playerUsername)
                                     .delete()
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
@@ -97,7 +98,7 @@ public class ManagePlayersActivity extends AppCompatActivity {
                                                                         for (QueryDocumentSnapshot document : task.getResult()) {
                                                                             String userName = document.getId();
 
-                                                                            if(userName  ==  dataList.get(position)){
+                                                                            if(userName.equals(playerUsername)){
                                                                                 ref.document(userName).delete();
 
                                                                             }
@@ -121,6 +122,9 @@ public class ManagePlayersActivity extends AppCompatActivity {
                             dataList.remove(position);
 
                             playerList.setAdapter(playerAdapter);
+
+                            //CALL BAILEYS FUNCTION TO UPDATE PLAYER STATS & PLAYER LEADERBOARDS
+                            
                         }
                         confirmClicked = false;
 
@@ -132,5 +136,14 @@ public class ManagePlayersActivity extends AppCompatActivity {
 
 
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent();
+        //intent.putExtra("Player QRLibrary", playerQRLibrary);
+        intent.putExtra("UserList updated", dataList);
+        setResult(RESULT_OK, intent);
+        super.onBackPressed();
     }
 }

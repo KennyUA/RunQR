@@ -78,7 +78,8 @@ public class OwnerActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent playerIntent = new Intent(OwnerActivity.this, ManagePlayersActivity.class);
                 playerIntent.putStringArrayListExtra("list of players",userList);
-                startActivity(playerIntent);
+                //startActivity(playerIntent);
+                startActivityForResult(playerIntent, 1);
 
             }
         });
@@ -87,7 +88,8 @@ public class OwnerActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(OwnerActivity.this, ManageQRCodesActivity.class);
                 intent.putStringArrayListExtra("list of QRCodes",codesList);
-                startActivity(intent);
+                //startActivity(intent);
+                startActivityForResult(intent, 2);
 
 
 
@@ -96,8 +98,27 @@ public class OwnerActivity extends AppCompatActivity {
 
 
 
-
-
     }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if(resultCode == RESULT_OK) {
+                //QRLibrary updatedQRLibrary = (QRLibrary) data.getSerializableExtra("Player QRLibrary");
+                //Player updatedCurrentPlayer = (Player) data.getSerializableExtra("Player QRLibrary Updated");
+                ArrayList<String> updatedUserList = (ArrayList<String>) data.getSerializableExtra("UserList updated");
+                userList = updatedUserList;
+
+            }
+        }
+        else if (requestCode == 2) {
+            if(resultCode == RESULT_OK) {
+                ArrayList<String> updatedCodesList = (ArrayList<String>) data.getSerializableExtra("CodeList updated");
+                codesList = updatedCodesList;
+
+            }
+        }
+    }
+
 
 }

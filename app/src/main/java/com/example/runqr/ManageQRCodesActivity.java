@@ -30,7 +30,7 @@ public class ManageQRCodesActivity extends AppCompatActivity {
     private ListView codeList;
     private ArrayAdapter<String> codeAdapter;
     private ArrayList<String> dataList;
-    private ArrayList<Player> scannedByList;
+    private ArrayList<Player> scannedByList = new ArrayList<Player>();
     private boolean confirmClicked = false;
     FirebaseFirestore db;
 
@@ -59,11 +59,12 @@ public class ManageQRCodesActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 confirmClicked = true;
                 //dataList.remove(position);
+                String codeHash = dataList.get(position);
                 final Button button = (Button) findViewById(R.id.confirm_button);
                 button.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View view) {
                         if(confirmClicked){
-                            db.collection("QR Codes").document(dataList.get(position).toString())
+                            db.collection("QR Codes").document(codeHash.toString())
                                     .collection("Players")
                                     .get()
                                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -81,15 +82,17 @@ public class ManageQRCodesActivity extends AppCompatActivity {
                                             }
                                         }
                                     });
+
+
                             for(int i =0; i< scannedByList.size();i++){
                                 Player player = scannedByList.get(i);
-                                player.getPlayerQRLibrary().deleteQRCodeWithHash(dataList.get(position));
+                                player.getPlayerQRLibrary().deleteQRCodeWithHash(codeHash);
 
                                 //CALL BAILEYS FUNCTION TO UPDATE PLAYER STATS
 
                             }
 
-                            db.collection("QR Codes").document(dataList.get(position).toString())
+                            db.collection("QR Codes").document(codeHash.toString())
                                     .delete()
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
@@ -120,25 +123,14 @@ public class ManageQRCodesActivity extends AppCompatActivity {
         });
 
 
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent();
+        //intent.putExtra("Player QRLibrary", playerQRLibrary);
+        intent.putExtra("CodeList updated", dataList);
+        setResult(RESULT_OK, intent);
+        super.onBackPressed();
     }
 }
