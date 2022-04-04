@@ -50,10 +50,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-// Main activity of the RunQR game has an app bar with 2 icons: dropdown menu and an add QR Button which opens scanner for player to scan QRCodes.
-// Main activity also contains a map with a refresh button and a nearbySearch button (AYUSH can elaborate on this).
-// CURRENT ISSUES:
-// - after destroying app and opening again, player's QRLibrary is null and pressing QRLibrary in menu causes app to crash
+// Main activity of the RunQR game has an app bar with 3 icons:
+// dropdown menu
+// add QR Button which opens scanner for player to scan QRCodes
+// & a search icon to allow a player to search for other players on the game.
+// Main activity also contains a map with a nearbySearch button that displays nearbyQRCodes in a list.
+
 
 public class MainActivity extends AppCompatActivity implements AddQRFragment.OnFragmentInteractionListener, OnMapReadyCallback {
 

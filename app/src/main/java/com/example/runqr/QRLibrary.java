@@ -108,7 +108,11 @@ public class QRLibrary implements Serializable {
     }
 
 
-
+    /**
+     * This method deletes a QRCode with a specified hash from the QRLibrary.
+     * @param hashToDelete
+     *      The hash of the code to search for in the library and delete.
+     */
     public void deleteQRCodeWithHash(String hashToDelete) {
         for(int i=0; i < this.getLibrarySize();i++) {
             if (this.getQRCode(i).getHash() == hashToDelete) {

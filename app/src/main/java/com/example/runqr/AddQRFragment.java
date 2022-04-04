@@ -70,7 +70,6 @@ public class AddQRFragment extends Fragment {
     Player currentPlayer;
 
     Boolean unique;
-    ScannedByLibrary scannedByLibrary;
     ArrayList<Player> scannedByList;
     Boolean addCode = true;
 

@@ -35,9 +35,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Pattern;
 
-/** Represents login screen. When yser opens the app, he has two options:
+/** Represents login screen. When yser opens the app, he has three options:
  * 1) Create a new valid user (username should be at least 5 characters and must be unique. Email should also follow appropriate format.)
  * 2) Login using qr code identifier attached to a player (is not yet implemented).
+ * 3) Login as owner with a private owner key known only by owners, this allows you to execute owner stories.
  * This activity stores a newly created player to the database.
  * This activity stores a unique identifier to the phone so that if user is already logged in, he could directly move to main activity.
  * This activity sends the newest player information from database to the main activity if user has an existing account on the device.

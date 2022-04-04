@@ -25,6 +25,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
+// This class is the Activity used to allow owners to delete malicious QRCodes from the game and it deletes directly from firestore.
+
 public class ManageQRCodesActivity extends AppCompatActivity {
 
     private ListView codeList;

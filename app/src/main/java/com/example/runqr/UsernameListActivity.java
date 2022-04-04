@@ -26,6 +26,10 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
+// This Activity opens when players press on search icon to search for other players' profiles.
+// This displays a list of other players' usernames that match the name searched and display them in a listview.
+// Once a username from list is clicked, their profile is displayed by opening ProfileActivity.
+
 public class UsernameListActivity extends AppCompatActivity {
 
     ListView userNameListView;
