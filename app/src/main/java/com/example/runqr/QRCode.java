@@ -1,5 +1,7 @@
 package com.example.runqr;
 
+import android.graphics.Bitmap;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,7 +20,7 @@ public class QRCode implements Serializable {
     private int score;
     private Location location;
     private String hash;
-    private Photo photo;
+    private Bitmap photo;
     private CommentLibrary commentLibrary;
     private ArrayList<Player> scannedByList = new ArrayList<Player>();
 
@@ -52,7 +54,7 @@ public class QRCode implements Serializable {
         this.hash = hash;
     }
 
-    public void setPhoto(Photo photo) {
+    public void setPhoto(Bitmap photo) {
         this.photo = photo;
     }
 
@@ -61,7 +63,7 @@ public class QRCode implements Serializable {
     }
 
     // If location is denied and photo is allowed
-    public QRCode(String hash, Photo photo) {
+    public QRCode(String hash, Bitmap photo) {
         this.score = scoreQRCode(hash);
         this.hash = hash;
         this.photo = photo;
@@ -69,7 +71,7 @@ public class QRCode implements Serializable {
     }
 
     // If both location and photo are allowed
-    public QRCode(String hash, Location location, Photo photo) {
+    public QRCode(String hash, Location location, Bitmap photo) {
         this.score = scoreQRCode(hash);
         this.hash = hash;
         this.location = location;
@@ -103,7 +105,7 @@ public class QRCode implements Serializable {
      *      Photo object representing an image of the object on which the QRCode exists.
      */
 
-    public Photo getPhoto() {
+    public Bitmap getPhoto() {
         return this.photo;
     }
 

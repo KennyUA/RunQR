@@ -8,6 +8,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,12 +29,15 @@ import java.util.concurrent.Executor;
 
 public class CameraActivity extends AppCompatActivity implements View.OnClickListener {
     //impliment camera class from android studios "https://developer.android.com/guide/topics/media/camera"
+
     private ListenableFuture<ProcessCameraProvider> cameraProviderFuture;
 
     PreviewView previewView;
     Button takePicture;
     private ImageCapture imageCapture;
     Bitmap bitmap;
+    Photo photo;
+    Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +66,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void startCameraX(ProcessCameraProvider cameraProvider) {
+        //Structure of the code referenced from "https://www.youtube.com/watch?v=IrwhjDtpIU0" by Coding Reel
         cameraProvider.unbindAll();
 
         CameraSelector cameraSelector = new CameraSelector.Builder()
@@ -82,7 +87,23 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     public void onClick(View view){
         if (view.getId() == R.id.takePhoto) {
-            capturePhoto();
+            //capturePhoto();
+            //recieved from: https://developer.android.com/reference/androidx/camera/view/PreviewView#public-methods_1
+            photo = new Photo();
+
+            bitmap = previewView.getBitmap();
+            int byteCount = bitmap.getByteCount();
+            if(byteCount > 8000000){
+                bitmap = bitmap.createScaledBitmap(bitmap,100,100,false);
+            }
+            photo.setImage(bitmap);
+            Context context = mContext;
+            CharSequence text = "This Picture Has Been Saved";
+            int duration = Toast.LENGTH_SHORT;
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.show();
+            finish();
+
         }
     }
 

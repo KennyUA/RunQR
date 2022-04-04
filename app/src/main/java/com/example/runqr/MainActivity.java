@@ -159,7 +159,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        //lastKnownLocation = new Location((Location) null);
         loadPlayer();
         // Retrieve location and camera position from saved instance state.
         if (savedInstanceState != null) {
@@ -185,7 +185,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
         //HashMap<String, String> qrData = new HashMap<>();
 
 
-        Places.initialize(getApplicationContext(), BuildConfig.MAPS_API_KEY);
+        Places.initialize(getApplicationContext(), "AIzaSyBCVF_eq7zdUk2jwTJTKK0rCOISbiLlqlY");
         placesClient = Places.createClient(this);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         //droidbyme.medium.com/get-current-location-using-fusedlocationproviderclient-in-android-cb7ebf5ab88e
@@ -465,8 +465,6 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
         super.onResume();
         if((checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) && (checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
             fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
-        }else{
-            getLocationPermissions();
         }
 
 

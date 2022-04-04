@@ -7,6 +7,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -59,11 +60,13 @@ public class AddQRFragment extends Fragment {
     private Button take_photo, add_geolocation, yes, no;
 
     static Boolean locationAdded = false;
-    static Boolean photoAdded = false;
+    static Boolean photoAdded = true;
     Boolean alreadyScanned;
 
     Location QRCodeLocation;
     QRCode QRCodeToAdd;
+    Photo QRCodePhoto;
+    Bitmap bitmap;
 
     Context mContext;
     int LOCATION_PERMISSION_REQUEST_CODE = 100;
@@ -211,9 +214,11 @@ public class AddQRFragment extends Fragment {
                         public void onClick(View view) {
                             photoAdded = true;
                             //FIX BELOW
+                            QRCodePhoto = new Photo();
 
                             //define Take Photo here
                             listener.openCamera();
+                            bitmap = QRCodePhoto.getImage();
                         }
                     });
 
@@ -274,12 +279,12 @@ public class AddQRFragment extends Fragment {
                     // Instantiate new QRCode to add to the QRLibrary
                     if (locationAdded && photoAdded) {
                         // NOTE: photo is temporarily null here
-                        QRCodeToAdd = new QRCode(hashedString, QRCodeLocation, (Photo) null);
+                        QRCodeToAdd = new QRCode(hashedString, QRCodeLocation, QRCodePhoto.getImage());
                     } else if (locationAdded && !photoAdded) {
-                        QRCodeToAdd = new QRCode(hashedString, QRCodeLocation);
+                        QRCodeToAdd = new QRCode(hashedString, QRCodeLocation, (Bitmap) null);
                     } else if (!locationAdded && photoAdded) {
                         // NOTE: photo is temporarily null here
-                        QRCodeToAdd = new QRCode(hashedString, (Photo) null);
+                        QRCodeToAdd = new QRCode(hashedString, (Location) null, QRCodePhoto.getImage());
                     } else {
                         QRCodeToAdd = new QRCode(hashedString);
                     }
@@ -406,6 +411,7 @@ public class AddQRFragment extends Fragment {
         String hash = qrcode.getHash();
         String playerUsername =  currentPlayer.getPlayerAccount().getUsername();
         DocumentReference docref = db.collection("QR Codes").document(hash).collection("Players").document(playerUsername);
+        Log.v("User", docref.getId());
         docref.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
