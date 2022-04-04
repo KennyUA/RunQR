@@ -24,6 +24,13 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+/**
+ * This class represents a LeaderboardActivity object in the RunQR game.
+ * This class has a ranking list of all players for single highest value qr code, most qr codes scanned, and highest overall point sum
+ * it switches lists based on buttons pressed, default is highest single qr code value
+ * player rankings get updated when viewing the appropriate leaderboard
+ *
+ */
 
 public class LeaderboardActivity extends AppCompatActivity {
 
@@ -184,7 +191,32 @@ public class LeaderboardActivity extends AppCompatActivity {
                                                     //playerStats.updatePlayerStats("playerStats.rankSumOfScores", finalRank);
                                                 }
                                             }
+                                            /*
+                                            //////////////////////////////////////////////////////
+                                            String usernameData = player.getPlayerAccount().getUsername();
+                                            HashMap<String, Player> data = new HashMap<>();
+                                            data.put("playerInfo", player);
+                                            db.collection("Accounts")
+                                                    .document(usernameData)
+                                                    .set(player)
+                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void aVoid) {
+                                                            // These are a method which gets executed when the task is succeeded
+                                                            Log.d(TAG, "Data has been added successfully!");
+                                                        }
 
+                                                    })
+                                                    .addOnFailureListener(new OnFailureListener() {
+                                                        @Override
+                                                        public void onFailure(@NonNull Exception e) {
+                                                            // These are a method which gets executed if there’s any problem
+                                                            Log.d(TAG, "Data could not be added!" + e.toString());
+                                                        }
+                                                    });
+                                            ///////////////////////////////////////////////////
+
+                                             */
                                         }
 
                                     })
@@ -196,29 +228,7 @@ public class LeaderboardActivity extends AppCompatActivity {
                                     });
 
                         }
-                        //////////////////////////////////////////////////////
-                        String usernameData = player.getPlayerAccount().getUsername();
-                        HashMap<String, Player> data = new HashMap<>();
-                        data.put("playerInfo", player);
-                        db.collection("Accounts")
-                                .document(usernameData)
-                                .set(player)
-                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        // These are a method which gets executed when the task is succeeded
-                                        Log.d(TAG, "Data has been added successfully!");
-                                    }
 
-                                })
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        // These are a method which gets executed if there’s any problem
-                                        Log.d(TAG, "Data could not be added!" + e.toString());
-                                    }
-                                });
-                        ///////////////////////////////////////////////////
                     }
                 }
 
