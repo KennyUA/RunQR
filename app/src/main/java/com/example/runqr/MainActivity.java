@@ -16,14 +16,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.widget.Button;
 import android.widget.SearchView;
 import android.widget.Toast;
-
-import android.widget.Button;
-
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -41,7 +36,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -50,10 +44,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.net.PlacesClient;
-
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.events.Event;
 import com.google.firebase.firestore.CollectionReference;
@@ -78,6 +70,14 @@ import java.util.List;
 // Main activity also contains a map with a refresh button and a nearbySearch button (AYUSH can elaborate on this).
 // CURRENT ISSUES:
 // - after destroying app and opening again, player's QRLibrary is null and pressing QRLibrary in menu causes app to crash
+
+// Main activity of the RunQR game has an app bar with 3 icons:
+// dropdown menu
+// add QR Button which opens scanner for player to scan QRCodes
+// & a search icon to allow a player to search for other players on the game.
+// Main activity also contains a map with a nearbySearch button that displays nearbyQRCodes in a list.
+
+
 
 public class MainActivity extends AppCompatActivity implements AddQRFragment.OnFragmentInteractionListener, OnMapReadyCallback {
 
@@ -117,25 +117,29 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 
     String searchQuery;
     EventListener<QuerySnapshot> AccountsQuery;
-    //cite https://stackoverflow.com/questions/48699032/how-to-set-addsnapshotlistener-and-remove-in-populateviewholder-in-recyclerview
-    EventListener<QuerySnapshot> eventListener;
+
 
     ListenerRegistration listenerReg;
-    //cite https://stackoverflow.com/questions/21403496/how-to-get-current-location-in-google-map-android
+    //From Stackoverflow
+    //Source:  https://stackoverflow.com/questions/21403496/how-to-get-current-location-in-google-map-android
+    //By Shailendra Madda: https://stackoverflow.com/users/2462531/shailendra-madda
     FusedLocationProviderClient fusedLocationProviderClient;
+
     LocationRequest locationRequest;
     LocationCallback locationCallback;
-    //cite https://github.com/droidbyme/Location/blob/master/app/src/main/java/com/coders/location/MainActivity.java
-    //cite https://developers.google.com/maps/documentation/android-sdk/current-place-tutorial
+
+    //Google. (n.d.). Retrieved April 3, 2022 from the Android Developer Website: https://developers.google.com/maps/documentation/android-sdk/current-place-tutorial
     Places places;
     PlacesClient placesClient;
     Marker currentMarker;
 
 
-    private int locationRequestCode = 1000;
-    public double currentLatitude = 0.0, currentLongitude = 0.0;
+
+    private static final int locationRequestCode = 1;
+    double currentLatitude = 0.0, currentLongitude = 0.0;
+
     private boolean locationPermissionGranted = false;
-    private Location lastKnownLocation;
+    Location lastKnownLocation;
     private static final String KEY_CAMERA_POSITION = "camera_position";
     private static final String KEY_LOCATION = "location";
     private CameraPosition cameraPosition;
@@ -159,13 +163,17 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //lastKnownLocation = new Location((Location) null);
+
         loadPlayer();
+        getLocationPermissions();
+        Log.v("Boo", "Boo");
+
         // Retrieve location and camera position from saved instance state.
         if (savedInstanceState != null) {
             lastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
             cameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
         }
+
 
         loadData();
         Log.v(TAG, hashUsername);
@@ -188,7 +196,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
         Places.initialize(getApplicationContext(), "AIzaSyBCVF_eq7zdUk2jwTJTKK0rCOISbiLlqlY");
         placesClient = Places.createClient(this);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-        //droidbyme.medium.com/get-current-location-using-fusedlocationproviderclient-in-android-cb7ebf5ab88e
+        // Droid By Me, Get Current location using FusedLocationProviderClient in Android, https://droidbyme.medium.com/get-current-location-using-fusedlocationproviderclient-in-android-cb7ebf5ab88e
         locationRequest = LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         locationRequest.setInterval(10 * 1000);
@@ -197,17 +205,20 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
         locationCallback = new LocationCallback(){
             @Override
             public void onLocationResult(LocationResult locationResult) {
-                Log.v("here", "poopie");
+
+
                 super.onLocationResult(locationResult);
                 if (locationResult == null) {
                     return;
                 }
+
                 for (Location location : locationResult.getLocations()) {
-                    if (location != null) {
-                        lastKnownLocation.setLatitude(location.getLatitude());
-                        lastKnownLocation.setLongitude(location.getLongitude());
+                    if (location != null && lastKnownLocation != null) {
                         Log.v("Update lat", String.valueOf(lastKnownLocation.getLatitude()));
                         Log.v("Update long", String.valueOf(lastKnownLocation.getLongitude()));
+                        lastKnownLocation.setLatitude(location.getLatitude());
+                        lastKnownLocation.setLongitude(location.getLongitude());
+
 
                         updateLocationLists();
 
@@ -386,7 +397,9 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 
         //HashMap<String, String> qrData = new HashMap<>();
 
-        //https://developers.google.com/maps/documentation/android-sdk/map
+
+
+        //Google. (n.d.). Retrieved March,9 2022 from the Android Developer Website: https://developers.google.com/maps/documentation/android-sdk/map
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -416,6 +429,9 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 
     }
 
+
+
+    //cite https://developer.android.com/training/location/request-updates
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         if (currentMap != null) {
@@ -463,8 +479,16 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
     @Override
     public void onResume(){
         super.onResume();
-        if((checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) && (checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
+        if(lastKnownLocation == null){
+            getDeviceLocation();
+        }
+        if(locationPermissionGranted){
             fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
+
+        } else {
+            Toast.makeText(this, "App will not run properly if permission denied", Toast.LENGTH_LONG).show();
+
+
         }
 
 
@@ -473,20 +497,21 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 
     @Override
     public void onDestroy(){
-        savePlayer();
+        //savePlayer();
+        savePlayerToDatabase();
         super.onDestroy();
 
     }
 
 
     private void getLocationPermissions(){
-        //cite https://droidbyme.medium.com/get-current-location-using-fusedlocationproviderclient-in-android-cb7ebf5ab88e
+        // Droid By Me, Get Current location using FusedLocationProviderClient in Android, https://droidbyme.medium.com/get-current-location-using-fusedlocationproviderclient-in-android-cb7ebf5ab88e
         // check permission
-        //cite https://github.com/droidbyme/Location/blob/master/app/src/main/java/com/coders/location/MainActivity.java
+        // https://github.com/droidbyme/Location/blob/master/app/src/main/java/com/coders/location/MainActivity.java
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+               ) {
             // request for permission
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     locationRequestCode);
 
 
@@ -495,27 +520,32 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
         }
     }
 
+    //cite https://developers.google.com/maps/documentation/android-sdk/current-place-tutorial
     @SuppressLint("MissingPermission")
     @Override
-    //cite https://github.com/droidbyme/Location/blob/master/app/src/main/java/com/coders/location/MainActivity.java
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         locationPermissionGranted = false;
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        switch (requestCode) {
-            case 1000: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                        locationPermissionGranted = true;
+        if(requestCode == locationRequestCode) {
 
-                        }
+        // If request is cancelled, the result arrays are empty.
+        if (grantResults.length > 0
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    locationPermissionGranted = true;
+
+                }
 
 
 
+            } else {
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
             }
-        }
-        updateLocationUI();
+
+
+            Log.v("repeat", "repeat");
+            updateLocationUI();
+
     }
 
     static public Player getCurrentPlayer() {return currentPlayer;}
@@ -815,7 +845,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.main_menu, menu);
-        //cite https://developer.android.com/training/search/setup
+        //Google. (n.d.). Retrieved April 4, 2022 from the Android Developer Website: https://developer.android.com/training/search/setup
         SearchManager searchManager =
                 (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView =
@@ -854,7 +884,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
             case R.id.profile_item:
                 //open player profile activity
                 Intent intent1 = new Intent(this, ProfileActivity.class);
-                intent1.putExtra("Player", (Serializable) currentPlayer);
+                intent1.putExtra("Display Player Profile", (Serializable) currentPlayer);
                 startActivity(intent1);
                 break;
             //return true;
@@ -919,8 +949,8 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
             }else{
                 currentMap.setMyLocationEnabled(false);
                 currentMap.getUiSettings().setMyLocationButtonEnabled(false);
-                lastKnownLocation = null;
-                getLocationPermissions();
+                //lastKnownLocation = null;
+                //Have to do something if user said no
             }
         } catch (SecurityException e){
             Log.e("Exception: %s", e.getMessage());
@@ -1031,7 +1061,6 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         this.currentMap = googleMap;
-        getLocationPermissions();
         updateLocationUI();
         Log.v("Here map", "here");
         getDeviceLocation();
@@ -1061,16 +1090,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 
 
 
-    public void openSearchedPlayerProfile(String username) {
-        // get player object from database and open ProfileActivity with the searchedPlayer object
-        String testUsername;
-        Player searchedPlayer = null; // get from database
 
-        Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
-        intent.putExtra("Display Player Profile", searchedPlayer);
-        startActivity(intent);
-
-    }
 
 }
 

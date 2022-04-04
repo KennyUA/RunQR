@@ -1,9 +1,7 @@
 package com.example.runqr;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import android.app.Activity;
+import android.widget.ListView;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
@@ -17,15 +15,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 
-/**
- * Tests for UI navigation from MainActivity to QRLibrary (from dropdown menu) and then to DisplayQRCodeActivity when QRCode is clicked.
- * Test QRCodes are added to QRLibrary and deleted. QRCode is clicked to display score currently (location and photo will be added in next part).
- * Robotium test framework is used.
- * NOTES: Don't know how to manually add QRCodes to the QRLibrary and test that QRCode is there and when clicked, opens a new activity.
- * POSSIBLE SOLUTION FOR NOW: instantiate player with some test QRCodes already present in QRLibrary 
- */
-public class QRLibraryActivityTest {
-
+public class CommentTest {
     private Solo solo;
     private Solo solo2;
     private Solo solo3;
@@ -95,12 +85,14 @@ public class QRLibraryActivityTest {
         Integer score1 = code1.getScore();
         currentPlayer.getPlayerQRLibrary().addQRCode(code1);
 
-        assertTrue(solo.waitForText(hash1, 1, 2000));
-        assertTrue(solo.waitForText( score1.toString(), 1, 2000));
 
-        currentPlayer.getPlayerQRLibrary().deleteQRCode(code1);
-        assertFalse(solo.waitForText(hash1, 1, 2000));
-        assertFalse(solo.waitForText( score1.toString(), 1, 2000));
+        ListView codeList = (ListView) solo.getView(com.example.runqr.R.id.qrlibrary_list,1); //1 is ipmortant, dont know why
+        //QRCode code  = (QRCode) codeList.getChildAt(0);
+        solo.clickInList(0);
+        solo.assertCurrentActivity();
+        
+        solo.clickOnView(solo.getView(R.id.));
+
 
         /*
         solo.clickOnButton("ADD CITY"); // Click ADD CITY Button

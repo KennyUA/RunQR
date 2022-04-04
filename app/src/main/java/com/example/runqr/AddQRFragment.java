@@ -74,7 +74,6 @@ public class AddQRFragment extends Fragment {
     Player currentPlayer;
 
     Boolean unique;
-    ScannedByLibrary scannedByLibrary;
     ArrayList<Player> scannedByList;
     Boolean addCode = true;
 
@@ -224,13 +223,15 @@ public class AddQRFragment extends Fragment {
                             QRCodePhoto = new Photo();
 
                             //define Take Photo here
-                            Intent intent = new Intent(getContext(), CameraActivity.class);
-                            startActivity(intent);
+                            listener.openCamera();
+                            /*
                             // cite: https://stackoverflow.com/questions/13067033/how-to-access-activity-variables-from-a-fragment-android by David M
                             CameraActivity result = (CameraActivity) getActivity();
                             QRCodePhoto.setImage(result.bitmap);
                             bitmap = QRCodePhoto.getImage();
-
+                             */
+                            Intent intent = getIntent();
+                            Bitmap bitmap = (Bitmap) intent.getParcelableExtra("BitmapImage");
 
                         }
                     });
@@ -410,7 +411,7 @@ public class AddQRFragment extends Fragment {
                         // These are a method which gets executed when the task is succeeded
                         savePlayerToQRCode(qrcode);
                         Log.d(TAG, "Data has been added successfully!");
-                        saveQRCodeToDB(qrcode);
+
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -428,7 +429,9 @@ public class AddQRFragment extends Fragment {
         String hash = qrcode.getHash();
         String playerUsername =  currentPlayer.getPlayerAccount().getUsername();
         DocumentReference docref = db.collection("QR Codes").document(hash).collection("Players").document(playerUsername);
+
         Log.v("User", docref.getId());
+
         docref.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {

@@ -62,7 +62,7 @@ public class MarkerFragment extends DialogFragment {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.list_fragment, null);
         locationList = view.findViewById(R.id.qrListView);
 
-        //cite https://camposha.info/android-examples/android-list-fragment/#gsc.tab=0
+        //https://camposha.info/android-examples/android-list-fragment/#gsc.tab=0
         ArrayList<MarkerOptions> locationsList = getArguments().getParcelableArrayList("markerArray");
 
         locationsAdapter = new CustomListAdapter(getContext(), locationsList);

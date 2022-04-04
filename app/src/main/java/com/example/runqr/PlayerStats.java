@@ -39,9 +39,9 @@ public class PlayerStats implements Serializable {
 
     /* in activity, string of rank will be displayed according to int stored in PlayerStats object*/
     /*according to range, will be Platinum, Gold, etc*/
-    private int rankNumOfScanned;
-    private int rankHighQr;
-    private int rankSumOfScores;
+    private String rankNumOfScanned;
+    private String rankHighQr;
+    private String rankSumOfScores;
 
     public PlayerStats() {
     }
@@ -59,15 +59,15 @@ public class PlayerStats implements Serializable {
      * @param numScanned
      *      initialized to 0
      * @param rankHighQr
-     *      initialized to 0
+     *      initialized to "N/A"
      * @param rankNumScanned
-     *      initialized to 0
+     *      initialized to "N/A"
      * @param rankSumScores
-     *      initialized to 0
+     *      initialized to "N/A"
      *
      */
 
-    public PlayerStats(String username, QRCode highQr, QRCode lowQr, int sumScores, int numScanned, int rankHighQr, int rankNumScanned, int rankSumScores) {
+    public PlayerStats(String username, QRCode highQr, QRCode lowQr, int sumScores, int numScanned, String rankHighQr, String rankNumScanned, String rankSumScores) {
         highQr = highQr;
         lowQr = lowQr;
         sumOfScores = sumScores;
@@ -94,9 +94,9 @@ public class PlayerStats implements Serializable {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
-                        rankHighQr = Integer.parseInt((String) document.get("highScoreRanking"));
-                        rankNumOfScanned = Integer.parseInt((String) document.get("numberOfScannedRanking"));
-                        rankSumOfScores = Integer.parseInt((String) document.get("totalScoreRanking"));
+                        rankHighQr = (String) document.get("highScoreRanking");
+                        rankNumOfScanned = (String) document.get("numberOfScannedRanking");
+                        rankSumOfScores = (String) document.get("totalScoreRanking");
                         numOfScanned = Integer.parseInt((String) document.get("numberOfScanned"));
                         sumOfScores = Integer.parseInt((String) document.get("totalScore"));
                         String highQrString = (String) document.get("highScore");
@@ -195,29 +195,29 @@ public class PlayerStats implements Serializable {
         //updatePlayerStats("playerInfo.playerStats.numOfScanned", String.valueOf(numOfScanned));
     }
 
-    public int getRankNumOfScanned() {
+    public String getRankNumOfScanned() {
         return rankNumOfScanned;
     }
 
-    public void setRankNumOfScanned(int rankNumOfScanned) {
+    public void setRankNumOfScanned(String rankNumOfScanned) {
         this.rankNumOfScanned = rankNumOfScanned;
         //updatePlayerStats("playerInfo.playerStats.rankNumOfScanned", String.valueOf(numOfScanned));
     }
 
-    public int getRankHighQr() {
+    public String getRankHighQr() {
         return rankHighQr;
     }
 
-    public void setRankHighQr(int rankHighQr) {
+    public void setRankHighQr(String rankHighQr) {
         this.rankHighQr = rankHighQr;
         //updatePlayerStats("playerInfo.playerStats.rankHighQr", String.valueOf(rankHighQr));
     }
 
-    public int getRankSumOfScores() {
+    public String getRankSumOfScores() {
         return rankSumOfScores;
     }
 
-    public void setRankSumOfScores(int rankSumOfScores) {
+    public void setRankSumOfScores(String rankSumOfScores) {
         this.rankSumOfScores = rankSumOfScores;
         //updatePlayerStats("playerInfo.playerStats.rankSumOfScores", String.valueOf(rankSumOfScores));
     }

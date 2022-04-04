@@ -25,6 +25,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
+// This class is the Activity used to allow owners to delete players from the game and it deletes directly from firestore.
+
 public class ManagePlayersActivity extends AppCompatActivity {
 
     private ListView playerList;
@@ -124,7 +126,7 @@ public class ManagePlayersActivity extends AppCompatActivity {
                             playerList.setAdapter(playerAdapter);
 
                             //CALL BAILEYS FUNCTION TO UPDATE PLAYER STATS & PLAYER LEADERBOARDS
-                            
+
                         }
                         confirmClicked = false;
 

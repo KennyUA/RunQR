@@ -35,9 +35,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Pattern;
 
-/** Represents login screen. When yser opens the app, he has two options:
+/** Represents login screen. When yser opens the app, he has three options:
  * 1) Create a new valid user (username should be at least 5 characters and must be unique. Email should also follow appropriate format.)
  * 2) Login using qr code identifier attached to a player (is not yet implemented).
+ * 3) Login as owner with a private owner key known only by owners, this allows you to execute owner stories.
  * This activity stores a newly created player to the database.
  * This activity stores a unique identifier to the phone so that if user is already logged in, he could directly move to main activity.
  * This activity sends the newest player information from database to the main activity if user has an existing account on the device.
@@ -191,14 +192,15 @@ public class LoginActivity extends AppCompatActivity implements LoginWithQRFragm
                     final String emailData = email.getText().toString();
                     Log.d(TAG, "Here!");
                     HashMap<String, PlayerStats> data = new HashMap<>();
+                    Log.v("no", "no");
                     if (usernameExists && emailExists) {
                         //PlayerStats newStats = new PlayerStats(null, null, 0, 0, null, null, null);
                         //PlayerStats newStats = new PlayerStats(0, 0);
                         //    public PlayerStats(QRCode highQR, QRCode lowQR, Integer sumScores, Integer numScanned, Integer rankHighQR,
                         //                       Integer rankNumScanned, Integer rankSumScores) {
 
-
-                        PlayerStats newStats = new PlayerStats(usernameData, null,null,0,0,0,0,0);
+                        Log.v("login", "login");
+                        PlayerStats newStats = new PlayerStats(usernameData, null,null,0,0,"N/A","N/A","N/A");
 
                         //PlayerStats newStats = new PlayerStats(usernameData);
 
@@ -210,6 +212,7 @@ public class LoginActivity extends AppCompatActivity implements LoginWithQRFragm
                         data.put("playerStats", newStats);
                         //data.put("playerAccount", newAccount);
                         //data.put("playerQRLibrary", newLibrary);
+                        Log.v("before","before");
                         collectionReference
                                 .document(usernameData)
                                 .set(currentPlayer)
@@ -238,10 +241,11 @@ public class LoginActivity extends AppCompatActivity implements LoginWithQRFragm
                                                         Log.d(TAG, "Data could not be added!" + e.toString());
                                                     }
                                                 });
-
+                                        Log.v("after", "after");
                                         saveData();
                                         savePlayer();
                                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                        Log.v("boo", "boo");
                                         startActivity(intent);
                                         kill_activity();
                                     }
@@ -328,18 +332,24 @@ public class LoginActivity extends AppCompatActivity implements LoginWithQRFragm
 
 
 
-    public void onConfirmPressed(QRCode qrCodeData) {
+    public void onConfirmPressed(String hash) {
         //String test = qrCodeData.getHash();
+        hashUsername = hash;
+        saveData();
+        //Intent intent = new Intent(getActivity(), MainActivity.class);
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        kill_activity();
 
 
-
+    }
 
         // THIS NEEDS TO BE UPDATED BY KENNY
         // Below: open activity/fragment which prompts user to access their device's location and take photo of the object containing scannedQRCode
 
 
 
-    }
+
 
 
     private boolean isValidEmailId(String email){

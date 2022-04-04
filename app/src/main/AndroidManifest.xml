@@ -17,7 +17,7 @@
 
         <activity
             android:name=".UsernameListActivity"
-            android:exported="false">
+            android:exported="true">
             <!-- cite https://developer.android.com/training/search/setup -->
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
@@ -35,7 +35,6 @@
         <activity
             android:name=".AddDeviceActivity"
             android:exported="false" />
-   
 
 
         <!--
@@ -91,10 +90,11 @@
         <activity
             android:name=".MainActivity"
 
+
             android:exported="false">
 
-            <meta-data android:name="android.app.searchable"
 
+            <meta-data android:name="android.app.searchable"
                 android:resource="@xml/searchable"/>
 
         </activity>

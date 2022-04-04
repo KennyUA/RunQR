@@ -14,6 +14,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+// This class is the DialogFragment which allows players to add and edit comments to the QRCode in DisplayQRCodeActivity.
+// The newly created comment is passed back to DisplayQRCodeActivity through method onOkPressed and added to QRCode's CommentLibrary there.
+
+
 public class AddCommentFragment extends DialogFragment {
 
     private EditText commentTitle;

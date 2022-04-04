@@ -1,31 +1,34 @@
 package com.example.runqr;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.SearchView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+
+// This Activity opens when players press on search icon to search for other players' profiles.
+// This displays a list of other players' usernames that match the name searched and display them in a listview.
+// Once a username from list is clicked, their profile is displayed by opening ProfileActivity.
 
 public class UsernameListActivity extends AppCompatActivity {
 
@@ -36,6 +39,8 @@ public class UsernameListActivity extends AppCompatActivity {
     CollectionReference collectionReference;
     ProgressBar progressBar;
     LinearLayout mainList;
+    Player searchedPlayer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,7 +62,47 @@ public class UsernameListActivity extends AppCompatActivity {
 
         getUsernames(getIntent());
 
+        userNameListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                String username = userNameList.get(i);
 
+                db.collection("Accounts").document(username)
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                searchedPlayer = task.getResult().toObject(Player.class);
+                                openSearchedPlayerProfile(searchedPlayer);
+                            }
+                        });
+
+                //openSearchedPlayerProfile(searchedPlayer);
+            }
+        });
+
+
+
+
+
+    }
+
+    public void openSearchedPlayerProfile(Player searchedPlayer) {
+        // get player object from database and open ProfileActivity with the searchedPlayer object
+
+        if (searchedPlayer != null) {
+            Intent intent = new Intent(UsernameListActivity.this, ProfileActivity.class);
+            intent.putExtra("Display Player Profile", searchedPlayer);
+            startActivity(intent);
+        }
+        else {
+            Context context = getApplicationContext();
+            CharSequence text = "Sorry this player doesn't have a profile to display";
+            int duration = Toast.LENGTH_SHORT;
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.show();
+
+        }
 
     }
 
@@ -67,7 +112,8 @@ public class UsernameListActivity extends AppCompatActivity {
         getUsernames(intent);
     }
     public void getUsernames(Intent intent){
-        //cite https://developer.android.com/training/search/setup
+
+        //Google. (n.d.). Retrieved April 3, 2022 from the Android Developer Website: https://developer.android.com/training/search/setup
         if(Intent.ACTION_SEARCH.equals(intent.getAction())) {
             newSearchQuery = intent.getStringExtra(SearchManager.QUERY);
             userNameList.clear();

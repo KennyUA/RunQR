@@ -107,7 +107,8 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
             photo.setImage(bitmap);
             //Intent intent = new Intent(this, AddQRFragment.class);
             //intent.putExtra("PhotoImage", (Parcelable) photo);
-
+            Intent intent = new Intent(this, NewActivity.class);
+            intent.putExtra("BitmapImage", bitmap);
             finish();
 
         }

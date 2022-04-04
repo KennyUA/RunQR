@@ -1,18 +1,16 @@
 package com.example.runqr;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.Point;
 import android.os.Bundle;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
@@ -23,8 +21,11 @@ import com.google.zxing.qrcode.QRCodeWriter;
 
 import java.lang.reflect.Type;
 
-import androidmads.library.qrgenearator.QRGContents;
 import androidmads.library.qrgenearator.QRGEncoder;
+
+// This class is the Activity used to host a codeScanner which allows players to login with qrcode from another device.
+// This class uses CodeScanner object to scan QRCodes and borrows code from: https://github.com/yuriy-budiyev/code-scanner.
+
 
 public class AddDeviceActivity extends AppCompatActivity {
     String hashUsername;

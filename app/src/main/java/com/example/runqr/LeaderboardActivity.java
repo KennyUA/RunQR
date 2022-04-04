@@ -2,9 +2,6 @@ package com.example.runqr;
 
 import static android.content.ContentValues.TAG;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -12,8 +9,13 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.runqr.placeholder.LeaderboardItemComparator;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -21,6 +23,14 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+/**
+ * This class represents a LeaderboardActivity object in the RunQR game.
+ * This class has a ranking list of all players for single highest value qr code, most qr codes scanned, and highest overall point sum
+ * it switches lists based on buttons pressed, default is highest single qr code value
+ * player rankings get updated when viewing the appropriate leaderboard
+ *
+ */
 
 public class LeaderboardActivity extends AppCompatActivity {
 
@@ -29,7 +39,7 @@ public class LeaderboardActivity extends AppCompatActivity {
     ArrayList<LeaderboardItem> scoreDataList;
     ArrayList<String> players;
     ArrayList<String> scores;
-    int mode = 0;
+    //int mode = 0;
 
 
     @Override
@@ -57,7 +67,7 @@ public class LeaderboardActivity extends AppCompatActivity {
         mostValuableButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                refreshListView("playerInfo.playerStats.highQr.score");
+                refreshListView("playerStats.highQr.score", playerStats, player);
             }
         });
 
@@ -65,7 +75,7 @@ public class LeaderboardActivity extends AppCompatActivity {
         mostScannedButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                refreshListView("playerInfo.playerStats.numOfScanned");
+                refreshListView("playerStats.numOfScanned", playerStats, player);
             }
         });
 
@@ -73,15 +83,15 @@ public class LeaderboardActivity extends AppCompatActivity {
         highestSumButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                refreshListView("playerInfo.playerStats.sumOfScores");
+                refreshListView("playerStats.sumOfScores", playerStats, player);
             }
         });
 
         /* default view is most valuable*/
-        refreshListView("playerInfo.playerStats.highQr.score");
+        refreshListView("playerStats.highQr.score", playerStats, player);
     }
 
-    public void refreshListView(String scoreString) {
+    public void refreshListView(String scoreString, PlayerStats playerStats, Player player) {
 
         players = new ArrayList<String>();
         scores = new ArrayList<String>();
@@ -98,14 +108,14 @@ public class LeaderboardActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
-                        String thisPlayer = (String) document.get("playerInfo.playerAccount.username");
+                        String thisPlayer = (String) document.get("playerAccount.username");
                         String thisScore = String.valueOf(document.get(finalScoreString));
                         if (thisScore != "null") {
                             //scoreDataList.add(new LeaderboardItem(thisPlayer, thisScore));
                             players.add(thisPlayer);
                             scores.add(thisScore);
                             Log.d(TAG, document.getId() + " => " + document.getData());
-                            Log.d(TAG, "player is " + thisPlayer + " and score is " + thisScore);
+                            //Log.d(TAG, "player is " + thisPlayer + " and score is " + thisScore);
                         }
                     }
                 } else {
@@ -117,7 +127,112 @@ public class LeaderboardActivity extends AppCompatActivity {
                 }
                 LeaderboardItemComparator leaderboardItemComparator = new LeaderboardItemComparator();
                 Collections.sort(scoreDataList, leaderboardItemComparator);
+                /*figuring out player rankings*/
+                int size = scoreDataList.size();
+                int numPlatinum = 0; //first x% should be platinum
+                int numGold = size/25; //next 4%
+                int numSilver = size/10; //next 10%
+                int numBronze = size/5; //next 20%
+                scoreDataList.add(numBronze, new LeaderboardItem("BRONZE", " "));
+                scoreDataList.add(numSilver, new LeaderboardItem("SILVER", " "));
+                scoreDataList.add(numGold, new LeaderboardItem("GOLD", " "));
+                scoreDataList.add(numPlatinum, new LeaderboardItem("PLATINUM", " "));
                 scoreAdapter.notifyDataSetChanged();
+
+                /*update rankings in player individual profiles*/
+                int i = 0;
+                String rank = "PLATINUM";
+                Log.d(TAG, "size in refreashplayerstats is "+scoreDataList.size());
+                for (i = 0; i < scoreDataList.size(); i++) {
+                    Log.d(TAG, "i is " + String.valueOf(i));
+                    LeaderboardItem thisItem = scoreDataList.get(i);
+                    if (thisItem.getPlayer() != null) {
+                        if (thisItem.getPlayer().equals("GOLD")) {
+                            rank = "GOLD";
+                        }
+                        if (thisItem.getPlayer().equals("SILVER")) {
+                            rank = "SILVER";
+                        }
+                        if (thisItem.getPlayer().equals("BRONZE")) {
+                            rank = "BRONZE";
+                        }
+                        if (!thisItem.getPlayer().equals("PLATINUM") && !thisItem.getPlayer().equals("GOLD") && !thisItem.getPlayer().equals("SILVER") && !thisItem.getPlayer().equals("BRONZE")) {
+                            /*find player based on username and update ranking*/
+                            Log.d(TAG, "reached for loop i = " + String.valueOf(i));
+                            FirebaseFirestore db = FirebaseFirestore.getInstance();
+                            String username = thisItem.getPlayer();
+                            String finalRank = rank;
+                            String rankString = "";
+                            if (scoreString.equals("playerStats.highQr.score")) {
+                                rankString = "playerStats.rankHighQr";
+                            }
+                            if (scoreString.equals("playerStats.numOfScanned")) {
+                                rankString = "playerStats.rankNumOfScanned";
+                            }
+                            if (scoreString.equals("playerStats.sumOfScores")) {
+                                rankString = "playerStats.rankSumOfScores";
+                            }
+                            String finalRankString = rankString;
+                            db.collection("Accounts").document(username).update(rankString, rank)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            Log.d(TAG, "DocumentSnapshot successfully written!");
+                                            Log.d("TESTTEST", "rankString = " + finalRankString + " and rank = " + finalRank);
+                                            if (playerStats.username.equals(username)) {
+                                                if (finalRankString.equals("playerStats.rankHighQr")) {
+                                                    playerStats.setRankHighQr(finalRank);
+                                                    //playerStats.updatePlayerStats("playerStats.rankHighQr", finalRank);
+                                                } else if (finalRankString.equals("playerStats.rankNumOfScanned")) {
+                                                    playerStats.setRankNumOfScanned(finalRank);
+                                                    //playerStats.updatePlayerStats("playerStats.rankNumOfScanned", finalRank);
+                                                } else if (finalRankString.equals("playerStats.rankSumOfScores")) {
+                                                    playerStats.setRankSumOfScores(finalRank);
+                                                    //playerStats.updatePlayerStats("playerStats.rankSumOfScores", finalRank);
+                                                }
+                                            }
+                                            /*
+                                            //////////////////////////////////////////////////////
+                                            String usernameData = player.getPlayerAccount().getUsername();
+                                            HashMap<String, Player> data = new HashMap<>();
+                                            data.put("playerInfo", player);
+                                            db.collection("Accounts")
+                                                    .document(usernameData)
+                                                    .set(player)
+                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void aVoid) {
+                                                            // These are a method which gets executed when the task is succeeded
+                                                            Log.d(TAG, "Data has been added successfully!");
+                                                        }
+
+                                                    })
+                                                    .addOnFailureListener(new OnFailureListener() {
+                                                        @Override
+                                                        public void onFailure(@NonNull Exception e) {
+                                                            // These are a method which gets executed if there’s any problem
+                                                            Log.d(TAG, "Data could not be added!" + e.toString());
+                                                        }
+                                                    });
+                                            ///////////////////////////////////////////////////
+
+                                             */
+                                        }
+
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Log.w(TAG, "Error writing document", e);
+                                        }
+                                    });
+
+                        }
+
+                    }
+                }
+
+
             }
         });
     }

@@ -17,6 +17,7 @@ import java.util.List;
 /**
  * This class represents a custom ArrayAdapter<QRCode> class to display player's QRCodeLibrary in the form of a ListView in QRLibraryActivity.
  * This class allows the hash and score of the QRCode to be displayed in QRLibraryActivity's ListView.
+ * Extends ArrayAdapter<QRCode> and overrides its methods.
  */
 
 public class QRList extends ArrayAdapter<QRCode> implements Serializable {
