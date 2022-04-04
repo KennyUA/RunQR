@@ -1,25 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!--
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
     android:orientation="vertical">
+-->
 
-
+    <!--
     <TextView
-        android:id="@+id/qrcode_hash_text"
+        android:id="@+id/qrcode_comment_title_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="20dp"
-        android:text="QRCode Hash"
+        android:text="Comment Title"
         android:textSize="15sp"></TextView>
+    -->
 
     <TextView
-        android:id="@+id/qrcode_score_text"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/qrcode_comment_body_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="20dp"
-        android:text="QRCode Score"
-        android:textSize="15sp"></TextView>
+        android:text="Comment Body"
+        android:clickable="true"
+        android:textSize="15sp">
+
+    </TextView>
 
 
-</LinearLayout>
+
+<!--</LinearLayout>-->

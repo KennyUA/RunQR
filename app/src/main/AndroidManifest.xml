@@ -14,6 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.RunQR"
         android:usesCleartextTraffic="true">
+
         <activity
             android:name=".UsernameListActivity"
             android:exported="false">
@@ -23,6 +24,17 @@
             </intent-filter>
             <meta-data android:name="android.app.searchable"
                 android:resource="@xml/searchable"/>
+
+        <!--
+        activity
+            android:name=".CustomListAdapter"
+            android:exported="false"
+        -->
+
+        <activity
+            android:name=".AddDeviceActivity"
+            android:exported="false" />
+   
 
         </activity>
         <!--
@@ -42,6 +54,10 @@
             android:name=".DisplayQRCodeActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".CameraActivity"
+            android:exported="false" />
+
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -56,6 +72,16 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".OwnerActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ManageQRCodesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ManagePlayersActivity"
+            android:exported="true" />
+
+        <activity
             android:name=".QRLibraryActivity"
             android:exported="false" />
         <activity
@@ -63,7 +89,8 @@
             android:exported="false" />
         <activity
             android:name=".MainActivity"
-            android:exported="true">
+            
+            android:exported="false" />
             <meta-data android:name="android.app.searchable"
 
                 android:resource="@xml/searchable"/>
@@ -72,3 +99,7 @@
     </application>
 
 </manifest>
+
+=
+
+
