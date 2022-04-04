@@ -406,6 +406,7 @@ public class AddQRFragment extends Fragment {
         String hash = qrcode.getHash();
         String playerUsername =  currentPlayer.getPlayerAccount().getUsername();
         DocumentReference docref = db.collection("QR Codes").document(hash).collection("Players").document(playerUsername);
+        Log.v("User",docref.getId());
         docref.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
