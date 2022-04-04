@@ -124,7 +124,7 @@ public class ManagePlayersActivity extends AppCompatActivity {
                             playerList.setAdapter(playerAdapter);
 
                             //CALL BAILEYS FUNCTION TO UPDATE PLAYER STATS & PLAYER LEADERBOARDS
-                            
+
                         }
                         confirmClicked = false;
 
