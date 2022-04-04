@@ -19,6 +19,11 @@ public class CommentLibrary implements Serializable {
         this.numComments = 0;
     }
 
+    public CommentLibrary(ArrayList<Comment> commentList, int numComments) {
+        this.commentList = commentList;
+        this.numComments = numComments;
+    }
+
     /**
      * This method returns the list of comments for a given QRCode.
      * @return

@@ -8,7 +8,7 @@ import java.io.Serializable;
  * A comment object has one attribute: the body text of the comment.
  */
 public class Comment implements Serializable {
-    String body;
+    private String body;
 
 
 
