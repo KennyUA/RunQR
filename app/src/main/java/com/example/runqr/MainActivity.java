@@ -16,16 +16,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-
-
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.widget.Button;
 import android.widget.SearchView;
 import android.widget.Toast;
-
-
-import android.widget.Button;
-
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -43,7 +36,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -52,10 +44,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.net.PlacesClient;
-
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.events.Event;
 import com.google.firebase.firestore.CollectionReference;
@@ -64,9 +54,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
-
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -202,7 +190,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
         //HashMap<String, String> qrData = new HashMap<>();
 
 
-        Places.initialize(getApplicationContext(), BuildConfig.MAPS_API_KEY);
+        Places.initialize(getApplicationContext(), "AIzaSyBCVF_eq7zdUk2jwTJTKK0rCOISbiLlqlY");
         placesClient = Places.createClient(this);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         // Droid By Me, Get Current location using FusedLocationProviderClient in Android, https://droidbyme.medium.com/get-current-location-using-fusedlocationproviderclient-in-android-cb7ebf5ab88e
@@ -504,7 +492,8 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 
     @Override
     public void onDestroy(){
-        savePlayer();
+        //savePlayer();
+        savePlayerToDatabase();
         super.onDestroy();
 
     }
