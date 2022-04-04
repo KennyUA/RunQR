@@ -46,6 +46,10 @@ public class ProfileActivity extends AppCompatActivity {
 
         String highQrString = "N/A";
         String lowQrString = "N/A";
+        String rankHighQrString = "N/A";
+        String rankNumOfScannedString = "N/A";
+        String rankSumOfScoresString = "N/A";
+
 
         if (playerStats.getHighQr() != null) {
             highQrString = String.valueOf(playerStats.getHighQr().getScore());
@@ -55,8 +59,29 @@ public class ProfileActivity extends AppCompatActivity {
             lowQrString = String.valueOf(playerStats.getLowQr().getScore());
         }
 
+        /*
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("Accounts").document(playerStats.username).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Log.d(TAG, "entered firebase profile activity");
+                        String rankHighQrString = (String) document.get("playerInfo.playerStats.rankHighQr");
+                        String rankNumOfScannedString = (String) document.get("playerInfo.playerStats.rankNumOfScanned");
+                        String rankSumOfScoresString = (String) document.get("playerInfo.playerStats.rankSumOfScores");
+                    }
+                } else {
+                    Log.d(TAG, "Error getting documents: ", task.getException());
+                }
+            }
+        });
+
+         */
+
         String[] items = {"Scanned QR Codes: ", "Total Score: ", "Rank (number of codes): ", "Rank (player): ", "Rank (highest scoring code): ", "Highest Scoring: ", "Lowest Scoring: "};
-        String[] values = {String.valueOf(playerStats.getNumOfScanned()), String.valueOf(playerStats.getSumOfScores()), String.valueOf(playerStats.getRankNumOfScanned()), String.valueOf(playerStats.getRankSumOfScores()), String.valueOf(playerStats.getRankHighQr()), highQrString, lowQrString};
+        String[] values = {String.valueOf(playerStats.getNumOfScanned()), String.valueOf(playerStats.getSumOfScores()), rankNumOfScannedString, rankSumOfScoresString, rankHighQrString, highQrString, lowQrString};
 
         profileDataList = new ArrayList<>();
         for (int i = 0; i < items.length; i++) {

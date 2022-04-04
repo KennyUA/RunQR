@@ -199,7 +199,7 @@ public class LoginActivity extends AppCompatActivity implements LoginWithQRFragm
                         //                       Integer rankNumScanned, Integer rankSumScores) {
 
 
-                        PlayerStats newStats = new PlayerStats(usernameData, null,null,0,0,0,0,0);
+                        PlayerStats newStats = new PlayerStats(usernameData, null,null,0,0,"N/A","N/A","N/A");
 
                         //PlayerStats newStats = new PlayerStats(usernameData);
 
