@@ -1,15 +1,23 @@
 package com.example.runqr;
 
+import static android.content.ContentValues.TAG;
+
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
@@ -27,7 +35,9 @@ public class ProfileActivity extends AppCompatActivity {
     ArrayList<ProfileItem> profileDataList;
     String[] items;
     String[] values;
-
+    private String rankNumOfScannedString;
+    private String rankHighQrString;
+    private String rankSumOfScoresString;
 
 
     @Override
@@ -36,16 +46,21 @@ public class ProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
 
         // To retrieve object in second Activity
-        Player player = (Player) getIntent().getSerializableExtra("Player");
+        Player player = (Player) getIntent().getSerializableExtra("Display Player Profile");
         PlayerStats playerStats = player.getPlayerStats();
 
-
+        Log.d("Player stats, rankingSumOfScores",playerStats.getRankSumOfScores());
+        Log.d("Player stats, sumOfScores", String.valueOf(playerStats.getSumOfScores()));
 
         profileList = findViewById(R.id.profile_list);
         viewQRCodesButton = findViewById(R.id.view_qrcodes_button);
 
         String highQrString = "N/A";
         String lowQrString = "N/A";
+        //String rankHighQrString = "N/A";
+        //String rankNumOfScannedString = "N/A";
+        //String rankSumOfScoresString = "N/A";
+
 
         if (playerStats.getHighQr() != null) {
             highQrString = String.valueOf(playerStats.getHighQr().getScore());
@@ -55,8 +70,29 @@ public class ProfileActivity extends AppCompatActivity {
             lowQrString = String.valueOf(playerStats.getLowQr().getScore());
         }
 
-        String[] items = {"Scanned QR Codes: ", "Total Score: ", "Rank (number of codes): ", "Rank (player): ", "Rank (highest scoring code): ", "Highest Scoring: ", "Lowest Scoring: "};
-        String[] values = {String.valueOf(playerStats.getNumOfScanned()), String.valueOf(playerStats.getSumOfScores()), String.valueOf(playerStats.getRankNumOfScanned()), String.valueOf(playerStats.getRankSumOfScores()), String.valueOf(playerStats.getRankHighQr()), highQrString, lowQrString};
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("Accounts").document(playerStats.username).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Log.d(TAG, "entered firebase profile activity");
+                        String rankHighQrString = (String) document.get("playerStats.rankHighQr");
+                        String rankNumOfScannedString = (String) document.get("playerStats.rankNumOfScanned");
+                        String rankSumOfScoresString = (String) document.get("playerStats.rankSumOfScores");
+                    }
+                } else {
+                    Log.d(TAG, "Error getting documents: ", task.getException());
+                }
+            }
+        });
+
+
+
+        String[] items = {"Scanned QR Codes: ", "Total Score: ", "Highest Scoring: ", "Lowest Scoring: "};
+        String[] values = {String.valueOf(playerStats.getNumOfScanned()), String.valueOf(playerStats.getSumOfScores()), highQrString, lowQrString};
 
         profileDataList = new ArrayList<>();
         for (int i = 0; i < items.length; i++) {

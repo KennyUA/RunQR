@@ -1,5 +1,8 @@
 package com.example.runqr;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import android.app.Activity;
 
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -86,6 +89,18 @@ public class QRLibraryActivityTest {
 
         // Add QRCodes to list
         Player currentPlayer = new Player(new Account(), new QRLibrary(new ArrayList<QRCode>(), 0));
+        Hasher hasher = new Hasher();
+        String hash1 = hasher.hashQRCode("hello");
+        QRCode code1 = new QRCode(hash1);
+        Integer score1 = code1.getScore();
+        currentPlayer.getPlayerQRLibrary().addQRCode(code1);
+
+        assertTrue(solo.waitForText(hash1, 1, 2000));
+        assertTrue(solo.waitForText( score1.toString(), 1, 2000));
+
+        currentPlayer.getPlayerQRLibrary().deleteQRCode(code1);
+        assertFalse(solo.waitForText(hash1, 1, 2000));
+        assertFalse(solo.waitForText( score1.toString(), 1, 2000));
 
         /*
         solo.clickOnButton("ADD CITY"); // Click ADD CITY Button
@@ -106,7 +121,6 @@ public class QRLibraryActivityTest {
         */
 
     }
-
 
 
     /**

@@ -6,7 +6,7 @@ import org.junit.Test;
 
 public class PlayerStatsTest {
 
-    PlayerStats playerStats = new PlayerStats("abcde",null,null,0,0,0,0,0);
+    PlayerStats playerStats = new PlayerStats("abcde",null,null,0,0,"N/A","N/A","N/A");
     
 
     @Test

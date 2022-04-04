@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!--
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:clickable="true"
     android:orientation="vertical">
+-->
 
     <!--
     <TextView
@@ -15,15 +19,17 @@
     -->
 
     <TextView
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/qrcode_comment_body_text"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:padding="20dp"
         android:text="Comment Body"
+        android:clickable="true"
         android:textSize="15sp">
 
     </TextView>
 
 
 
-</LinearLayout>
+<!--</LinearLayout>-->

@@ -12,6 +12,11 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 
+/**
+ * This class represents an adapter for the Leaderboard list of items to display in Leaderboard Activity.
+ * Extends ArrayAdapter<LeaderboardItem> and overrides its methods.
+ */
+
 public class LeaderboardCustomList extends ArrayAdapter<LeaderboardItem> {
 
     private ArrayList<LeaderboardItem> leaderboard_items;

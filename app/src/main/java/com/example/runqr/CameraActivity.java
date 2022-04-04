@@ -1,12 +1,8 @@
 package com.example.runqr;
 
-import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.ImageDecoder;
-import android.hardware.camera2.CameraManager;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -30,7 +26,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 
 
-public class Camera extends AppCompatActivity implements View.OnClickListener {
+public class CameraActivity extends AppCompatActivity implements View.OnClickListener {
     //impliment camera class from android studios "https://developer.android.com/guide/topics/media/camera"
     private ListenableFuture<ProcessCameraProvider> cameraProviderFuture;
 
@@ -43,7 +39,7 @@ public class Camera extends AppCompatActivity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.camera_layout);
         takePicture = findViewById(R.id.takePhoto);
 
         previewView = findViewById(R.id.previewView);

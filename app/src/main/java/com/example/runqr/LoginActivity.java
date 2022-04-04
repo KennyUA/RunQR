@@ -20,6 +20,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.common.hash.Hashing;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -34,9 +35,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Pattern;
 
-/** Represents login screen. When yser opens the app, he has two options:
+/** Represents login screen. When yser opens the app, he has three options:
  * 1) Create a new valid user (username should be at least 5 characters and must be unique. Email should also follow appropriate format.)
  * 2) Login using qr code identifier attached to a player (is not yet implemented).
+ * 3) Login as owner with a private owner key known only by owners, this allows you to execute owner stories.
  * This activity stores a newly created player to the database.
  * This activity stores a unique identifier to the phone so that if user is already logged in, he could directly move to main activity.
  * This activity sends the newest player information from database to the main activity if user has an existing account on the device.
@@ -45,13 +47,16 @@ import java.util.regex.Pattern;
 // COMMENT: Initializing with PlayerStats object is giving errors with opening app, need to make getter/setter for private attributes
 // For now: run without adding PlayerStats to currentPLayer
 
-public class LoginActivity extends AppCompatActivity {
+
+public class LoginActivity extends AppCompatActivity implements LoginWithQRFragment.OnFragmentInteractionListener, ValidateOwnerFragment.OnFragmentInteractionListener {
+
 
     String hashUsername;
     Boolean emailExists;
     Boolean usernameExists;
     FirebaseFirestore db;
     Button loginQR;
+    Button ownerLogin;
     Button signupButton;
     TextView usernameMessage;
     EditText email;
@@ -186,7 +191,8 @@ public class LoginActivity extends AppCompatActivity {
                     final String usernameData = username.getText().toString();
                     final String emailData = email.getText().toString();
                     Log.d(TAG, "Here!");
-                    HashMap<String, Player> data = new HashMap<>();
+                    HashMap<String, PlayerStats> data = new HashMap<>();
+                    Log.v("no", "no");
                     if (usernameExists && emailExists) {
                         //PlayerStats newStats = new PlayerStats(null, null, 0, 0, null, null, null);
                         //PlayerStats newStats = new PlayerStats(0, 0);
@@ -194,7 +200,8 @@ public class LoginActivity extends AppCompatActivity {
                         //                       Integer rankNumScanned, Integer rankSumScores) {
 
 
-                        PlayerStats newStats = new PlayerStats(usernameData, null,null,0,0,0,0,0);
+                        PlayerStats newStats = new PlayerStats(usernameData, null,null,0,0,"N/A","N/A","N/A");
+
                         //PlayerStats newStats = new PlayerStats(usernameData);
 
                         Account newAccount = new Account(usernameData, emailData);
@@ -202,10 +209,12 @@ public class LoginActivity extends AppCompatActivity {
                         currentPlayer = new Player(newAccount, newStats, newLibrary);
                         //currentPlayer = new Player(newAccount, newLibrary);
                         //currentPlayer = new Player(newAccount);
-                        data.put("playerInfo", currentPlayer);
+                        data.put("playerStats", newStats);
+                        //data.put("playerAccount", newAccount);
+                        //data.put("playerQRLibrary", newLibrary);
                         collectionReference
                                 .document(usernameData)
-                                .set(data)
+                                .set(currentPlayer)
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
@@ -231,9 +240,11 @@ public class LoginActivity extends AppCompatActivity {
                                                         Log.d(TAG, "Data could not be added!" + e.toString());
                                                     }
                                                 });
+
                                         saveData();
                                         savePlayer();
                                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                        Log.v("boo", "boo");
                                         startActivity(intent);
                                         kill_activity();
                                     }
@@ -250,32 +261,61 @@ public class LoginActivity extends AppCompatActivity {
             });
 
 
+
             loginQR.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    openAddQRFragment(loginQR);
+                    openLoginWithQRFragment();
                 }
             });
+
+
         }
+        ownerLogin = findViewById(R.id.login_owner_button);
+        ownerLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new ValidateOwnerFragment().show(getSupportFragmentManager(), "ENTER_PASSWORD");
+                //ownerLogin.setVisibility(View.INVISIBLE);
+
+            }
+        });
 
 
     }
 
-    public void openAddQRFragment(Button addQR){
+
+    @Override
+    public void onOkPressed() {
+        Intent intent = new Intent(LoginActivity.this, OwnerActivity.class);
+        startActivity(intent);
+    }
+
+
+
+
+    public void openLoginWithQRFragment(){
+
         // open addQRFragment to scan QRcode and add it to player's account
-        addQR.setVisibility(View.GONE);
+        //addQR.setVisibility(View.GONE);
+
+        final FloatingActionButton searchLocationsMap = findViewById(R.id.searchLocationsBtn);
+
+
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        AddQRFragment addQRFragment = new AddQRFragment();
+        LoginWithQRFragment loginQRFragment = new LoginWithQRFragment();
         //fragmentTransaction.add(R.id.addQRFragment_container,addQRFragment);\
-        fragmentTransaction.add(R.id.addQRFragment_container, addQRFragment, "Add QR Code");
-        fragmentTransaction.commit();
+        fragmentManager.beginTransaction()
+                .replace(R.id.frameLayout, loginQRFragment).commit();
         //addQR.setVisibility(View.VISIBLE);
 
         //getSupportFragmentManager().beginTransaction().add(R.id.container, new AddQRFragment()).commit();
 
         //final View addQR = findViewById(R.id.fragment_container_view);
         //addQR.setVisibility(View.VISIBLE);
+
+
 
 
 
@@ -288,6 +328,27 @@ public class LoginActivity extends AppCompatActivity {
         //transaction.commit();
 
     }
+
+
+
+    public void onConfirmPressed(String hash) {
+        //String test = qrCodeData.getHash();
+        hashUsername = hash;
+        saveData();
+        //Intent intent = new Intent(getActivity(), MainActivity.class);
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        kill_activity();
+
+
+    }
+
+        // THIS NEEDS TO BE UPDATED BY KENNY
+        // Below: open activity/fragment which prompts user to access their device's location and take photo of the object containing scannedQRCode
+
+
+
+
 
 
     private boolean isValidEmailId(String email){

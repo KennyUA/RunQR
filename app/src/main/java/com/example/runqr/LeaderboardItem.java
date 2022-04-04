@@ -1,5 +1,6 @@
 package com.example.runqr;
 
+
 public class LeaderboardItem implements Comparable<LeaderboardItem>{
     private String player;
     private String score;
@@ -21,7 +22,15 @@ public class LeaderboardItem implements Comparable<LeaderboardItem>{
         return score;
     }
 
-    public int getScoreInt() { return Integer.parseInt(score); }
+    public int getScoreInt() {
+
+        if(score.equalsIgnoreCase("null")){
+            return 0;
+        }
+
+
+        return Integer.parseInt(score);
+    }
 
     public void setScore(String score) { this.score = score; }
 

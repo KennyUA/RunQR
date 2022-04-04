@@ -15,6 +15,13 @@ public class Hasher implements Serializable {
     public Hasher() {
     }
 
+    /**
+     * This method hashes a scanned QRCode using SHA-256 hash.
+     * @param rawContent
+     *      The String representing raw content of the QRCode scanned.
+     * @return
+     *      A String representing the resulting hash.
+     */
     public String hashQRCode(String rawContent){
 
         String sha256hex = Hashing.sha256()

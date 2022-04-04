@@ -12,6 +12,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+/**
+ * This class acts as an adapter for the RecyclerView that functions to display the list of comments in the comment library.
+ * This list of comments is displayed in the DisplayQRCodeActivity.
+ * Below is constructor and overriden methods from extending RecyclerView.Adapter.
+ */
 public class CommentList extends RecyclerView.Adapter<CommentList.ViewHolder> implements Serializable {
 
     //private QRLibrary QRCodes;
@@ -54,6 +59,7 @@ public class CommentList extends RecyclerView.Adapter<CommentList.ViewHolder> im
         holder.bodyText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mItemListener.onItemClick(comments.get(holder.getAdapterPosition()));
                 //Comment commentClicked = comments.get(position);
                 //onCommentClick(commentClicked);
 
@@ -87,10 +93,6 @@ public class CommentList extends RecyclerView.Adapter<CommentList.ViewHolder> im
         }
     }
 
-    public void onCommentClick(Comment commentClicked){
-        //edit comment
-
-    }
 
     public interface ItemClickListener{
         void onItemClick(Comment commentClicked);
