@@ -112,7 +112,8 @@ public class UsernameListActivity extends AppCompatActivity {
         getUsernames(intent);
     }
     public void getUsernames(Intent intent){
-        //cite https://developer.android.com/training/search/setup
+
+        //Google. (n.d.). Retrieved April 3, 2022 from the Android Developer Website: https://developer.android.com/training/search/setup
         if(Intent.ACTION_SEARCH.equals(intent.getAction())) {
             newSearchQuery = intent.getStringExtra(SearchManager.QUERY);
             userNameList.clear();

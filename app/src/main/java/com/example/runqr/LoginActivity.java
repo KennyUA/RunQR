@@ -192,6 +192,7 @@ public class LoginActivity extends AppCompatActivity implements LoginWithQRFragm
                     final String emailData = email.getText().toString();
                     Log.d(TAG, "Here!");
                     HashMap<String, PlayerStats> data = new HashMap<>();
+                    Log.v("no", "no");
                     if (usernameExists && emailExists) {
                         //PlayerStats newStats = new PlayerStats(null, null, 0, 0, null, null, null);
                         //PlayerStats newStats = new PlayerStats(0, 0);
@@ -243,6 +244,7 @@ public class LoginActivity extends AppCompatActivity implements LoginWithQRFragm
                                         saveData();
                                         savePlayer();
                                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                        Log.v("boo", "boo");
                                         startActivity(intent);
                                         kill_activity();
                                     }
