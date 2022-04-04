@@ -36,7 +36,7 @@ public class ProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
 
         // To retrieve object in second Activity
-        Player player = (Player) getIntent().getSerializableExtra("Player");
+        Player player = (Player) getIntent().getSerializableExtra("Display Player Profile");
         PlayerStats playerStats = player.getPlayerStats();
 
 

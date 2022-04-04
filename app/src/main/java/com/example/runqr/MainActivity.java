@@ -17,10 +17,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Toast;
+
 
 import android.widget.Button;
 
@@ -62,7 +64,9 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
+
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -78,6 +82,14 @@ import java.util.List;
 // Main activity also contains a map with a refresh button and a nearbySearch button (AYUSH can elaborate on this).
 // CURRENT ISSUES:
 // - after destroying app and opening again, player's QRLibrary is null and pressing QRLibrary in menu causes app to crash
+
+// Main activity of the RunQR game has an app bar with 3 icons:
+// dropdown menu
+// add QR Button which opens scanner for player to scan QRCodes
+// & a search icon to allow a player to search for other players on the game.
+// Main activity also contains a map with a nearbySearch button that displays nearbyQRCodes in a list.
+
+
 
 public class MainActivity extends AppCompatActivity implements AddQRFragment.OnFragmentInteractionListener, OnMapReadyCallback {
 
@@ -878,7 +890,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
             case R.id.profile_item:
                 //open player profile activity
                 Intent intent1 = new Intent(this, ProfileActivity.class);
-                intent1.putExtra("Player", (Serializable) currentPlayer);
+                intent1.putExtra("Display Player Profile", (Serializable) currentPlayer);
                 startActivity(intent1);
                 break;
             //return true;
@@ -1078,16 +1090,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 
 
 
-    public void openSearchedPlayerProfile(String username) {
-        // get player object from database and open ProfileActivity with the searchedPlayer object
-        String testUsername;
-        Player searchedPlayer = null; // get from database
 
-        Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
-        intent.putExtra("Display Player Profile", searchedPlayer);
-        startActivity(intent);
-
-    }
 
 }
 

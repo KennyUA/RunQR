@@ -73,7 +73,9 @@ public class DisplayQRCodeActivity extends AppCompatActivity implements AddComme
             //QRCodePhoto.setImageBitmap(codeToDisplay.getPhoto());
 
         }
+
         QRCodeStats.setText("Score: "+codeToDisplay.getScore());
+        QRCodeStats.append("Num Comments:" + codeToDisplay.getCommentLibrary().getNumComments());
 
         addCommentButton.setOnClickListener(new View.OnClickListener() {
             @Override

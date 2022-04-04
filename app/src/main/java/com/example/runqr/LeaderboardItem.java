@@ -1,5 +1,6 @@
 package com.example.runqr;
 
+
 public class LeaderboardItem implements Comparable<LeaderboardItem>{
     private String player;
     private String score;

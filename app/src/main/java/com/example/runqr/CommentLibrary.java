@@ -56,6 +56,12 @@ public class CommentLibrary implements Serializable {
         this.numComments = numComments;
     }
 
+
+    /**
+     * This method adds a comment to the comment library and increments the number of total comments.
+     * @param comment
+     *  The new comment to be added to the library.
+     */
     public void addComment(Comment comment) {
         commentList.add(comment);
         numComments += 1;

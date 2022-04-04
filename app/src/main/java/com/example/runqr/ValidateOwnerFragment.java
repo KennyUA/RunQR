@@ -13,6 +13,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+
+// This class validates that the person trying to log in as owner is an actual owner, i.e. they have the correct owner password.
+
 public class ValidateOwnerFragment extends DialogFragment {
 
     String password = "runqrowner123";

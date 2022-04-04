@@ -37,27 +37,6 @@ public class QRCode implements Serializable {
         this.hash = hash;
         this.location = location;
         this.commentLibrary = new CommentLibrary();
-    }public QRCode() {
-    }
-
-    public void setScore(int score) {
-        this.score = score;
-    }
-
-    public void setLocation(Location location) {
-        this.location = location;
-    }
-
-    public void setHash(String hash) {
-        this.hash = hash;
-    }
-
-    public void setPhoto(Photo photo) {
-        this.photo = photo;
-    }
-
-    public void setCommentLibrary(CommentLibrary commentLibrary) {
-        this.commentLibrary = commentLibrary;
     }
 
     // If location is denied and photo is allowed
@@ -76,6 +55,58 @@ public class QRCode implements Serializable {
         this.photo = photo;
         this.commentLibrary = new CommentLibrary();
     }
+
+
+
+    public QRCode() {
+    }
+
+
+    /**
+     * This sets the score of the QRCode.
+     * @param score
+     *      An int to set the score of the code to.
+     */
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    /**
+     * This sets the location of the QRCode.
+     * @param location
+     *      A Location to set the location to.
+     */
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    /**
+     * This sets the hash of the code.
+     * @param hash
+     *      A String representing the new hash to set hash to.
+     */
+    public void setHash(String hash) {
+        this.hash = hash;
+    }
+
+    /**
+     * This sets the photo of the code.
+     * @param photo
+     *      A Photo object to set the photo to.
+     */
+    public void setPhoto(Photo photo) {
+        this.photo = photo;
+    }
+
+    /**
+     * This sets the comment library of the code.
+     * @param commentLibrary
+     *      A CommentLibrary object to set the commentLibrary to.
+     */
+    public void setCommentLibrary(CommentLibrary commentLibrary) {
+        this.commentLibrary = commentLibrary;
+    }
+
 
 
     /**
@@ -136,28 +167,6 @@ public class QRCode implements Serializable {
      */
     public int scoreQRCode(String hash){
         int QRScore = 0;
-
-        /*
-        ArrayList<Character> hashCharArray = new ArrayList<Character>();
-        // Creating array of string length
-        char[] ch = new char[hash.length()];
-
-        // Copy character by character into array
-        for (int i = 0; i < hash.length(); i++) {
-            ch[i] = hash.charAt(i);
-        }
-
-        // Printing content of array
-        for (char c : ch) {
-            //System.out.println(c);
-            hashCharArray.add(c);
-        }
-
-        groupElements(hashCharArray, hashCharArray.size());
-
-         */
-
-
 
         //DO SCORING
         HashMap<Character, Integer> charCount = characterCount(hash);
@@ -223,36 +232,6 @@ public class QRCode implements Serializable {
     }
 
 
-    /*
-    // A simple method to group all occurrences of individual elements
-    public void groupElements(ArrayList<Character> arr, int n) {
-
-        // Initialize all elements as not visited
-        boolean visited[] = new boolean[n];
-        for (int i = 0; i < n; i++) {
-            visited[i] = false;
-        }
-
-        // Traverse all elements
-        for (int i = 0; i < n; i++) {
-
-            // Check if this is first occurrence
-            if (!visited[i]) {
-
-                // If yes, print it and all
-                // subsequent occurrences
-                Log.d("PRINT1", arr.get(i) + " ");
-                for (int j = i + 1; j < n; j++) {
-                    if (arr.get(i) == arr.get(j)) {
-                        Log.d("PRINT2",arr.get(i) + " ");
-                        visited[j] = true;
-                    }
-                }
-            }
-        }
-    }
-
-     */
 
 
 }

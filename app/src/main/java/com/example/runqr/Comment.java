@@ -2,16 +2,15 @@ package com.example.runqr;
 
 import java.io.Serializable;
 
+/**
+ * This class represents a comment on a QRCode object.
+ * A comment can be added by any player to any QRCode object in the game.
+ * A comment object has one attribute: the body text of the comment.
+ */
 public class Comment implements Serializable {
-    //String title;
     String body;
 
-    /*
-    public Comment(String title, String body) {
-        this.title = title;
-        this.body = body;
-    }
-     */
+
 
     public Comment(){}
 
@@ -20,22 +19,22 @@ public class Comment implements Serializable {
     }
 
 
+    /**
+     * This method returns the body text of the comment.
+     * @return
+     *      A String representing the comment body.
+     */
     public String getBody() {
         return body;
     }
 
-    /*
-    public String getTitle() {
-        return title;
-    }
-    */
+    /**
+     * This method sets the body text of the comment.
+     * @param body
+     *      The String to set the body of the comment to.
+     */
     public void setBody(String body) {
         this.body = body;
     }
 
-    /*
-    public void setTitle(String title) {
-        this.title = title;
-    }
-     */
 }

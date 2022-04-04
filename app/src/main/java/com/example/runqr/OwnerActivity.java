@@ -19,6 +19,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
+// This class is the Activity used to allow owners to select whether they want to manage QRCodes or Players.
+// This activity is opened from LoginActivity and takes owners to ManageQRCodesActivity & ManagePlayersActivity.
+
 public class OwnerActivity extends AppCompatActivity {
 
     FirebaseFirestore db;
