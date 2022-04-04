@@ -33,6 +33,7 @@ public class QRList extends ArrayAdapter<QRCode> implements Serializable {
     }
 
 
+
     /**
      * This method gets the view of the content of an item in the QRLibraryActivity's ListView.
      * @param position
@@ -62,13 +63,17 @@ public class QRList extends ArrayAdapter<QRCode> implements Serializable {
         TextView QRCodeHash = view.findViewById(R.id.qrcode_hash_text);
 
         QRCodeScore.setText("Score: "+ QRcode.getScore());
-        QRCodeHash.setText(QRcode.getHash());
+        QRCodeHash.setText("Hash: " + QRcode.getHash());
 
         return view;
 
     }
 
+    public void setQRCodes(ArrayList<QRCode> QRCodes) {
+        this.QRCodes = QRCodes;
+    }
 
-
-
+    public void setContext(Context context) {
+        this.context = context;
+    }
 }
