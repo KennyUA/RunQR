@@ -1,5 +1,8 @@
 package com.example.runqr;
 
+import android.app.SearchManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -8,7 +11,13 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.SearchView;
+
 import android.widget.Button;
+
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -76,6 +85,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
     // Create HashMaps to store QRCode and account data in Firestore.
     static HashMap<String, String> qrData = new HashMap<>();
     static HashMap<String, String> accountData = new HashMap<>();
+    SearchView searchView;
 
     SupportMapFragment mapFragment;
     FloatingActionButton loadBtn;
@@ -83,6 +93,11 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
     ArrayList<Marker> markerArrayList;
     ArrayList<MarkerOptions> markerOptionsArrayList;
     GoogleMap currentMap;
+
+    String searchQuery;
+    EventListener<QuerySnapshot> AccountsQuery;
+    //cite https://stackoverflow.com/questions/48699032/how-to-set-addsnapshotlistener-and-remove-in-populateviewholder-in-recyclerview
+    EventListener<QuerySnapshot> eventListener;
 
     ListenerRegistration listenerReg;
 
@@ -98,6 +113,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
     Boolean successFirst = false;
     Boolean successSecond = false;
     String user = "";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,6 +133,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 
         // Creating collection for global QRCodes
         QRCodesReference = db.collection("QR Codes");
+
         //HashMap<String, String> qrData = new HashMap<>();
 
                 /*
@@ -305,7 +322,12 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
         //}
         //}
 
+
+
+
     }
+
+
 
     @Override
     public void onStart(){
@@ -321,6 +343,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
     @Override
     public void onPause(){
         savePlayerToDatabase();
+
         super.onPause();
 
     }
@@ -525,11 +548,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 /*
         // THIS NEEDS TO BE UPDATED BY KENNY
         // Below: open activity/fragment which prompts user to access their device's location and take photo of the object containing scannedQRCode
-<<<<<<< HEAD
-<<<<<<< HEAD
-        dialogBuilder = new AlertDialog.Builder(this);
-        final View conformationPopup = getLayoutInflater().inflate(R.layout.scanner_popup,null);
-=======
+
         dialogBuilder = new AlertDialog.Builder(this);
         final View conformationPopup = getLayoutInflater().inflate(R.layout.scanner_popup,null);
 
@@ -598,81 +617,9 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
                 dialog.dismiss();
             }
         });
->>>>>>> cd4c2074fd50cf72943c40b113797fb26db2de44
-
-        take_photo = (Button) conformationPopup.findViewById(R.id.takePhotoButton);
-        add_geolocation = (Button) conformationPopup.findViewById(R.id.addGeolocationButton);
-        yes = (Button) conformationPopup.findViewById(R.id.yesButton);
-        no = (Button) conformationPopup.findViewById(R.id.noButton);
 
 
-        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            ActivityCompat.requestPermissions(MainActivity.this,new String[]{
-                    Manifest.permission.ACCESS_FINE_LOCATION
-            }, 100);
-
-            return;
-        }
-        android.location.Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
-
-
-        dialogBuilder.setView(conformationPopup);
-        dialog = dialogBuilder.create();
-        dialog.show();
-
-        take_photo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                photoAdded = true;
-                //FIX BELOW
-                //define Take Photo here
-                openCamera(view);
-            }
-        });
-
-        add_geolocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                locationAdded = true;
-                //define Geo-Location here
-                double longitude = location.getLongitude();
-                double latitude = location.getLatitude();
-                Location QRCodeLocation = new Location(longitude, latitude);
-                //view.setX(Math.round(longitude));
-                //view.setY(Math.round(latitude));
-
-            }
-        });
-
-        yes.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //define Got it here
-                dialog.dismiss();
-            }
-        });
-
-        no.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //define Cancel here
-                dialog.dismiss();
-            }
-        });
-=======
->>>>>>> a6f558e1e8e07907267f4897bd3685d9449da45a
-
-
+      
  */
 
 
@@ -719,6 +666,13 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.main_menu, menu);
+        //cite https://developer.android.com/training/search/setup
+        SearchManager searchManager =
+                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView =
+                (SearchView) menu.findItem(R.id.search_bar).getActionView();
+        searchView.setSearchableInfo(
+                searchManager.getSearchableInfo(new ComponentName(this, UsernameListActivity.class)));
         return true;
 
     }
@@ -773,6 +727,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
                 break;
             //return true;
 
+
             case R.id.add_device_item:
                 Intent intent3 = new Intent(this, AddDeviceActivity.class);
                 intent3.putExtra("Player AddDeviceActivity", (Serializable) currentPlayer);
@@ -780,15 +735,15 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
                 break;
 
 
-
-
-
-
-
         }
         return super.onOptionsItemSelected(item);
     }
 
+    public void onBackPressed(){
+
+
+        super.onBackPressed();
+    }
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
