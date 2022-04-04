@@ -67,6 +67,7 @@ public class MarkerFragment extends DialogFragment {
 
         locationsAdapter = new CustomListAdapter(getContext(), locationsList);
         locationList.setAdapter(locationsAdapter);
+        locationList.setEmptyView(view.findViewById(R.id.noQRCodesNearbyView));
 
         AlertDialog.Builder  builder = new AlertDialog.Builder((getContext()));
         return builder
