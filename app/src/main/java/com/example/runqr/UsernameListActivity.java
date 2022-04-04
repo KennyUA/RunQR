@@ -1,6 +1,7 @@
 package com.example.runqr;
 
 import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -67,10 +69,11 @@ public class UsernameListActivity extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                 searchedPlayer = task.getResult().toObject(Player.class);
+                                openSearchedPlayerProfile(searchedPlayer);
                             }
                         });
 
-                openSearchedPlayerProfile(searchedPlayer);
+                //openSearchedPlayerProfile(searchedPlayer);
             }
         });
 
@@ -89,7 +92,12 @@ public class UsernameListActivity extends AppCompatActivity {
             startActivity(intent);
         }
         else {
-            
+            Context context = getApplicationContext();
+            CharSequence text = "Sorry this player doesn't have a profile to display";
+            int duration = Toast.LENGTH_SHORT;
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.show();
+
         }
 
     }
