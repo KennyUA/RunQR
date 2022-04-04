@@ -1,26 +1,23 @@
 package com.example.runqr;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.SearchManager;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.SearchView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -36,6 +33,8 @@ public class UsernameListActivity extends AppCompatActivity {
     CollectionReference collectionReference;
     ProgressBar progressBar;
     LinearLayout mainList;
+    Player searchedPlayer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,7 +56,41 @@ public class UsernameListActivity extends AppCompatActivity {
 
         getUsernames(getIntent());
 
+        userNameListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                String username = userNameList.get(i);
 
+                db.collection("Accounts").document(username)
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                searchedPlayer = task.getResult().toObject(Player.class);
+                            }
+                        });
+
+                openSearchedPlayerProfile(searchedPlayer);
+            }
+        });
+
+
+
+
+
+    }
+
+    public void openSearchedPlayerProfile(Player searchedPlayer) {
+        // get player object from database and open ProfileActivity with the searchedPlayer object
+
+        if (searchedPlayer != null) {
+            Intent intent = new Intent(UsernameListActivity.this, ProfileActivity.class);
+            intent.putExtra("Display Player Profile", searchedPlayer);
+            startActivity(intent);
+        }
+        else {
+            
+        }
 
     }
 

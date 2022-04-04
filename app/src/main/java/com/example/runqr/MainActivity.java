@@ -11,13 +11,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.SearchView;
-
 import android.widget.Button;
-
+import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -42,8 +37,10 @@ import com.google.firebase.events.Event;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -782,16 +779,7 @@ public class MainActivity extends AppCompatActivity implements AddQRFragment.OnF
 
 
 
-    public void openSearchedPlayerProfile(String username) {
-        // get player object from database and open ProfileActivity with the searchedPlayer object
-        String testUsername;
-        Player searchedPlayer = null; // get from database
 
-        Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
-        intent.putExtra("Display Player Profile", searchedPlayer);
-        startActivity(intent);
-
-    }
 
 }
 
