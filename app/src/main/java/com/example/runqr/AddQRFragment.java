@@ -6,7 +6,9 @@ import static android.content.ContentValues.TAG;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -64,6 +66,8 @@ public class AddQRFragment extends Fragment {
 
     Location QRCodeLocation;
     QRCode QRCodeToAdd;
+    Photo QRCodePhoto;
+    Bitmap bitmap;
 
     Context mContext;
     int LOCATION_PERMISSION_REQUEST_CODE = 100;
@@ -90,7 +94,7 @@ public class AddQRFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         void onConfirmPressed(QRCode QRCodeToAdd);
 
-        void openCamera();
+        Photo openCamera();
 
     }
 
@@ -101,6 +105,8 @@ public class AddQRFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         final Activity activity = (Activity) getActivity();
         currentPlayer = MainActivity.getCurrentPlayer();
+        //CameraActivity result = (CameraActivity) getActivity();
+        //QRCodePhoto.setImage(result.bitmap);
 
         db = FirebaseFirestore.getInstance();
         View root = inflater.inflate(R.layout.add_qr_fragment_layout, container, false);
@@ -150,6 +156,7 @@ public class AddQRFragment extends Fragment {
             public void onClick(View view) {
                 //add QRCode
                 if (QRString != null) {
+                    Log.v("Confirm 1", "Confirm 1");
                     String hashedString = QRCodeHasher.hashQRCode(QRString);
                     /*
                     QRCode QRCodeToAdd = new QRCode(hashedString);
@@ -164,6 +171,8 @@ public class AddQRFragment extends Fragment {
 
                     // THIS NEEDS TO BE UPDATED BY KENNY
                     // Below: open activity/fragment which prompts user to access their device's location and take photo of the object containing scannedQRCode
+                    Log.v("Confirm 2", "Confirm 2");
+
                     dialogBuilder = new AlertDialog.Builder(getActivity());
                     final View conformationPopup = getLayoutInflater().inflate(R.layout.scanner_popup, null);
 
@@ -175,6 +184,7 @@ public class AddQRFragment extends Fragment {
 
                     LocationManager lm = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 
+                    Log.v("Confirm 3", "Confirm 3");
 
                     if (ActivityCompat.checkSelfPermission(getActivity(),
                             Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -210,15 +220,30 @@ public class AddQRFragment extends Fragment {
                         public void onClick(View view) {
                             photoAdded = true;
                             //FIX BELOW
+                            QRCodePhoto = new Photo();
 
                             //define Take Photo here
-                            listener.openCamera();
+                            QRCodePhoto = listener.openCamera();
+                            //QRCodePhoto.setImage(bitmap);
+
+                            // cite: https://stackoverflow.com/questions/13067033/how-to-access-activity-variables-from-a-fragment-android by David M
+                            //CameraActivity result = (CameraActivity) getActivity();
+                            //QRCodePhoto.setImage(result.bitmap);
+                            //bitmap = QRCodePhoto.getImage();
+
+                            //Intent intent = getIntent();
+                            //Bitmap bitmap = (Bitmap) intent.getParcelableExtra("BitmapImage");
+
                         }
                     });
+
 
                     add_geolocation.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
+                            MainActivity result2 = (MainActivity) getActivity();
+                            QRCodeLocation.setX(result2.currentLatitude);
+                            QRCodeLocation.setY(result2.currentLongitude);
 
                             /*
                             // Get location permission:
@@ -273,12 +298,12 @@ public class AddQRFragment extends Fragment {
                     // Instantiate new QRCode to add to the QRLibrary
                     if (locationAdded && photoAdded) {
                         // NOTE: photo is temporarily null here
-                        QRCodeToAdd = new QRCode(hashedString, QRCodeLocation, (Photo) null);
+                        QRCodeToAdd = new QRCode(hashedString, QRCodeLocation, QRCodePhoto);
                     } else if (locationAdded && !photoAdded) {
-                        QRCodeToAdd = new QRCode(hashedString, QRCodeLocation);
+                        QRCodeToAdd = new QRCode(hashedString, QRCodeLocation, (Photo) null);
                     } else if (!locationAdded && photoAdded) {
                         // NOTE: photo is temporarily null here
-                        QRCodeToAdd = new QRCode(hashedString, (Photo) null);
+                        QRCodeToAdd = new QRCode(hashedString, QRCodePhoto);
                     } else {
                         QRCodeToAdd = new QRCode(hashedString);
                     }
@@ -405,7 +430,9 @@ public class AddQRFragment extends Fragment {
         String hash = qrcode.getHash();
         String playerUsername =  currentPlayer.getPlayerAccount().getUsername();
         DocumentReference docref = db.collection("QR Codes").document(hash).collection("Players").document(playerUsername);
-        Log.v("User",docref.getId());
+
+        Log.v("User", docref.getId());
+
         docref.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
