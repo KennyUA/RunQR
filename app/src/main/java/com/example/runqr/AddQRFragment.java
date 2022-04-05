@@ -61,7 +61,7 @@ public class AddQRFragment extends Fragment {
     private Button take_photo, add_geolocation, yes, no;
 
     static Boolean locationAdded = false;
-    static Boolean photoAdded = true;
+    static Boolean photoAdded = false;
     Boolean alreadyScanned;
 
     Location QRCodeLocation;
