@@ -69,19 +69,25 @@ public class DisplayQRCodeActivity extends AppCompatActivity implements AddComme
             QRCodeLocation.append("X: "+codeToDisplay.getLocation().getX()+"\n"+"Y: "+codeToDisplay.getLocation().getY());
 
         }
+        else{
+            QRCodeLocation.append("No Location to display");
+        }
         if (codeToDisplay.getPhoto() != null){
-            //QRCodePhoto.setImageBitmap(codeToDisplay.getPhoto());
-
+            QRCodePhoto.setImageURI(codeToDisplay.getPhoto());
+        }
+        else {
+            //QRCodePhoto.setImageResource(R.drawable.qr_code);
         }
 
-        QRCodeStats.setText("Score: "+codeToDisplay.getScore());
-        QRCodeStats.append("Num Comments:" + codeToDisplay.getCommentLibrary().getNumComments());
+        QRCodeStats.setText("QRCode: " + (clickPos+1) + "\n");
+        QRCodeStats.append("Score: "+codeToDisplay.getScore() + "\n");
+        QRCodeStats.append("Comments:" + codeToDisplay.getCommentLibrary().getNumComments());
 
         addCommentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 edit = false;
-                new AddCommentFragment().show(getSupportFragmentManager(), "ADD_CITY");
+                new AddCommentFragment().show(getSupportFragmentManager(), "ADD_Comment");
             }
         });
 

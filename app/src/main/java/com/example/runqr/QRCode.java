@@ -1,5 +1,7 @@
 package com.example.runqr;
 
+import android.net.Uri;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,7 +20,7 @@ public class QRCode implements Serializable {
     private int score;
     private Location location;
     private String hash;
-    private Photo photo;
+    private Uri photo;
     private CommentLibrary commentLibrary;
     private ArrayList<Player> scannedByList = new ArrayList<Player>();
 
@@ -37,10 +39,29 @@ public class QRCode implements Serializable {
         this.hash = hash;
         this.location = location;
         this.commentLibrary = new CommentLibrary();
+
     }
 
+    /*public void setScore(int score) {
+        this.score = score;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    public void setHash(String hash) {
+        this.hash = hash;
+    }
+
+    public void setPhoto(Bitmap photo) {
+        this.photo = photo;
+    }*/
+
+
+
     // If location is denied and photo is allowed
-    public QRCode(String hash, Photo photo) {
+    public QRCode(String hash, Uri photo) {
         this.score = scoreQRCode(hash);
         this.hash = hash;
         this.photo = photo;
@@ -48,7 +69,7 @@ public class QRCode implements Serializable {
     }
 
     // If both location and photo are allowed
-    public QRCode(String hash, Location location, Photo photo) {
+    public QRCode(String hash, Location location, Uri photo) {
         this.score = scoreQRCode(hash);
         this.hash = hash;
         this.location = location;
@@ -94,7 +115,7 @@ public class QRCode implements Serializable {
      * @param photo
      *      A Photo object to set the photo to.
      */
-    public void setPhoto(Photo photo) {
+    public void setPhoto(Uri photo) {
         this.photo = photo;
     }
 
@@ -134,7 +155,7 @@ public class QRCode implements Serializable {
      *      Photo object representing an image of the object on which the QRCode exists.
      */
 
-    public Photo getPhoto() {
+    public Uri getPhoto() {
         return this.photo;
     }
 

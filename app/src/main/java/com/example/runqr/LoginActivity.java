@@ -199,7 +199,7 @@ public class LoginActivity extends AppCompatActivity implements LoginWithQRFragm
                         //    public PlayerStats(QRCode highQR, QRCode lowQR, Integer sumScores, Integer numScanned, Integer rankHighQR,
                         //                       Integer rankNumScanned, Integer rankSumScores) {
 
-
+                        Log.v("login", "login");
                         PlayerStats newStats = new PlayerStats(usernameData, null,null,0,0,"N/A","N/A","N/A");
 
                         //PlayerStats newStats = new PlayerStats(usernameData);
@@ -212,6 +212,7 @@ public class LoginActivity extends AppCompatActivity implements LoginWithQRFragm
                         data.put("playerStats", newStats);
                         //data.put("playerAccount", newAccount);
                         //data.put("playerQRLibrary", newLibrary);
+                        Log.v("before","before");
                         collectionReference
                                 .document(usernameData)
                                 .set(currentPlayer)
@@ -240,7 +241,7 @@ public class LoginActivity extends AppCompatActivity implements LoginWithQRFragm
                                                         Log.d(TAG, "Data could not be added!" + e.toString());
                                                     }
                                                 });
-
+                                        Log.v("after", "after");
                                         saveData();
                                         savePlayer();
                                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
