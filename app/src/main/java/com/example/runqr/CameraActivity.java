@@ -107,11 +107,20 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
             photo.setImage(bitmap);
             //Intent intent = new Intent(this, AddQRFragment.class);
             //intent.putExtra("PhotoImage", (Parcelable) photo);
-            Intent intent = new Intent(this, NewActivity.class);
-            intent.putExtra("BitmapImage", bitmap);
-            finish();
+            //Intent intent = new Intent(this, CameraActivity.class);
+            //intent.putExtra("BitmapImage", bitmap);
+            //finish();
 
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent();
+        intent.putExtra("photo", photo);
+        setResult(RESULT_OK, intent);
+        super.onBackPressed();
+
     }
 
     private void capturePhoto() {

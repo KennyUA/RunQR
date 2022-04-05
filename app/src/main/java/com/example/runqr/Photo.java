@@ -2,7 +2,9 @@ package com.example.runqr;
 
 import android.graphics.Bitmap;
 
-public class Photo {
+import java.io.Serializable;
+
+public class Photo implements Serializable {
     private Bitmap image;
     private Photo photo;
     /*

@@ -94,7 +94,7 @@ public class AddQRFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         void onConfirmPressed(QRCode QRCodeToAdd);
 
-        void openCamera();
+        Photo openCamera();
 
     }
 
@@ -223,15 +223,16 @@ public class AddQRFragment extends Fragment {
                             QRCodePhoto = new Photo();
 
                             //define Take Photo here
-                            listener.openCamera();
-                            /*
+                            QRCodePhoto = listener.openCamera();
+                            //QRCodePhoto.setImage(bitmap);
+
                             // cite: https://stackoverflow.com/questions/13067033/how-to-access-activity-variables-from-a-fragment-android by David M
-                            CameraActivity result = (CameraActivity) getActivity();
-                            QRCodePhoto.setImage(result.bitmap);
-                            bitmap = QRCodePhoto.getImage();
-                             */
-                            Intent intent = getIntent();
-                            Bitmap bitmap = (Bitmap) intent.getParcelableExtra("BitmapImage");
+                            //CameraActivity result = (CameraActivity) getActivity();
+                            //QRCodePhoto.setImage(result.bitmap);
+                            //bitmap = QRCodePhoto.getImage();
+
+                            //Intent intent = getIntent();
+                            //Bitmap bitmap = (Bitmap) intent.getParcelableExtra("BitmapImage");
 
                         }
                     });
@@ -297,12 +298,12 @@ public class AddQRFragment extends Fragment {
                     // Instantiate new QRCode to add to the QRLibrary
                     if (locationAdded && photoAdded) {
                         // NOTE: photo is temporarily null here
-                        QRCodeToAdd = new QRCode(hashedString, QRCodeLocation, bitmap);
+                        QRCodeToAdd = new QRCode(hashedString, QRCodeLocation, QRCodePhoto);
                     } else if (locationAdded && !photoAdded) {
-                        QRCodeToAdd = new QRCode(hashedString, QRCodeLocation, (Bitmap) null);
+                        QRCodeToAdd = new QRCode(hashedString, QRCodeLocation, (Photo) null);
                     } else if (!locationAdded && photoAdded) {
                         // NOTE: photo is temporarily null here
-                        QRCodeToAdd = new QRCode(hashedString, bitmap);
+                        QRCodeToAdd = new QRCode(hashedString, QRCodePhoto);
                     } else {
                         QRCodeToAdd = new QRCode(hashedString);
                     }

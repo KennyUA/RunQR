@@ -70,7 +70,7 @@ public class DisplayQRCodeActivity extends AppCompatActivity implements AddComme
 
         }
         if (codeToDisplay.getPhoto() != null){
-            //QRCodePhoto.setImageBitmap(codeToDisplay.getPhoto());
+            QRCodePhoto.setImageBitmap(codeToDisplay.getPhoto().getImage());
 
         }
 
