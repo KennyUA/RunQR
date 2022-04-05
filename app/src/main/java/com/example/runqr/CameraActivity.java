@@ -2,15 +2,12 @@ package com.example.runqr;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -89,7 +86,9 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     public void onClick(View view){
         if (view.getId() == R.id.takePhoto) {
-            //capturePhoto();
+            capturePhoto();
+
+            /*
             //recieved from: https://developer.android.com/reference/androidx/camera/view/PreviewView#public-methods_1
             photo = new Photo();
 
@@ -99,11 +98,13 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
                 bitmap = bitmap.createScaledBitmap(bitmap,100,100,false);
             }
             //photo.setImage(bitmap);
+            */
             /*Context context = mContext;
             CharSequence text = "This Picture Has Been Saved";
             int duration = Toast.LENGTH_SHORT;
             Toast toast = Toast.makeText(context, text, duration);
             toast.show();*/
+            /*
             photo.setImage(bitmap);
             //Intent intent = new Intent(this, AddQRFragment.class);
             //intent.putExtra("PhotoImage", (Parcelable) photo);
@@ -111,14 +112,16 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
             //intent.putExtra("BitmapImage", bitmap);
             //finish();
 
+             */
+
         }
     }
 
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent();
-        intent.putExtra("photo", photo);
-        setResult(RESULT_OK, intent);
+        //Intent intent = new Intent();
+        //intent.put("photo bitmap", photo.getImage());
+        //setResult(RESULT_OK, intent);
         super.onBackPressed();
 
     }

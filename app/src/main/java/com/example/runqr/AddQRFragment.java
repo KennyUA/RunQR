@@ -1,17 +1,21 @@
 package com.example.runqr;
 
 
+import static android.app.Activity.RESULT_OK;
 import static android.content.ContentValues.TAG;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,7 +26,14 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.camera.core.CameraSelector;
+import androidx.camera.core.ImageCapture;
+import androidx.camera.core.ImageCaptureException;
+import androidx.camera.core.Preview;
+import androidx.camera.lifecycle.ProcessCameraProvider;
+import androidx.camera.view.PreviewView;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.budiyev.android.codescanner.CodeScanner;
@@ -32,13 +43,16 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.common.util.concurrent.ListenableFuture;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.zxing.Result;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.concurrent.Executor;
 
 // This class is the Fragment used to host a codeScanner which allows players to scan QRCodes and uses Hasher to hash code contents.
 // The newly created QRCode is passed back to MainActivity through method onConfirmPressed and added to player's QRLibrary there.
@@ -46,7 +60,7 @@ import java.util.ArrayList;
 
 
 
-public class AddQRFragment extends Fragment {
+public class AddQRFragment extends Fragment implements View.OnClickListener {
     FirebaseFirestore db;
 
     private static final int RC_PERMISSION = 10;
@@ -60,13 +74,13 @@ public class AddQRFragment extends Fragment {
     static AlertDialog dialog;
     private Button take_photo, add_geolocation, yes, no;
 
-    static Boolean locationAdded = false;
-    static Boolean photoAdded = false;
+    private Boolean locationAdded = false;
+    private Boolean photoAdded = false;
     Boolean alreadyScanned;
 
     Location QRCodeLocation;
     QRCode QRCodeToAdd;
-    Photo QRCodePhoto;
+    Uri QRCodePhoto;
     Bitmap bitmap;
 
     Context mContext;
@@ -76,6 +90,12 @@ public class AddQRFragment extends Fragment {
     Boolean unique;
     ArrayList<Player> scannedByList;
     Boolean addCode = true;
+
+    private ListenableFuture<ProcessCameraProvider> cameraProviderFuture;
+
+    PreviewView previewView;
+    Button takePicture;
+    private ImageCapture imageCapture;
 
 
     @Override
@@ -93,8 +113,8 @@ public class AddQRFragment extends Fragment {
 
     public interface OnFragmentInteractionListener {
         void onConfirmPressed(QRCode QRCodeToAdd);
-
-        Photo openCamera();
+        void onPhotoCaptured(QRCode QRCodeWithPhoto);
+        //Bitmap openCamera();
 
     }
 
@@ -111,6 +131,7 @@ public class AddQRFragment extends Fragment {
         db = FirebaseFirestore.getInstance();
         View root = inflater.inflate(R.layout.add_qr_fragment_layout, container, false);
         CodeScannerView scannerView = root.findViewById(R.id.scanner_view);
+
 
         Button confirmAddQR = root.findViewById(R.id.confirm_addQR_button);
         Button cancelAddQR = root.findViewById(R.id.cancel_addQR_button);
@@ -208,7 +229,7 @@ public class AddQRFragment extends Fragment {
                     //define Geo-Location here
                     double longitude = location.getLongitude();
                     double latitude = location.getLatitude();
-                    QRCodeLocation = new Location(longitude, latitude);
+                    //QRCodeLocation = new Location(longitude, latitude);
 
 
                     dialogBuilder.setView(conformationPopup);
@@ -218,12 +239,13 @@ public class AddQRFragment extends Fragment {
                     take_photo.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
+
                             photoAdded = true;
                             //FIX BELOW
-                            QRCodePhoto = new Photo();
+                            //QRCodePhoto = new Photo();
 
                             //define Take Photo here
-                            QRCodePhoto = listener.openCamera();
+                            //bitmap = listener.openCamera();
                             //QRCodePhoto.setImage(bitmap);
 
                             // cite: https://stackoverflow.com/questions/13067033/how-to-access-activity-variables-from-a-fragment-android by David M
@@ -241,9 +263,8 @@ public class AddQRFragment extends Fragment {
                     add_geolocation.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            MainActivity result2 = (MainActivity) getActivity();
-                            QRCodeLocation.setX(result2.currentLatitude);
-                            QRCodeLocation.setY(result2.currentLongitude);
+                            locationAdded = true;
+
 
                             /*
                             // Get location permission:
@@ -295,16 +316,26 @@ public class AddQRFragment extends Fragment {
                     });
 
 
+                    MainActivity result2 = (MainActivity) getActivity();
+
+                    QRCodeLocation = new Location(result2.currentLatitude,result2.currentLongitude);
+
                     // Instantiate new QRCode to add to the QRLibrary
                     if (locationAdded && photoAdded) {
                         // NOTE: photo is temporarily null here
+
                         QRCodeToAdd = new QRCode(hashedString, QRCodeLocation, QRCodePhoto);
-                    } else if (locationAdded && !photoAdded) {
-                        QRCodeToAdd = new QRCode(hashedString, QRCodeLocation, (Photo) null);
-                    } else if (!locationAdded && photoAdded) {
+                        //listener.onPhotoCaptured(QRCodeToAdd);
+                    }
+                    else if (locationAdded && !photoAdded) {
+                        QRCodeToAdd = new QRCode(hashedString, QRCodeLocation,  null);
+                    }
+                    else if (!locationAdded && photoAdded) {
                         // NOTE: photo is temporarily null here
                         QRCodeToAdd = new QRCode(hashedString, QRCodePhoto);
-                    } else {
+                        listener.onPhotoCaptured(QRCodeToAdd);
+                    }
+                    else {
                         QRCodeToAdd = new QRCode(hashedString);
                     }
 
@@ -480,18 +511,93 @@ public class AddQRFragment extends Fragment {
 
 
 
+    private Executor getExecutor() {
+        return ContextCompat.getMainExecutor(mContext);
+    }
+
+    private void startCameraX(ProcessCameraProvider cameraProvider) {
+        //Structure of the code referenced from "https://www.youtube.com/watch?v=IrwhjDtpIU0" by Coding Reel
+        cameraProvider.unbindAll();
+
+        CameraSelector cameraSelector = new CameraSelector.Builder()
+                .requireLensFacing(CameraSelector.LENS_FACING_BACK)
+                .build();
+
+        Preview preview = new Preview.Builder().build();
+
+        preview.setSurfaceProvider(previewView.createSurfaceProvider());
+
+        imageCapture = new ImageCapture.Builder()
+                .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
+                .build();
+
+        cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageCapture);
+    }
+
+    @Override
+    public void onClick(View view){
+        if (view.getId() == R.id.takePhoto) {
+            capturePhoto();
+
+
+        }
+    }
 
 
 
-    /*
 
-    public void passData(QRCode data) {
-        dataPasser.onConfirmPressed(data);
 
+    private void capturePhoto() {
+
+        long timestamp = System.currentTimeMillis();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, timestamp);
+        contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg");
+
+        imageCapture.takePicture(
+
+                new ImageCapture.OutputFileOptions.Builder(
+                        mContext.getContentResolver(),
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                        contentValues
+                ).build(),
+                ContextCompat.getMainExecutor(mContext),
+                new ImageCapture.OnImageSavedCallback(){
+
+                    @Override
+                    public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
+                        //ImageDecoder.Source source = ImageDecoder.createSource(contentValues, outputFileResults.getSavedUri());
+                        Context context = null;
+                        try {
+                            context.getContentResolver().openInputStream(outputFileResults.getSavedUri());
+
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                        Log.v("hello","Photo saved");
+                    }
+
+                    @Override
+                    public void onError(@NonNull ImageCaptureException exception) {
+                        Log.v("hello","Photo not saved");
+
+                    }
+                }
+
+        );
 
     }
-    */
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK && data != null){
+            Uri selectedImage = data.getData();
+            QRCodePhoto = selectedImage;
+
+        }
+    }
 
     @Override
     public void onResume() {
