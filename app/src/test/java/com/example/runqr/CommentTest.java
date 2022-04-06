@@ -1,12 +1,8 @@
 package com.example.runqr;
 
-import static org.junit.Assert.assertTrue;
-
 import android.app.Activity;
-import android.widget.EditText;
 import android.widget.ListView;
 
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 
@@ -92,19 +88,29 @@ public class CommentTest {
 
         ListView codeList = (ListView) solo.getView(com.example.runqr.R.id.qrlibrary_list,1); //1 is ipmortant, dont know why
         //QRCode code  = (QRCode) codeList.getChildAt(0);
-        solo2.clickInList(0);
-
-        solo3.assertCurrentActivity("Wrong Activity", DisplayQRCodeActivity.class);
-        assertTrue(solo.waitForText(score1.toString(), 1, 2000));
-
-        RecyclerView commentList = (RecyclerView) solo3.getView(R.id.recyclerView);
-        solo3.clickOnView(solo3.getView(R.id.add_comment_button));
-        solo3.enterText((EditText)solo3.getView(R.id.comment_body_editText), "Edmonton");
-        solo3.clickOnButton("OK"); //Select CONFIRM Button
-        //solo3.clickInList()
-        assertTrue(solo3.waitForText("Edmonton", 1, 2000));
+        solo.clickInList(0);
+        solo.assertCurrentActivity();
+        
+        solo.clickOnView(solo.getView(R.id.));
 
 
+        /*
+        solo.clickOnButton("ADD CITY"); // Click ADD CITY Button
+        //Get view for EditText and enter a city name
+        solo.enterText((EditText)solo.getView(R.id.editText_name), "Edmonton");
+        solo.clickOnButton("CONFIRM"); //Select CONFIRM Button
+        solo.clearEditText((EditText) solo.getView(R.id.editText_name)); //Clear the EditText
+
+        // True if there is a text: Edmonton on the screen, wait at least 2 seconds and find
+        minimum one match.
+
+        assertTrue(solo.waitForText("Edmonton", 1, 2000));
+
+        solo.clickOnButton("CLEAR ALL"); //Select CLEAR ALL Button
+
+        // True if there is no text: Edmonton, on the screen
+        assertFalse(solo.searchText("Edmonton"));
+        */
 
     }
 

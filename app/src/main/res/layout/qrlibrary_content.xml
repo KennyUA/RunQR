@@ -9,7 +9,7 @@
         android:id="@+id/qrcode_hash_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="25dp"
+        android:padding="20dp"
         android:text="QRCode Hash"
         android:textSize="15sp"></TextView>
 
@@ -17,7 +17,7 @@
         android:id="@+id/qrcode_score_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="25dp"
+        android:padding="20dp"
         android:text="QRCode Score"
         android:textSize="15sp"></TextView>
 

@@ -17,18 +17,29 @@
         <entry key="..\:/Users/mdota/project/RunQR/app/src/main/res/drawable/qrlibrary_list_content.xml" value="0.253" />
         <entry key="..\:/Users/mdota/project/RunQR/app/src/main/res/layout/activity_display_qrcode.xml" value="0.268" />
         <entry key="..\:/Users/mdota/project/RunQR/app/src/main/res/layout/activity_main.xml" value="0.2140625" />
+        <entry key="..\:/Users/mdota/project/RunQR/app/src/main/res/layout/activity_manage_qrcodes.xml" value="0.24739583333333334" />
+        <entry key="..\:/Users/mdota/project/RunQR/app/src/main/res/layout/activity_owner.xml" value="0.24739583333333334" />
         <entry key="..\:/Users/mdota/project/RunQR/app/src/main/res/layout/activity_qrlibrary.xml" value="0.24739583333333334" />
         <entry key="..\:/Users/mdota/project/RunQR/app/src/main/res/layout/add_qr_fragment_layout.xml" value="0.20572916666666666" />
+        <entry key="..\:/Users/mdota/project/RunQR/app/src/main/res/layout/content.xml" value="0.2826086956521739" />
         <entry key="..\:/Users/mdota/project/RunQR/app/src/main/res/layout/qrlibrary_content.xml" value="0.2066115702479339" />
         <entry key="..\:/Users/mdota/project/RunQR/app/src/main/res/layout/store_info_activity.xml" value="0.259375" />
         <entry key="..\:/Users/mdota/project/RunQR/app/src/main/res/layout/store_info_fragment.xml" value="0.259375" />
         <entry key="..\:/Users/mdota/project/RunQR/app/src/main/res/menu/main_menu.xml" value="0.2890625" />
         <entry key="..\:/Users/psroy/Desktop/CMPUT301/Project/RunQR/app/src/main/res/drawable/ic_locations.xml" value="0.1" />
         <entry key="..\:/Users/psroy/Desktop/CMPUT301/Project/RunQR/app/src/main/res/drawable/ic_refresh.xml" value="0.1" />
+        <entry key="..\:/Users/psroy/Desktop/CMPUT301/Project/RunQR/app/src/main/res/drawable/ic_sad.xml" value="0.109" />
         <entry key="..\:/Users/psroy/Desktop/CMPUT301/Project/RunQR/app/src/main/res/layout/activity_custom_list_adapter.xml" value="0.1" />
-        <entry key="..\:/Users/psroy/Desktop/CMPUT301/Project/RunQR/app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="..\:/Users/psroy/Desktop/CMPUT301/Project/RunQR/app/src/main/res/layout/activity_main.xml" value="0.24328147100424327" />
+        <entry key="..\:/Users/psroy/Desktop/CMPUT301/Project/RunQR/app/src/main/res/layout/activity_username_list.xml" value="0.1" />
         <entry key="..\:/Users/psroy/Desktop/CMPUT301/Project/RunQR/app/src/main/res/layout/fragment_item.xml" value="0.1" />
         <entry key="..\:/Users/psroy/Desktop/CMPUT301/Project/RunQR/app/src/main/res/layout/fragment_item_list.xml" value="0.1" />
+        <entry key="..\:/Users/psroy/Desktop/CMPUT301/Project/RunQR/app/src/main/res/layout/list_fragment.xml" value="0.1671875" />
+
+        <entry key="..\:/Users/psroy/Desktop/CMPUT301/Project/RunQR/app/src/main/res/layout/username_content.xml" value="0.1" />
+        <entry key="..\:/Users/psroy/Desktop/CMPUT301/Project/RunQR/app/src/main/res/menu/main_menu.xml" value="0.20416666666666666" />
+        <entry key="..\:/Users/psroy/Desktop/CMPUT301/Project/RunQR/app/src/main/res/menu/search_menu.xml" value="0.1398148148148148" />
+        <entry key="..\:/Users/psroy/Desktop/CMPUT301/Project/RunQR/app/src/main/res/xml/searchable.xml" value="0.1068840579710145" />
         <entry key="..\:/Users/yumna/OneDrive/Documents/CMPUT 301/RunQrProject/RunQR/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.142" />
         <entry key="..\:/Users/yumna/OneDrive/Documents/CMPUT 301/RunQrProject/RunQR/app/src/main/res/drawable/ic_launcher_background.xml" value="0.142" />
         <entry key="..\:/Users/yumna/OneDrive/Documents/CMPUT 301/RunQrProject/RunQR/app/src/main/res/drawable/ic_locations.xml" value="0.142" />
@@ -46,7 +57,6 @@
         <entry key="..\:/Users/yumna/OneDrive/Documents/CMPUT 301/RunQrProject/RunQR/app/src/main/res/layout/camera_layout.xml" value="0.27395833333333336" />
         <entry key="..\:/Users/yumna/OneDrive/Documents/CMPUT 301/RunQrProject/RunQR/app/src/main/res/layout/commentlibrary_content.xml" value="0.22760416666666666" />
         <entry key="..\:/Users/yumna/OneDrive/Documents/CMPUT 301/RunQrProject/RunQR/app/src/main/res/layout/fragment_item.xml" value="0.12760416666666666" />
-        <entry key="..\:/Users/yumna/OneDrive/Documents/CMPUT 301/RunQrProject/RunQR/app/src/main/res/layout/fragment_login_with_q_r2.xml" value="0.14447463768115942" />
         <entry key="..\:/Users/yumna/OneDrive/Documents/CMPUT 301/RunQrProject/RunQR/app/src/main/res/layout/leaderboard_content.xml" value="0.12760416666666666" />
         <entry key="..\:/Users/yumna/OneDrive/Documents/CMPUT 301/RunQrProject/RunQR/app/src/main/res/layout/list_fragment.xml" value="0.12760416666666666" />
         <entry key="..\:/Users/yumna/OneDrive/Documents/CMPUT 301/RunQrProject/RunQR/app/src/main/res/layout/profile_content.xml" value="0.12760416666666666" />
@@ -57,7 +67,7 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">
